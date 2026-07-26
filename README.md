@@ -150,7 +150,7 @@ src/
 
 ## Ask AI History
 
-![Ask AI History](screenshots/ask-ai history.png)
+![Ask AI History](screenshots/history.png)
 
 ## Analytics
 

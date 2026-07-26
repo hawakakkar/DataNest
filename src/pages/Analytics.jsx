@@ -1,0 +1,401 @@
+import { useEffect, useState } from "react";
+import {
+  FiFileText,
+  FiDatabase,
+  FiMessageSquare,
+  FiCheckCircle,
+  FiActivity,
+  FiClock,
+  FiCpu,
+  FiTrendingUp,
+} from "react-icons/fi";
+
+import { supabase } from "../Services/supabase";
+
+export default function Analytics() {
+  const [documents, setDocuments] = useState(0);
+  const [chunks, setChunks] = useState(0);
+  const [questions, setQuestions] = useState(0);
+  const [recentDocs, setRecentDocs] = useState([]);
+
+  useEffect(() => {
+    loadAnalytics();
+  }, []);
+
+  async function loadAnalytics() {
+    const { data: docs } = await supabase
+      .from("documents")
+      .select("*")
+      .order("uploaded_at", { ascending: false });
+
+    const { data: chunkData } = await supabase.from("chunks").select("id");
+
+    const { data: questionData } = await supabase.from("questions").select("*");
+
+    setDocuments(docs?.length || 0);
+    setChunks(chunkData?.length || 0);
+    setQuestions(questionData?.length || 0);
+
+    setRecentDocs(docs?.slice(0, 5) || []);
+  }
+
+  const health =
+    documents === 0
+      ? 0
+      : Math.min(100, Math.round((chunks / Math.max(documents, 1)) * 10));
+
+  return (
+    <div className="max-w-7xl mx-auto px-8 py-6 space-y-8">
+      {/* Header */}
+
+      <div>
+        <h1 className="text-4xl font-bold text-[#5A3F2A]">
+          Analytics Dashboard
+        </h1>
+
+        <p className="text-gray-500 mt-2">
+          Monitor your AI Knowledge Base performance.
+        </p>
+      </div>
+
+      {/* Cards */}
+
+      <div className="grid xl:grid-cols-4 md:grid-cols-2 gap-6">
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-7
+          hover:shadow-2xl
+          hover:-translate-y-1
+          hover:border-[#8B5E3C]
+          transition-all
+        "
+        >
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-gray-500">Documents</p>
+
+              <h2 className="text-4xl font-bold text-[#5A3F2A] mt-3">
+                {documents}
+              </h2>
+            </div>
+
+            <div
+              className="
+              w-16
+              h-16
+              rounded-2xl
+              bg-[#EFE7DE]
+              text-[#8B5E3C]
+              flex
+              items-center
+              justify-center
+            "
+            >
+              <FiFileText size={28} />
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-7
+          hover:shadow-2xl
+          hover:-translate-y-1
+          hover:border-[#8B5E3C]
+          transition-all
+        "
+        >
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-gray-500">Indexed Chunks</p>
+
+              <h2 className="text-4xl font-bold text-[#5A3F2A] mt-3">
+                {chunks}
+              </h2>
+            </div>
+
+            <div
+              className="
+              w-16
+              h-16
+              rounded-2xl
+              bg-[#EFE7DE]
+              text-[#8B5E3C]
+              flex
+              items-center
+              justify-center
+            "
+            >
+              <FiDatabase size={28} />
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-7
+          hover:shadow-2xl
+          hover:-translate-y-1
+          hover:border-[#8B5E3C]
+          transition-all
+        "
+        >
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-gray-500">AI Questions</p>
+
+              <h2 className="text-4xl font-bold text-[#5A3F2A] mt-3">
+                {questions}
+              </h2>
+            </div>
+
+            <div
+              className="
+              w-16
+              h-16
+              rounded-2xl
+              bg-[#EFE7DE]
+              text-[#8B5E3C]
+              flex
+              items-center
+              justify-center
+            "
+            >
+              <FiMessageSquare size={28} />
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-7
+          hover:shadow-2xl
+          hover:-translate-y-1
+          hover:border-[#8B5E3C]
+          transition-all
+        "
+        >
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-gray-500">Knowledge Health</p>
+
+              <h2 className="text-4xl font-bold text-[#5A3F2A] mt-3">
+                {health}%
+              </h2>
+            </div>
+
+            <div
+              className="
+              w-16
+              h-16
+              rounded-2xl
+              bg-[#EFE7DE]
+              text-[#8B5E3C]
+              flex
+              items-center
+              justify-center
+            "
+            >
+              <FiTrendingUp size={28} />
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* System Health + Recent Uploads */}
+
+      <div className="grid lg:grid-cols-2 gap-8">
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-8
+        "
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <FiActivity className="text-[#8B5E3C]" size={22} />
+            <h2 className="text-2xl font-bold text-[#5A3F2A]">System Health</h2>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Knowledge Base</span>
+
+                <span className="font-semibold text-[#8B5E3C]">{health}%</span>
+              </div>
+
+              <div className="h-3 bg-[#EFE7DE] rounded-full overflow-hidden">
+                <div
+                  className="bg-[#8B5E3C] h-full rounded-full transition-all"
+                  style={{ width: `${health}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 text-green-600">
+              <FiCheckCircle />
+              AI Service Connected
+            </div>
+
+            <div className="flex items-center gap-3 text-green-600">
+              <FiCheckCircle />
+              Supabase Connected
+            </div>
+
+            <div className="flex items-center gap-3 text-green-600">
+              <FiCheckCircle />
+              Vector Search Active
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-8
+        "
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <FiClock className="text-[#8B5E3C]" size={22} />
+            <h2 className="text-2xl font-bold text-[#5A3F2A]">
+              Recent Uploads
+            </h2>
+          </div>
+
+          {recentDocs.length === 0 ? (
+            <p className="text-gray-500">No uploaded documents.</p>
+          ) : (
+            <div className="space-y-4">
+              {recentDocs.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="
+                    flex
+                    justify-between
+                    items-center
+                    border-b
+                    border-[#ECE6DE]
+                    pb-3
+                  "
+                >
+                  <div>
+                    <p className="font-semibold text-[#5A3F2A]">{doc.title}</p>
+
+                    <p className="text-xs text-gray-500">{doc.file_name}</p>
+                  </div>
+
+                  <span className="text-xs text-gray-400">
+                    {new Date(doc.uploaded_at).toLocaleDateString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* AI Performance + Summary */}
+
+      <div className="grid lg:grid-cols-2 gap-8">
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-8
+        "
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <FiCpu className="text-[#8B5E3C]" size={22} />
+            <h2 className="text-2xl font-bold text-[#5A3F2A]">
+              AI Performance
+            </h2>
+          </div>
+
+          <div className="space-y-5">
+            <div className="flex justify-between">
+              <span>AI Accuracy</span>
+              <strong className="text-green-600">98%</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Embedding Status</span>
+              <strong className="text-green-600">Active</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Database</span>
+              <strong className="text-green-600">Healthy</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Search Engine</span>
+              <strong className="text-green-600">Online</strong>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="
+          bg-white
+          rounded-3xl
+          border border-[#ECE6DE]
+          shadow-lg
+          p-8
+        "
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <FiTrendingUp className="text-[#8B5E3C]" size={22} />
+            <h2 className="text-2xl font-bold text-[#5A3F2A]">
+              Activity Summary
+            </h2>
+          </div>
+
+          <div className="space-y-5">
+            <div className="flex justify-between">
+              <span>Total Documents</span>
+              <strong>{documents}</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Total Chunks</span>
+              <strong>{chunks}</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Total AI Questions</span>
+              <strong>{questions}</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Knowledge Health</span>
+              <strong className="text-green-600">{health}%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

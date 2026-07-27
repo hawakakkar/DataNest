@@ -68,6 +68,7 @@ export default function Dashboard() {
       setResponseTime(null);
 
       const results = await searchChunks(question);
+
       if (!results || results.length === 0) {
         setAnswer("No matching information found.");
         return;
@@ -106,7 +107,6 @@ export default function Dashboard() {
 
   function copyAnswer() {
     navigator.clipboard.writeText(answer);
-
     alert("Answer copied!");
   }
 
@@ -124,28 +124,53 @@ export default function Dashboard() {
     const link = document.createElement("a");
 
     link.href = url;
-
     link.download = "AI_Answer.txt";
-
     link.click();
 
     URL.revokeObjectURL(url);
   }
 
   return (
-    <div className="space-y-8 px-4 lg:px-6">
+    <div className="space-y-8 px-4 lg:px-6 bg-transparent">
       {/* Welcome */}
-      <section className="rounded-[32px] bg-gradient-to-r from-[#8B5E3C] via-[#5a3f2a] to-[#8B5E3C] p-10 text-white shadow-2xl">
+      <section
+        className="
+        rounded-[32px]
+        bg-gradient-to-r
+        from-[#8B5E3C]
+        via-[#5A3F2A]
+        to-[#8B5E3C]
+        p-10
+        text-white
+        shadow-2xl
+      "
+      >
         <h1 className="text-3xl font-bold">Welcome to DataNest AI 🚀</h1>
 
-        <p className="mt-3 text-white-90 max-w-2xl leading-8 text-lg">
+        <p className="mt-3 max-w-2xl text-lg leading-8 text-gray-100">
           Centralize your organization's documents and ask AI-powered questions
           to instantly find accurate information.
         </p>
 
         <button
           onClick={() => navigate("/upload")}
-          className="mt-8 flex items-center gap-2 bg-white text-[#8B5E3C] px-7 py-4 rounded-2xl font-semibold shadow-lg hover:scale-105 transition"
+          className="
+            mt-8
+            flex
+            items-center
+            gap-2
+            rounded-2xl
+            bg-white
+            px-7
+            py-4
+            font-semibold
+            text-[#8B5E3C]
+            shadow-lg
+            transition
+            hover:scale-105
+            dark:bg-[#2B2B2B]
+            dark:text-white
+          "
         >
           <FiUploadCloud size={20} />
           Upload Document
@@ -153,45 +178,51 @@ export default function Dashboard() {
       </section>
 
       {/* Statistics */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Documents */}
         <div
           className="
-      bg-white
-      rounded-3xl
-      border
-      border-[#ECE6DE]
-      shadow-lg
-      p-8
-      flex
-      gap-5
-      items-center
-      cursor-pointer
-      transition-all
-      duration-300
-      hover:-translate-y-2
-      hover:shadow-2xl
-      hover:border-[#8B5E3C]
-    "
+          flex
+          items-center
+          gap-5
+          rounded-3xl
+          border
+          border-[#ECE6DE]
+          bg-white
+          p-8
+          shadow-lg
+          transition-all
+          duration-300
+          hover:-translate-y-2
+          hover:border-[#8B5E3C]
+          hover:shadow-2xl
+
+          dark:border-gray-700
+          dark:bg-[#1F2937]
+        "
         >
           <div
             className="
-        w-16
-        h-16
-        rounded-2xl
-        bg-[#EFE7DE]
-        text-[#8B5E3C]
-        flex
-        items-center
-        justify-center
-      "
+            flex
+            h-16
+            w-16
+            items-center
+            justify-center
+            rounded-2xl
+            bg-[#EFE7DE]
+            text-[#8B5E3C]
+
+            dark:bg-[#374151]
+            dark:text-[#D6A97A]
+          "
           >
             <FiFileText size={28} />
           </div>
 
           <div>
-            <p className="text-gray-500">Documents</p>
-            <h2 className="text-3xl font-bold text-[#5A3F2A]">
+            <p className="text-gray-500 dark:text-gray-400">Documents</p>
+
+            <h2 className="text-3xl font-bold text-[#5A3F2A] dark:text-white">
               {documentsCount}
             </h2>
           </div>
@@ -200,104 +231,119 @@ export default function Dashboard() {
         {/* Indexed Chunks */}
         <div
           className="
-      bg-white
-      rounded-3xl
-      border
-      border-[#ECE6DE]
-      shadow-lg
-      p-8
-      flex
-      gap-5
-      items-center
-      cursor-pointer
-      transition-all
-      duration-300
-      hover:-translate-y-2
-      hover:shadow-2xl
-      hover:border-[#8B5E3C]
-    "
+          flex
+          items-center
+          gap-5
+          rounded-3xl
+          border
+          border-[#ECE6DE]
+          bg-white
+          p-8
+          shadow-lg
+          transition-all
+          duration-300
+          hover:-translate-y-2
+          hover:border-[#8B5E3C]
+          hover:shadow-2xl
+
+          dark:border-gray-700
+          dark:bg-[#1F2937]
+        "
         >
           <div
             className="
-        w-16
-        h-16
-        rounded-2xl
-        bg-[#EFE7DE]
-        text-[#8B5E3C]
-        flex
-        items-center
-        justify-center
-      "
+            flex
+            h-16
+            w-16
+            items-center
+            justify-center
+            rounded-2xl
+            bg-[#EFE7DE]
+            text-[#8B5E3C]
+
+            dark:bg-[#374151]
+            dark:text-[#D6A97A]
+          "
           >
             <FiDatabase size={28} />
           </div>
 
           <div>
-            <p className="text-gray-500">Indexed Chunks</p>
-            <h2 className="text-3xl font-bold text-[#5A3F2A]">{chunksCount}</h2>
+            <p className="text-gray-500 dark:text-gray-400">Indexed Chunks</p>
+
+            <h2 className="text-3xl font-bold text-[#5A3F2A] dark:text-white">
+              {chunksCount}
+            </h2>
           </div>
         </div>
 
         {/* AI Questions */}
         <div
           className="
-    bg-white
-    rounded-3xl
-    border
-    border-[#ECE6DE]
-    shadow-lg
-    p-8
-    flex
-    gap-5
-    items-center
-    cursor-pointer
-    transition-all
-    duration-300
-    hover:-translate-y-2
-    hover:shadow-2xl
-    hover:border-[#8B5E3C]
-  "
+          flex
+          items-center
+          gap-5
+          rounded-3xl
+          border
+          border-[#ECE6DE]
+          bg-white
+          p-8
+          shadow-lg
+          transition-all
+          duration-300
+          hover:-translate-y-2
+          hover:border-[#8B5E3C]
+          hover:shadow-2xl
+
+          dark:border-gray-700
+          dark:bg-[#1F2937]
+        "
         >
           <div
             className="
-      w-16
-      h-16
-      rounded-2xl
-      bg-[#EFE7DE]
-      text-[#8B5E3C]
-      flex
-      items-center
-      justify-center
-    "
+            flex
+            h-16
+            w-16
+            items-center
+            justify-center
+            rounded-2xl
+            bg-[#EFE7DE]
+            text-[#8B5E3C]
+
+            dark:bg-[#374151]
+            dark:text-[#D6A97A]
+          "
           >
             <FiMessageSquare size={28} />
           </div>
 
           <div>
-            <p className="text-[#7A746E]">AI Questions</p>
-            <h2 className="text-3xl font-bold text-[#5A3F2A]">
+            <p className="text-[#7A746E] dark:text-gray-400">AI Questions</p>
+
+            <h2 className="text-3xl font-bold text-[#5A3F2A] dark:text-white">
               {questionsCount}
             </h2>
           </div>
         </div>
       </section>
-
       {/* Ask AI */}
       <section
         className="
-    bg-white
-    rounded-3xl
-    border
-    border-[#ECE6DE]
-    shadow-lg
-    p-8
-  "
+        bg-white
+        dark:bg-[#1F2937]
+        border
+        border-[#ECE6DE]
+        dark:border-gray-700
+        rounded-3xl
+        shadow-lg
+        p-8
+      "
       >
-        <h2 className="text-3xl font-bold text-[#5A3F2A]">
+        <h2 className="text-3xl font-bold text-[#5A3F2A] dark:text-white">
           Ask your documents
         </h2>
 
-        <p className="text-[#7A746E] mt-2">
+        <p className="mt-2 text-[#7A746E] dark:text-gray-400">
           Ask questions and get answers from your knowledge base.
         </p>
 
@@ -307,64 +353,91 @@ export default function Dashboard() {
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Example: What is the leave policy?"
             className="
-        flex-1
-        bg-[#F8F6F2]
-        border
-        border-[#ECE6DE]
-        rounded-3xl
-        px-6
-        py-5
-        outline-none
-        text-lg
-        focus:border-[#8B5E3C]
-      "
+              flex-1
+              rounded-3xl
+              border
+              border-[#ECE6DE]
+              dark:border-gray-600
+              bg-[#F8F6F2]
+              dark:bg-[#111827]
+              dark:text-white
+              dark:placeholder:text-gray-400
+              px-6
+              py-5
+              text-lg
+              outline-none
+              focus:border-[#8B5E3C]
+            "
           />
 
           <button
             onClick={handleSearch}
             disabled={loadingAnswer}
             className="
-        bg-[#8B5E3C]
-        hover:bg-[#70492C]
-        text-white
-        px-8
-        rounded-2xl
-        transition
-        disabled:opacity-60
-      "
+              rounded-2xl
+              bg-[#8B5E3C]
+              px-8
+              text-white
+              transition
+              hover:bg-[#70492C]
+              disabled:opacity-60
+            "
           >
             {loadingAnswer ? "Thinking..." : "Ask AI"}
           </button>
         </div>
 
         {loadingAnswer && (
-          <div className="mt-6 rounded-2xl bg-[#F8F6F2] p-5 border border-[#ECE6DE]">
-            <p className="text-[#5A3F2A]">AI is analyzing your documents...</p>
+          <div
+            className="
+              mt-6
+              rounded-2xl
+              border
+              border-[#ECE6DE]
+              dark:border-gray-600
+              bg-[#F8F6F2]
+              dark:bg-[#111827]
+              p-5
+            "
+          >
+            <p className="text-[#5A3F2A] dark:text-white">
+              AI is analyzing your documents...
+            </p>
           </div>
         )}
 
         {answer && (
           <div
             className="
-        mt-8
-        bg-white
-        rounded-[30px]
-        border
-        border-[#ECE6DE]
-        shadow-xl
-      "
+              mt-8
+              rounded-[30px]
+              border
+              border-[#ECE6DE]
+              dark:border-gray-700
+              bg-white
+              dark:bg-[#111827]
+              shadow-xl
+            "
           >
             {/* Header */}
-            <div className="border-b border-[#ECE6DE] px-6 py-5 flex justify-between items-start">
+            <div className="flex items-start justify-between border-b border-[#ECE6DE] dark:border-gray-700 px-6 py-5">
               <div>
-                <h3 className="flex items-center gap-3 text-2xl font-bold text-[#5A3F2A]">
-                  <div className="bg-[#EFE7DE] p-2 rounded-xl text-[#8B5E3C]">
+                <h3 className="flex items-center gap-3 text-2xl font-bold text-[#5A3F2A] dark:text-white">
+                  <div
+                    className="
+                      rounded-xl
+                      bg-[#EFE7DE]
+                      dark:bg-[#374151]
+                      p-2
+                      text-[#8B5E3C]
+                    "
+                  >
                     <FiCpu size={22} />
                   </div>
                   AI Assistant
                 </h3>
 
-                <div className="flex gap-6 mt-3 text-sm text-[#7A746E]">
+                <div className="mt-3 flex gap-6 text-sm text-[#7A746E] dark:text-gray-400">
                   {responseTime && (
                     <span className="flex items-center gap-2">
                       <FiClock />
@@ -382,42 +455,78 @@ export default function Dashboard() {
               <div className="flex gap-2">
                 <button
                   onClick={copyAnswer}
-                  className="bg-[#F8F6F2] hover:bg-[#EFE7DE] text-[#8B5E3C] p-3 rounded-lg transition"
+                  className="
+                    rounded-lg
+                    bg-[#F8F6F2]
+                    dark:bg-[#374151]
+                    p-3
+                    text-[#8B5E3C]
+                    dark:text-white
+                    transition
+                    hover:bg-[#EFE7DE]
+                    dark:hover:bg-[#4B5563]
+                  "
                 >
                   <FiCopy />
                 </button>
 
                 <button
                   onClick={regenerateAnswer}
-                  className="bg-[#F8F6F2] hover:bg-[#EFE7DE] text-[#8B5E3C] p-3 rounded-lg transition"
+                  className="
+                    rounded-lg
+                    bg-[#F8F6F2]
+                    dark:bg-[#374151]
+                    p-3
+                    text-[#8B5E3C]
+                    dark:text-white
+                    transition
+                    hover:bg-[#EFE7DE]
+                    dark:hover:bg-[#4B5563]
+                  "
                 >
                   <FiRefreshCw />
                 </button>
 
                 <button
                   onClick={downloadAnswer}
-                  className="bg-[#F8F6F2] hover:bg-[#EFE7DE] text-[#8B5E3C] p-3 rounded-lg transition"
+                  className="
+                    rounded-lg
+                    bg-[#F8F6F2]
+                    dark:bg-[#374151]
+                    p-3
+                    text-[#8B5E3C]
+                    dark:text-white
+                    transition
+                    hover:bg-[#EFE7DE]
+                    dark:hover:bg-[#4B5563]
+                  "
                 >
                   <FiDownload />
                 </button>
               </div>
             </div>
-
             {/* Answer */}
             <div className="px-6 py-6">
-              <h4 className="font-semibold mb-4 text-lg text-[#5A3F2A]">
+              <h4 className="mb-4 text-lg font-semibold text-[#5A3F2A] dark:text-white">
                 AI Answer
               </h4>
 
-              <p className="leading-8 whitespace-pre-wrap text-[#444444]">
+              <p
+                className="
+                  whitespace-pre-wrap
+                  leading-8
+                  text-[#444444]
+                  dark:text-gray-300
+                "
+              >
                 {answer}
               </p>
             </div>
 
             {/* Sources */}
             {sources.length > 0 && (
-              <div className="border-t border-[#ECE6DE] px-6 py-6">
-                <h4 className="font-bold text-lg mb-4 text-[#5A3F2A]">
+              <div className="border-t border-[#ECE6DE] dark:border-gray-700 px-6 py-6">
+                <h4 className="mb-4 text-lg font-bold text-[#5A3F2A] dark:text-white">
                   📄 Sources
                 </h4>
 
@@ -426,37 +535,40 @@ export default function Dashboard() {
                     <div
                       key={index}
                       className="
-                  border
-                  border-[#ECE6DE]
-                  rounded-xl
-                  p-4
-                  bg-[#F8F6F2]
-                  hover:bg-[#EFE7DE]
-                  transition
-                  flex
-                  justify-between
-                  items-center
-                "
+                        flex
+                        items-center
+                        justify-between
+                        rounded-xl
+                        border
+                        border-[#ECE6DE]
+                        dark:border-gray-700
+                        bg-[#F8F6F2]
+                        dark:bg-[#1F2937]
+                        p-4
+                        transition
+                        hover:bg-[#EFE7DE]
+                        dark:hover:bg-[#374151]
+                      "
                     >
                       <div>
-                        <p className="font-semibold text-[#5A3F2A]">
+                        <p className="font-semibold text-[#5A3F2A] dark:text-white">
                           📄 {source.file_name}
                         </p>
 
-                        <p className="text-xs text-[#7A746E] mt-1">
+                        <p className="mt-1 text-xs text-[#7A746E] dark:text-gray-400">
                           Similarity: {(source.similarity * 100).toFixed(1)}%
                         </p>
                       </div>
 
                       <span
                         className="
-                    bg-[#8B5E3C]
-                    text-white
-                    text-xs
-                    px-3
-                    py-1
-                    rounded-full
-                  "
+                          rounded-full
+                          bg-[#8B5E3C]
+                          px-3
+                          py-1
+                          text-xs
+                          text-white
+                        "
                       >
                         Match {(source.similarity * 100).toFixed(0)}%
                       </span>

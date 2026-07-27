@@ -119,76 +119,77 @@ export default function Upload() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8F6F2] p-8">
+    <div className="min-h-screen bg-[#F8F6F2] dark:bg-[#111827] p-8 transition-colors">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-[#5A3F2A]">
+        <h1 className="text-4xl font-bold text-center text-[#5A3F2A] dark:text-white">
           Upload Documents
         </h1>
 
-        <p className="text-center text-[#72685F] mt-3">
+        <p className="text-center text-[#72685F] dark:text-gray-400 mt-3">
           Upload PDF, DOCX or TXT files to build your AI Knowledge Base.
         </p>
 
         {/* Drop Zone */}
-
         <div
           {...getRootProps()}
           className="
-            mt-10
-            bg-white
-            border-2
-            border-dashed
-            border-[#8B5E3C]
-            rounded-3xl
-            p-16
-            text-center
-            cursor-pointer
-            hover:bg-[#F8F6F2]
-            transition-all
-            duration-300
-          "
+                mt-10
+                bg-white
+                dark:bg-[#1F2937]
+                border-2
+                border-dashed
+                border-[#8B5E3C]
+                dark:border-gray-600
+                rounded-3xl
+                p-16
+                text-center
+                cursor-pointer
+                hover:bg-[#F8F6F2]
+                dark:hover:bg-[#374151]
+                transition-all
+                duration-300
+              "
         >
           <input {...getInputProps()} />
 
           <div className="text-6xl">📄</div>
 
-          <h2
-            className="text-2xl font-bold text-[#5A3F2A]
-           mt-5"
-          >
+          <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white mt-5">
             Drag & Drop Files
           </h2>
 
-          <p className="text-[#72685F] mt-2">or click to select document</p>
+          <p className="text-[#72685F] dark:text-gray-400 mt-2">
+            or click to select document
+          </p>
 
-          <p className="text-sm text-[#9A9087] mt-3">
+          <p className="text-sm text-[#9A9087] dark:text-gray-500 mt-3">
             PDF • DOCX • TXT (Max 20MB)
           </p>
         </div>
 
         {/* Selected File */}
-
         {selectedFile && (
           <div
             className="
-              mt-6
-              bg-[#F8F6F2]
-              border
-              border-[#ECE6DE]
-              rounded-3xl
-              p-6
-            "
+                  mt-6
+                  bg-[#F8F6F2]
+                  dark:bg-[#1F2937]
+                  border
+                  border-[#ECE6DE]
+                  dark:border-gray-700
+                  rounded-3xl
+                  p-6
+                "
           >
-            <h3 className="font-semibold text-[#8B5E3C]">Selected File</h3>
+            <h3 className="font-semibold text-[#8B5E3C] dark:text-[#D6A97A]">
+              Selected File
+            </h3>
 
-            <p
-              className="mt-2 text-[#5A3F2A]
-            "
-            >
+            <p className="mt-2 text-[#5A3F2A] dark:text-white">
               📄 {selectedFile.name}
             </p>
 
-            <p className="text-sm text-[#72685F]">
+            <p className="text-sm text-[#72685F] dark:text-gray-400">
               Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
             </p>
 
@@ -199,12 +200,7 @@ export default function Upload() {
                   setMessage("");
                   setUploadedChunks(null);
                 }}
-                className="
-                  mt-3
-                  text-sm
-                  text-red-500
-                  hover:text-red-700
-                "
+                className="mt-3 text-sm text-red-500 hover:text-red-700"
               >
                 Remove File
               </button>
@@ -213,73 +209,61 @@ export default function Upload() {
         )}
 
         {/* Upload Status */}
-
         <div
           className="
-            bg-white
-            rounded-3xl
-            border
-            border-[#ECE6DE]
-            shadow-lg
-            mt-8
-            p-8
-          "
+                bg-white
+                dark:bg-[#1F2937]
+                rounded-3xl
+                border
+                border-[#ECE6DE]
+                dark:border-gray-700
+                shadow-lg
+                mt-8
+                p-8
+              "
         >
-          <h2
-            className="font-bold text-2xl text-[#5A3F2A]
-          "
-          >
+          <h2 className="font-bold text-2xl text-[#5A3F2A] dark:text-white">
             Upload Status
           </h2>
 
           {uploading ? (
             <div className="mt-5">
-              <div className="h-3 bg-[#ECE6DE] rounded-full overflow-hidden">
-                <div
-                  className="
-                    h-3
-                    bg-[#8B5E3C]
-                    rounded-full
-                    w-full
-                    animate-pulse
-                  "
-                ></div>
+              <div className="h-3 bg-[#ECE6DE] dark:bg-gray-700 rounded-full overflow-hidden">
+                <div className="h-3 bg-[#8B5E3C] rounded-full w-full animate-pulse"></div>
               </div>
 
-              <p className="mt-3 text-[#8B5E3C] font-medium">
+              <p className="mt-3 text-[#8B5E3C] dark:text-[#D6A97A] font-medium">
                 Uploading document and generating embeddings...
               </p>
             </div>
           ) : (
-            <p className="mt-4 text-[#72685F]">Ready to upload.</p>
+            <p className="mt-4 text-[#72685F] dark:text-gray-400">
+              Ready to upload.
+            </p>
           )}
 
           {uploadedChunks && (
             <div
               className="
-                mt-5
-                bg-[#F8F6F2]
-                border
-                border-[#ECE6DE]
-                rounded-2xl
-                p-4
-                text-[#8B5E3C]
-              "
+                    mt-5
+                    bg-[#F8F6F2]
+                    dark:bg-[#111827]
+                    border
+                    border-[#ECE6DE]
+                    dark:border-gray-700
+                    rounded-2xl
+                    p-4
+                    text-[#8B5E3C]
+                    dark:text-[#D6A97A]
+                  "
             >
               Chunks created:
-              <span className="font-bold ml-2">{uploadedChunks}</span>✅
+              <span className="font-bold ml-2">{uploadedChunks}</span> ✅
             </div>
           )}
 
           {message && (
-            <div
-              className="
-                mt-5
-                text-center
-                font-semibold
-                text-[#2F2A27]
-              "
-            >
+            <div className="mt-5 text-center font-semibold text-[#2F2A27] dark:text-white">
               {message}
             </div>
           )}

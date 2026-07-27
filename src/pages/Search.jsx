@@ -21,7 +21,9 @@ function Search() {
     const { data, error } = await supabase
       .from("questions")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("created_at", {
+        ascending: false,
+      });
 
     if (error) {
       console.log(error);
@@ -97,7 +99,10 @@ function Search() {
 
     return text.split(regex).map((part, index) =>
       part.toLowerCase() === keyword.toLowerCase() ? (
-        <mark key={index} className="bg-yellow-300 rounded px-1 font-semibold">
+        <mark
+          key={index}
+          className="bg-yellow-300 dark:bg-yellow-600 rounded px-1 font-semibold text-black"
+        >
           {part}
         </mark>
       ) : (
@@ -107,12 +112,14 @@ function Search() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 px-6">
+    <div className="max-w-7xl mx-auto space-y-8 px-6 py-8 min-h-screen bg-[#F8F6F2] dark:bg-[#111827] transition-colors duration-300">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-[#5A3F2A]">Ask AI History</h1>
+          <h1 className="text-4xl font-bold text-[#5A3F2A] dark:text-white">
+            Ask AI History
+          </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
             View and manage all your previous AI conversations.
           </p>
         </div>
@@ -125,8 +132,11 @@ function Search() {
               py-2
               rounded-xl
               bg-[#EFE7DE]
+              dark:bg-[#374151]
               text-[#5A3F2A]
+              dark:text-white
               hover:bg-[#E3D7CA]
+              dark:hover:bg-[#4B5563]
               transition
             "
           >
@@ -154,8 +164,21 @@ function Search() {
       </div>
 
       {filteredQuestions.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-[#ECE6DE] shadow-lg p-8">
-          <p className="text-gray-500">No matching questions found.</p>
+        <div
+          className="
+            bg-white
+            dark:bg-[#1F2937]
+            rounded-3xl
+            border
+            border-[#ECE6DE]
+            dark:border-gray-700
+            shadow-lg
+            p-8
+          "
+        >
+          <p className="text-gray-500 dark:text-gray-400">
+            No matching questions found.
+          </p>
         </div>
       ) : (
         <div className="space-y-5">
@@ -164,19 +187,21 @@ function Search() {
               key={item.id}
               className="
                 bg-white
+                dark:bg-[#1F2937]
                 rounded-3xl
                 border
                 border-[#ECE6DE]
+                dark:border-gray-700
                 shadow-lg
                 hover:shadow-2xl
                 hover:-translate-y-1
                 hover:border-[#8B5E3C]
+                dark:hover:border-[#D6A97A]
                 transition-all
                 duration-300
                 p-7
               "
             >
-              {/* Header */}
               <div className="flex justify-between items-start gap-5">
                 <div className="flex gap-4">
                   <input
@@ -191,20 +216,15 @@ function Search() {
                         );
                       }
                     }}
-                    className="
-                      mt-1
-                      w-5
-                      h-5
-                      accent-[#8B5E3C]
-                    "
+                    className="mt-1 w-5 h-5 accent-[#8B5E3C]"
                   />
 
                   <div>
-                    <h2 className="font-semibold text-[#8B5E3C] text-lg">
+                    <h2 className="font-semibold text-[#8B5E3C] dark:text-[#D6A97A] text-lg">
                       Question
                     </h2>
 
-                    <p className="mt-3 leading-7">
+                    <p className="mt-3 leading-7 text-[#2F2A27] dark:text-gray-200">
                       {highlightText(item.query)}
                     </p>
                   </div>
@@ -226,19 +246,31 @@ function Search() {
                 </button>
               </div>
 
-              <hr className="my-6 border-[#ECE6DE]" />
-
-              {/* Answer */}
-
-              <h2 className="font-semibold text-[#8B5E3C] text-lg">
+              <hr className="my-6 border-[#ECE6DE] dark:border-gray-700" />
+              <h2 className="font-semibold text-[#8B5E3C] dark:text-[#D6A97A] text-lg">
                 AI Answer
               </h2>
 
-              <p className="mt-3 whitespace-pre-wrap leading-8 text-gray-700">
+              <p
+                className="
+                  mt-3
+                  whitespace-pre-wrap
+                  leading-8
+                  text-gray-700
+                  dark:text-gray-300
+                "
+              >
                 {highlightText(item.answer)}
               </p>
 
-              <div className="mt-6 text-xs text-gray-400">
+              <div
+                className="
+                  mt-6
+                  text-xs
+                  text-gray-400
+                  dark:text-gray-500
+                "
+              >
                 {new Date(item.created_at).toLocaleString()}
               </div>
             </div>

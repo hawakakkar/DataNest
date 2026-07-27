@@ -9,6 +9,7 @@ import Search from "./pages/Search";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 
+
 function App() {
   return (
     <Routes>

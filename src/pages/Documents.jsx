@@ -94,22 +94,37 @@ export default function Documents() {
         });
 
   return (
-    <div className="flex-1 px-8 md:px-12 py-8 bg-[#F8F6F2] min-h-screen">
+    <div className="flex-1 px-8 md:px-12 py-8 bg-[#F8F6F2] dark:bg-[#111827] min-h-screen transition-colors">
       {/* Header */}
 
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-[#5A3F2A]">Documents</h1>
+        <h1 className="text-4xl font-bold text-[#5A3F2A] dark:text-white">
+          Documents
+        </h1>
 
-        <p className="text-[#8A7A6A] mt-2">
+        <p className="text-[#8A7A6A] dark:text-gray-400 mt-2">
           Manage your uploaded knowledge base files.
         </p>
       </div>
 
-      <div className="bg-white rounded-3xl border border-[#ECE6DE] shadow-xl p-8">
+      <div
+        className="
+        bg-white
+        dark:bg-[#1F2937]
+        rounded-3xl
+        border
+        border-[#ECE6DE]
+        dark:border-gray-700
+        shadow-xl
+        p-8
+      "
+      >
         {loading ? (
-          <p className="text-[#8A7A6A] text-lg">Loading documents...</p>
+          <p className="text-[#8A7A6A] dark:text-gray-400 text-lg">
+            Loading documents...
+          </p>
         ) : filteredDocuments.length === 0 ? (
-          <p className="text-[#8A7A6A]">
+          <p className="text-[#8A7A6A] dark:text-gray-400">
             No documents found
             {keyword && (
               <>
@@ -129,17 +144,19 @@ export default function Documents() {
                 <div
                   key={doc.id}
                   className="
-        bg-white
-        border
-        border-[#ECE6DE]
-        rounded-3xl
-        shadow-md
-        hover:shadow-2xl
-        hover:-translate-y-2
-        transition-all
-        duration-300
-        p-7
-      "
+                  bg-white
+                  dark:bg-[#1F2937]
+                  border
+                  border-[#ECE6DE]
+                  dark:border-gray-700
+                  rounded-3xl
+                  shadow-md
+                  hover:shadow-2xl
+                  hover:-translate-y-2
+                  transition-all
+                  duration-300
+                  p-7
+                "
                 >
                   {/* Top */}
 
@@ -149,59 +166,62 @@ export default function Documents() {
                     <div className="flex gap-5 flex-1">
                       <div
                         className="
-              w-16
-              h-16
-              rounded-2xl
-              bg-[#EFE7DE]
-              text-[#8B5E3C]
-              flex
-              items-center
-              justify-center
-              shadow-sm
-              shrink-0
-            "
+                        w-16
+                        h-16
+                        rounded-2xl
+                        bg-[#EFE7DE]
+                        dark:bg-[#374151]
+                        text-[#8B5E3C]
+                        dark:text-[#D6A97A]
+                        flex
+                        items-center
+                        justify-center
+                        shadow-sm
+                        shrink-0
+                      "
                       >
                         <FiFileText size={28} />
                       </div>
 
                       <div className="flex-1">
-                        <h2 className="text-xl font-bold text-[#5A3F2A]">
+                        <h2 className="text-xl font-bold text-[#5A3F2A] dark:text-white">
                           {highlight(doc.title || "")}
                         </h2>
 
-                        <p className="text-[#8A7A6A] mt-1">
+                        <p className="text-[#8A7A6A] dark:text-gray-400 mt-1">
                           {highlight(doc.file_name || "")}
                         </p>
 
-                        <p className="text-sm text-[#8A7A6A] mt-3">
+                        <p className="text-sm text-[#8A7A6A] dark:text-gray-400 mt-3">
                           Uploaded:{" "}
                           {new Date(doc.uploaded_at).toLocaleDateString()}
                         </p>
 
-                        <p className="text-sm text-green-600 mt-1">
+                        <p className="text-sm text-green-600 dark:text-green-400 mt-1">
                           Embeddings Generated ✓
                         </p>
 
-                        <p className="text-sm text-[#8B5E3C] mt-1">
+                        <p className="text-sm text-[#8B5E3C] dark:text-[#D6A97A] mt-1">
                           Chunks: {doc.chunks?.length || 0}
                         </p>
 
                         {matchedChunk && (
                           <div
                             className="
-                  mt-4
-                  bg-[#F8F6F2]
-                  border-l-4
-                  border-[#C08A52]
-                  rounded-2xl
-                  p-4
-                "
+                            mt-4
+                            bg-[#F8F6F2]
+                            dark:bg-[#111827]
+                            border-l-4
+                            border-[#C08A52]
+                            rounded-2xl
+                            p-4
+                          "
                           >
-                            <p className="font-semibold text-[#5A3F2A]">
+                            <p className="font-semibold text-[#5A3F2A] dark:text-white">
                               Matching Text
                             </p>
 
-                            <p className="text-[#6B625B] mt-2 leading-7">
+                            <p className="text-[#6B625B] dark:text-gray-300 mt-2 leading-7">
                               {highlight(matchedChunk.content.slice(0, 250))}
                               ...
                             </p>
@@ -209,7 +229,7 @@ export default function Documents() {
                         )}
 
                         {keyword && (
-                          <p className="mt-3 text-sm font-semibold text-[#8B5E3C]">
+                          <p className="mt-3 text-sm font-semibold text-[#8B5E3C] dark:text-[#D6A97A]">
                             ⭐ Found by Global Search
                           </p>
                         )}
@@ -217,7 +237,6 @@ export default function Documents() {
                     </div>
 
                     {/* Buttons */}
-
                     <div className="flex gap-3 self-start">
                       <button
                         onClick={() =>
@@ -226,17 +245,20 @@ export default function Documents() {
                           )
                         }
                         className="
-              w-10
-              h-10
-              rounded-xl
-              bg-[#F8F6F2]
-              hover:bg-[#EFE7DE]
-              text-[#8B5E3C]
-              flex
-              items-center
-              justify-center
-              transition
-            "
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-[#F8F6F2]
+                        dark:bg-[#374151]
+                        hover:bg-[#EFE7DE]
+                        dark:hover:bg-[#4B5563]
+                        text-[#8B5E3C]
+                        dark:text-white
+                        flex
+                        items-center
+                        justify-center
+                        transition
+                      "
                       >
                         {selectedDocument?.id === doc.id ? (
                           <FiEye size={20} />
@@ -248,40 +270,46 @@ export default function Documents() {
                       <button
                         onClick={() => deleteDocument(doc.id)}
                         className="
-              w-10
-              h-10
-              rounded-xl
-              bg-red-50
-              hover:bg-red-100
-              text-red-500
-              flex
-              items-center
-              justify-center
-              transition
-            "
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-red-50
+                        dark:bg-red-900/30
+                        hover:bg-red-100
+                        dark:hover:bg-red-800/40
+                        text-red-500
+                        dark:text-red-400
+                        flex
+                        items-center
+                        justify-center
+                        transition
+                      "
                       >
                         <FiTrash2 size={20} />
                       </button>
                     </div>
                   </div>
+
                   {/* Details */}
 
                   {selectedDocument?.id === doc.id && (
                     <div
                       className="
-            mt-6
-            bg-[#F8F6F2]
-            border
-            border-[#ECE6DE]
-            rounded-3xl
-            p-6
-          "
+                      mt-6
+                      bg-[#F8F6F2]
+                      dark:bg-[#111827]
+                      border
+                      border-[#ECE6DE]
+                      dark:border-gray-700
+                      rounded-3xl
+                      p-6
+                    "
                     >
-                      <h3 className="text-2xl font-bold text-[#5A3F2A] mb-5">
+                      <h3 className="text-2xl font-bold text-[#5A3F2A] dark:text-white mb-5">
                         Document Details
                       </h3>
 
-                      <div className="grid md:grid-cols-2 gap-4 text-[#5A3F2A]">
+                      <div className="grid md:grid-cols-2 gap-4 text-[#5A3F2A] dark:text-gray-200">
                         <p>
                           <span className="font-semibold">Title:</span>{" "}
                           {doc.title}
@@ -306,15 +334,18 @@ export default function Documents() {
                       {doc.chunks?.length > 0 && (
                         <div
                           className="
-                mt-6
-                bg-white
-                border
-                border-[#ECE6DE]
-                rounded-2xl
-                p-5
-                text-[#6B625B]
-                leading-7
-              "
+                          mt-6
+                          bg-white
+                          dark:bg-[#1F2937]
+                          border
+                          border-[#ECE6DE]
+                          dark:border-gray-700
+                          rounded-2xl
+                          p-5
+                          text-[#6B625B]
+                          dark:text-gray-300
+                          leading-7
+                        "
                         >
                           {doc.chunks[0].content.slice(0, 500)}
                           ...

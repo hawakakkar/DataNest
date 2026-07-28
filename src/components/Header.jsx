@@ -14,19 +14,32 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../Services/supabase";
 import { useSearch } from "../context/SearchContext";
 import { useTheme } from "../context/ThemeContext";
+
 import profile from "../assets/images/profile.jpg";
 
 export default function Header({ setSidebarOpen }) {
-  const [questionsCount, setQuestionsCount] = useState(0);
-  const [notifications, setNotifications] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-
   const navigate = useNavigate();
 
   const { search, setSearch } = useSearch();
   const { darkMode, setDarkMode } = useTheme();
 
+  // Notifications
+  const [questionsCount, setQuestionsCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // Profile
+  const [showProfile, setShowProfile] = useState(false);
+
+  // Logged User
+  const [user, setUser] = useState(null);
+
+  // Admin
+  const isAdmin = user?.user_metadata?.full_name === "Bibi Hawa Abdul Shukoor";
+
+  // -----------------------------
+  // Load Notifications
+  // -----------------------------
   useEffect(() => {
     loadNotifications();
 
@@ -37,6 +50,32 @@ export default function Header({ setSidebarOpen }) {
     return () => clearInterval(interval);
   }, []);
 
+  // -----------------------------
+  // Get Logged User
+  // -----------------------------
+  useEffect(() => {
+    async function getUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setUser(user);
+    }
+
+    getUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // -----------------------------
+  // Load Notifications Function
+  // -----------------------------
   async function loadNotifications() {
     const { data: questionList } = await supabase
       .from("questions")
@@ -47,40 +86,30 @@ export default function Header({ setSidebarOpen }) {
     const { data } = await supabase
       .from("questions")
       .select("*")
-      .order("created_at", {
-        ascending: false,
-      })
+      .order("created_at", { ascending: false })
       .limit(5);
 
     setNotifications(data || []);
   }
 
+  // -----------------------------
+  // Search
+  // -----------------------------
   async function handleSearch() {
     if (!search.trim()) return;
 
-    const { data: docs } = await supabase
-      .from("documents")
-      .select("*")
-      .or(`title.ilike.%${search}%,file_name.ilike.%${search}%`)
-      .limit(1);
+    navigate(`/search?q=${encodeURIComponent(search)}`);
+  }
 
-    if (docs?.length > 0) {
-      navigate(`/documents?search=${encodeURIComponent(search)}`);
-      return;
+  // -----------------------------
+  // Logout
+  // -----------------------------
+  async function handleLogout() {
+    const { error } = await supabase.auth.signOut();
+
+    if (!error) {
+      navigate("/login");
     }
-
-    const { data: questions } = await supabase
-      .from("questions")
-      .select("*")
-      .or(`query.ilike.%${search}%,answer.ilike.%${search}%`)
-      .limit(1);
-
-    if (questions?.length > 0) {
-      navigate(`/search?q=${encodeURIComponent(search)}`);
-      return;
-    }
-
-    alert("No results found.");
   }
 
   return (
@@ -347,37 +376,70 @@ export default function Header({ setSidebarOpen }) {
           <button
             onClick={() => setShowProfile(!showProfile)}
             className="
+      flex
+      items-center
+      gap-3
+      px-3
+      py-2
+      rounded-2xl
+      transition
+      hover:bg-[#F8F6F2]
+      dark:hover:bg-[#374151]
+    "
+          >
+            {user?.user_metadata?.full_name === "Bibi Hawa Abdul Shukoor" ? (
+              <img
+                src={profile}
+                alt="Profile"
+                className="
+          w-11
+          h-11
+          rounded-full
+          object-cover
+          border-2
+          border-[#8B5E3C]
+        "
+              />
+            ) : user?.user_metadata?.avatar_url ? (
+              <img
+                src={user.user_metadata.avatar_url}
+                alt="Profile"
+                className="
+          w-11
+          h-11
+          rounded-full
+          object-cover
+          border-2
+          border-[#8B5E3C]
+        "
+              />
+            ) : (
+              <div
+                className="
+          w-11
+          h-11
+          rounded-full
+          bg-[#8B5E3C]
+          text-white
           flex
           items-center
-          gap-3
-          px-3
-          py-2
-          rounded-2xl
-          transition
-          hover:bg-[#F8F6F2]
-          dark:hover:bg-[#374151]
+          justify-center
+          font-bold
         "
-          >
-            <img
-              src={profile}
-              alt="Profile"
-              className="
-            w-11
-            h-11
-            rounded-full
-            object-cover
-            border-2
-            border-[#8B5E3C]
-          "
-            />
+              >
+                {user?.user_metadata?.full_name
+                  ? user.user_metadata.full_name.charAt(0).toUpperCase()
+                  : "U"}
+              </div>
+            )}
 
             <div className="hidden md:block text-left">
               <p className="font-semibold text-[#2F2A27] dark:text-white">
-                Bibi Hawa Abdul Shukoor
+                {user?.user_metadata?.full_name || "Guest User"}
               </p>
 
               <p className="text-xs text-[#72685F] dark:text-gray-400">
-                Administrator
+                {user?.email || ""}
               </p>
             </div>
 
@@ -390,84 +452,132 @@ export default function Header({ setSidebarOpen }) {
           {showProfile && (
             <div
               className="
-            absolute
-            right-0
-            mt-3
-            w-72
-            max-w-[90vw]
-            bg-white
-            dark:bg-[#1F2937]
-            rounded-3xl
-            shadow-2xl
-            border
-            border-[#ECE6DE]
-            dark:border-gray-700
-            overflow-hidden
-            z-50
-          "
+      absolute
+      right-0
+      mt-3
+      w-72
+      max-w-[90vw]
+      bg-white
+      dark:bg-[#1F2937]
+      rounded-3xl
+      shadow-2xl
+      border
+      border-[#ECE6DE]
+      dark:border-gray-700
+      overflow-hidden
+      z-50
+    "
             >
               {/* Header */}
               <div className="p-5 border-b border-[#ECE6DE] dark:border-gray-700">
                 <div className="flex gap-4 items-center">
-                  <img
-                    src={profile}
-                    alt="Profile"
-                    className="
-                  w-14
-                  h-14
-                  rounded-full
-                  object-cover
-                  border-2
-                  border-[#8B5E3C]
-                "
-                  />
+                  {user?.user_metadata?.full_name ===
+                  "Bibi Hawa Abdul Shukoor" ? (
+                    <img
+                      src={profile}
+                      alt="Profile"
+                      className="
+              w-14
+              h-14
+              rounded-full
+              object-cover
+              border-2
+              border-[#8B5E3C]
+            "
+                    />
+                  ) : user?.user_metadata?.avatar_url ? (
+                    <img
+                      src={user.user_metadata.avatar_url}
+                      alt="Profile"
+                      className="
+              w-14
+              h-14
+              rounded-full
+              object-cover
+              border-2
+              border-[#8B5E3C]
+            "
+                    />
+                  ) : (
+                    <div
+                      className="
+              w-14
+              h-14
+              rounded-full
+              bg-[#8B5E3C]
+              text-white
+              flex
+              items-center
+              justify-center
+              text-xl
+              font-bold
+            "
+                    >
+                      {user?.user_metadata?.full_name
+                        ? user.user_metadata.full_name.charAt(0).toUpperCase()
+                        : "U"}
+                    </div>
+                  )}
 
                   <div>
                     <p className="font-bold text-[#2F2A27] dark:text-white">
-                      Bibi Hawa Abdul Shukoor
+                      {user?.user_metadata?.full_name || "Guest User"}
                     </p>
 
                     <p className="text-sm text-[#72685F] dark:text-gray-400">
-                      Administrator
+                      {user?.email}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Menu */}
+              {/* My Profile */}
               <button
+                onClick={() => {
+                  setShowProfile(false);
+                  navigate("/profile");
+                }}
                 className="
-              w-full
-              flex
-              items-center
-              gap-3
-              px-5
-              py-4
-              transition
-              hover:bg-[#F8F6F2]
-              dark:hover:bg-[#374151]
-              text-[#2F2A27]
-              dark:text-white
-            "
+        w-full
+        flex
+        items-center
+        gap-3
+        px-5
+        py-4
+        transition
+        hover:bg-[#F8F6F2]
+        dark:hover:bg-[#374151]
+        text-[#2F2A27]
+        dark:text-white
+      "
               >
                 <FiUser size={18} />
                 My Profile
               </button>
 
+              {/* Logout */}
               <button
+                onClick={async () => {
+                  const { error } = await supabase.auth.signOut();
+
+                  if (!error) {
+                    setShowProfile(false);
+                    navigate("/login");
+                  }
+                }}
                 className="
-              w-full
-              flex
-              items-center
-              gap-3
-              px-5
-              py-4
-              transition
-              hover:bg-[#F8F6F2]
-              dark:hover:bg-[#374151]
-              text-[#8B5E3C]
-              dark:text-red-400
-            "
+        w-full
+        flex
+        items-center
+        gap-3
+        px-5
+        py-4
+        transition
+        hover:bg-[#F8F6F2]
+        dark:hover:bg-[#374151]
+        text-[#8B5E3C]
+        dark:text-red-400
+      "
               >
                 <FiLogOut size={18} />
                 Logout

@@ -23,7 +23,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       <aside
         className={`
           fixed top-0 left-0 z-50 h-screen w-72
-          bg-[#5A3F2A] dark:bg-[#111827]
+          bg-[#5A3F2A] dark:bg-[#5A3F2A]
           text-white
           shadow-2xl
           transform transition-transform duration-300

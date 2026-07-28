@@ -142,7 +142,7 @@ export default function Dashboard() {
         to-[#8B5E3C]
         p-10
         text-white
-        shadow-2xl
+        shadow-2xl 
       "
       >
         <h1 className="text-3xl font-bold">Welcome to DataNest AI 🚀</h1>
@@ -506,15 +506,16 @@ export default function Dashboard() {
               </div>
             </div>
             {/* Answer */}
-            <div className="px-6 py-6">
-              <h4 className="mb-4 text-lg font-semibold text-[#5A3F2A] dark:text-white">
+            <div className="px-4 sm:px-6 py-4 sm:py-6">
+              <h4 className="mb-4 text-base sm:text-lg font-semibold text-[#5A3F2A] dark:text-white">
                 AI Answer
               </h4>
 
               <p
                 className="
                   whitespace-pre-wrap
-                  leading-8
+                  leading-7 sm:leading-8
+                  text-sm sm:text-base
                   text-[#444444]
                   dark:text-gray-300
                 "
@@ -525,8 +526,8 @@ export default function Dashboard() {
 
             {/* Sources */}
             {sources.length > 0 && (
-              <div className="border-t border-[#ECE6DE] dark:border-gray-700 px-6 py-6">
-                <h4 className="mb-4 text-lg font-bold text-[#5A3F2A] dark:text-white">
+              <div className="border-t border-[#ECE6DE] dark:border-gray-700 px-4 sm:px-6 py-4 sm:py-6">
+                <h4 className="mb-4 text-base sm:text-lg font-bold text-[#5A3F2A] dark:text-white">
                   📄 Sources
                 </h4>
 
@@ -535,33 +536,38 @@ export default function Dashboard() {
                     <div
                       key={index}
                       className="
-                        flex
-                        items-center
-                        justify-between
-                        rounded-xl
-                        border
-                        border-[#ECE6DE]
-                        dark:border-gray-700
-                        bg-[#F8F6F2]
-                        dark:bg-[#1F2937]
-                        p-4
-                        transition
-                        hover:bg-[#EFE7DE]
-                        dark:hover:bg-[#374151]
-                      "
+flex
+flex-col
+sm:flex-row
+sm:items-center
+justify-between
+gap-3
+rounded-xl
+border
+border-[#ECE6DE]
+dark:border-gray-700
+bg-[#F8F6F2]
+dark:bg-[#1F2937]
+p-4
+transition
+hover:bg-[#EFE7DE]
+dark:hover:bg-[#374151]
+"
                     >
                       <div>
-                        <p className="font-semibold text-[#5A3F2A] dark:text-white">
+                        <p className="font-semibold text-sm sm:text-base text-[#5A3F2A] dark:text-white">
                           📄 {source.file_name}
                         </p>
 
-                        <p className="mt-1 text-xs text-[#7A746E] dark:text-gray-400">
+                        <p className="mt-1 text-xs sm:text-sm text-[#7A746E] dark:text-gray-400">
                           Similarity: {(source.similarity * 100).toFixed(1)}%
                         </p>
                       </div>
 
                       <span
                         className="
+                          self-start
+                          sm:self-auto
                           rounded-full
                           bg-[#8B5E3C]
                           px-3

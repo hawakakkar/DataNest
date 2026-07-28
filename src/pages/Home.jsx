@@ -37,17 +37,17 @@ export default function Home() {
             : "bg-[#FFFDF9]/90 border-[#ECE6DE]"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-8 h-20 flex items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex items-center">
           {/* Logo */}
 
           <div className="flex items-center gap-4 flex-1">
-            <div className="w-14 h-14 rounded-2xl bg-[#8B5E3C] text-white flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-2xl bg-[#8B5E3C] text-white flex items-center justify-center shadow-lg">
               <FiCpu size={28} />
             </div>
 
             <div>
               <h1
-                className={`text-3xl font-bold tracking-tight ${
+                className={`text-xl sm:text-3xl font-bold tracking-tight ${
                   darkMode ? "text-white" : "text-[#2F2A27]"
                 }`}
               >
@@ -102,7 +102,7 @@ export default function Home() {
 
           {/* Buttons */}
 
-          <div className="flex items-center gap-5 ml-auto">
+          <div className="flex items-center gap-2 sm:gap-5 ml-auto">
             <button
               onClick={() => setDarkMode(!darkMode)}
               className={`w-12 h-12 rounded-xl flex items-center justify-center transition ${
@@ -120,7 +120,7 @@ export default function Home() {
 
             <Link
               to="/dashboard"
-              className={`w-[125px] h-12 rounded-xl border flex items-center justify-center font-medium transition ${
+              className={`hidden sm:flex w-[125px] h-12 rounded-xl border flex items-center justify-center font-medium transition ${
                 darkMode
                   ? "bg-[#242424] border-[#444] text-white hover:bg-[#333]"
                   : "bg-white border-[#D8D0C6] text-[#2F2A27] hover:bg-[#F5F1EB]"
@@ -131,7 +131,7 @@ export default function Home() {
 
             <Link
               to="/upload"
-              className="px-6 py-3 rounded-xl bg-[#8B5E3C] hover:bg-[#70492C] text-white shadow-lg transition font-medium"
+              className="hidden sm:block px-6 py-3 rounded-xl bg-[#8B5E3C] hover:bg-[#70492C] text-white shadow-lg transition font-medium"
             >
               Upload
             </Link>
@@ -141,8 +141,8 @@ export default function Home() {
 
       {/* ================= HERO ================= */}
 
-      <section className="max-w-7xl mx-auto px-1 py-10">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           {/* Left Side */}
 
           <div>
@@ -157,7 +157,7 @@ export default function Home() {
               AI Powered Knowledge Base
             </span>
 
-            <h2 className="mt-8 text-6xl font-bold leading-tight tracking-tight">
+            <h2 className="mt-8 text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
               Search Your
               <br />
               <span className="text-[#8B5E3C]">Documents</span>
@@ -166,7 +166,7 @@ export default function Home() {
             </h2>
 
             <p
-              className={`mt-8 text-xl leading-9 max-w-xl ${
+              className={`mt-8 text-base sm:text-lg lg:text-xl leading-9 max-w-xl ${
                 darkMode ? "text-gray-300" : "text-[#6E655D]"
               }`}
             >
@@ -175,7 +175,7 @@ export default function Home() {
               Retrieval-Augmented Generation (RAG).
             </p>
 
-            <div className="flex gap-5 mt-12">
+            <div className="flex flex-col sm:flex-row gap-5 mt-12">
               <Link
                 to="/dashboard"
                 className="
@@ -216,7 +216,7 @@ export default function Home() {
             <img
               src={HeroImage}
               alt="DataNest AI"
-              className={`rounded-[32px] shadow-2xl border-8 ${
+              className={`w-full max-w-md lg:max-w-xl rounded-[32px] shadow-2xl border-8 ${
                 darkMode ? "border-[#2A2A2A]" : "border-white"
               }`}
             />
@@ -224,7 +224,7 @@ export default function Home() {
             {/* Floating Card 1 */}
 
             <div
-              className={`absolute top-8 left-8 z-20 rounded-2xl shadow-[0_18px_40px_rgba(0,0,0,0.12)] border px-5 py-4 hover:scale-105 transition-all duration-300 ${
+              className={`hidden lg:block absolute top-8 left-8 z-20 rounded-2xl shadow-[0_18px_40px_rgba(0,0,0,0.12)] border px-5 py-4 hover:scale-105 transition-all duration-300 ${
                 darkMode
                   ? "bg-[#1F1F1F] border-[#333]"
                   : "bg-white border-[#ECE6DE]"
@@ -262,7 +262,7 @@ export default function Home() {
             {/* Floating Card 2 */}
 
             <div
-              className={`absolute bottom-8 right-8 z-20 rounded-2xl shadow-[0_18px_40px_rgba(0,0,0,0.12)] border px-5 py-4 hover:scale-105 transition-all duration-300 ${
+              className={`hidden lg:block absolute bottom-8 right-8 z-20 rounded-2xl shadow-[0_18px_40px_rgba(0,0,0,0.12)] border px-5 py-4 hover:scale-105 transition-all duration-300 ${
                 darkMode
                   ? "bg-[#1F1F1F] border-[#333]"
                   : "bg-white border-[#ECE6DE]"
@@ -302,7 +302,7 @@ export default function Home() {
 
       {/* ================= Statistics ================= */}
 
-      <section className="max-w-7xl mx-auto px-8 py-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Documents */}
 
@@ -435,7 +435,10 @@ export default function Home() {
 
       {/* ================= HOW IT WORKS ================= */}
 
-      <section id="workflow" className="max-w-7xl mx-auto px-8 py-24">
+      <section
+        id="workflow"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
+      >
         <div className="text-center">
           <span
             className={`px-5 py-2 rounded-full font-medium ${
@@ -448,7 +451,7 @@ export default function Home() {
           </span>
 
           <h2
-            className={`mt-6 text-5xl font-bold ${
+            className={`mt-6 text-3xl sm:text-4xl lg:text-5xl font-bold ${
               darkMode ? "text-white" : "text-[#2F2A27]"
             }`}
           >
@@ -785,7 +788,10 @@ export default function Home() {
       </section>
       {/* ================= ABOUT ================= */}
 
-      <section id="about" className="max-w-7xl mx-auto px-8 py-24">
+      <section
+        id="about"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+      >
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <span
@@ -842,7 +848,7 @@ export default function Home() {
 
       {/* ================= CTA ================= */}
 
-      <section className="max-w-7xl mx-auto px-8 pb-24">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         <div
           className={`relative overflow-hidden rounded-[36px] px-16 py-20 shadow-2xl ${
             darkMode
@@ -884,7 +890,7 @@ export default function Home() {
             <div className="flex flex-col gap-5">
               <Link
                 to="/upload"
-                className={`rounded-2xl px-8 py-5 font-semibold text-lg text-center transition shadow-lg ${
+                className={`rounded-2xl px-4 sm:px-6 lg:px-8 py-5 font-semibold text-lg text-center transition shadow-lg ${
                   darkMode
                     ? "bg-[#8B5E3C] text-white hover:bg-[#70492C]"
                     : "bg-white text-[#8B5E3C] hover:scale-[1.02]"
@@ -1000,7 +1006,7 @@ export default function Home() {
             : "bg-[#F2EEE8] border-[#E2D8CB]"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-8 py-14 grid md:grid-cols-3 gap-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid md:grid-cols-3 gap-10">
           {/* Logo */}
 
           <div>

@@ -8,7 +8,10 @@ import Documents from "./pages/Documents";
 import Search from "./pages/Search";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
-
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -29,6 +32,13 @@ function App() {
         <Route path="/analytics" element={<Analytics />} />
 
         <Route path="/settings" element={<Settings />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>
   );

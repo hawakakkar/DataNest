@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import Layout from "./layouts/Layout";
+
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
@@ -16,28 +17,22 @@ import Profile from "./pages/Profile";
 function App() {
   return (
     <Routes>
-      {/* Public Home */}
+      {/* Landing Page */}
       <Route path="/" element={<Home />} />
 
-      {/* Dashboard */}
+      {/* Authentication Pages (بدون Layout) */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+      {/* Dashboard Pages (با Layout) */}
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<Dashboard />} />
-
         <Route path="/upload" element={<Upload />} />
-
         <Route path="/documents" element={<Documents />} />
-
         <Route path="/search" element={<Search />} />
-
         <Route path="/analytics" element={<Analytics />} />
-
         <Route path="/settings" element={<Settings />} />
-        <Route path="/login" element={<Login />} />
-
-        <Route path="/register" element={<Register />} />
-
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-
         <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>

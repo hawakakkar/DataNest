@@ -34,25 +34,7 @@ export default function Header({ setSidebarOpen }) {
   // Logged User
   const [user, setUser] = useState(null);
 
-  // Admin
-  const isAdmin = user?.user_metadata?.full_name === "Bibi Hawa Abdul Shukoor";
-
-  // -----------------------------
-  // Load Notifications
-  // -----------------------------
-  useEffect(() => {
-    loadNotifications();
-
-    const interval = setInterval(() => {
-      loadNotifications();
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // -----------------------------
-  // Get Logged User
-  // -----------------------------
+  // Load logged user
   useEffect(() => {
     async function getUser() {
       const {
@@ -73,9 +55,24 @@ export default function Header({ setSidebarOpen }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Admin check
+  const isAdmin =
+    user?.email === "kkrhawa@gmail.com" ||
+    user?.user_metadata?.full_name === "Bibi Hawa Abdul Shukoor";
+
   // -----------------------------
-  // Load Notifications Function
+  // Load Notifications
   // -----------------------------
+  useEffect(() => {
+    loadNotifications();
+
+    const interval = setInterval(() => {
+      loadNotifications();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   async function loadNotifications() {
     const { data: questionList } = await supabase
       .from("questions")
@@ -387,7 +384,7 @@ export default function Header({ setSidebarOpen }) {
       dark:hover:bg-[#374151]
     "
           >
-            {user?.user_metadata?.full_name === "Bibi Hawa Abdul Shukoor" ? (
+            {isAdmin ? (
               <img
                 src={profile}
                 alt="Profile"
@@ -427,20 +424,26 @@ export default function Header({ setSidebarOpen }) {
           font-bold
         "
               >
-                {user?.user_metadata?.full_name
-                  ? user.user_metadata.full_name.charAt(0).toUpperCase()
-                  : "U"}
+                {(user?.user_metadata?.full_name || "U")
+                  .charAt(0)
+                  .toUpperCase()}
               </div>
             )}
 
             <div className="hidden md:block text-left">
               <p className="font-semibold text-[#2F2A27] dark:text-white">
-                {user?.user_metadata?.full_name || "Guest User"}
+                {user?.user_metadata?.full_name || "User"}
               </p>
 
               <p className="text-xs text-[#72685F] dark:text-gray-400">
-                {user?.email || ""}
+                {user?.email}
               </p>
+
+              {user?.user_metadata?.role === "Administrator" && (
+                <span className="inline-block mt-1 px-2 py-1 rounded-lg bg-[#8B5E3C] text-white text-[10px] font-semibold">
+                  Administrator
+                </span>
+              )}
             </div>
 
             <FiChevronDown
@@ -452,132 +455,100 @@ export default function Header({ setSidebarOpen }) {
           {showProfile && (
             <div
               className="
-      absolute
-      right-0
-      mt-3
-      w-72
-      max-w-[90vw]
-      bg-white
-      dark:bg-[#1F2937]
-      rounded-3xl
-      shadow-2xl
-      border
-      border-[#ECE6DE]
-      dark:border-gray-700
-      overflow-hidden
-      z-50
-    "
+        absolute
+        right-0
+        mt-3
+        w-72
+        max-w-[90vw]
+        bg-white
+        dark:bg-[#1F2937]
+        rounded-3xl
+        shadow-2xl
+        border
+        border-[#ECE6DE]
+        dark:border-gray-700
+        overflow-hidden
+        z-50
+      "
             >
-              {/* Header */}
               <div className="p-5 border-b border-[#ECE6DE] dark:border-gray-700">
                 <div className="flex gap-4 items-center">
-                  {user?.user_metadata?.full_name ===
-                  "Bibi Hawa Abdul Shukoor" ? (
+                  {isAdmin ? (
                     <img
                       src={profile}
                       alt="Profile"
-                      className="
-              w-14
-              h-14
-              rounded-full
-              object-cover
-              border-2
-              border-[#8B5E3C]
-            "
+                      className="w-14 h-14 rounded-full object-cover border-2 border-[#8B5E3C]"
                     />
                   ) : user?.user_metadata?.avatar_url ? (
                     <img
                       src={user.user_metadata.avatar_url}
                       alt="Profile"
-                      className="
-              w-14
-              h-14
-              rounded-full
-              object-cover
-              border-2
-              border-[#8B5E3C]
-            "
+                      className="w-14 h-14 rounded-full object-cover border-2 border-[#8B5E3C]"
                     />
                   ) : (
-                    <div
-                      className="
-              w-14
-              h-14
-              rounded-full
-              bg-[#8B5E3C]
-              text-white
-              flex
-              items-center
-              justify-center
-              text-xl
-              font-bold
-            "
-                    >
-                      {user?.user_metadata?.full_name
-                        ? user.user_metadata.full_name.charAt(0).toUpperCase()
-                        : "U"}
+                    <div className="w-14 h-14 rounded-full bg-[#8B5E3C] text-white flex items-center justify-center text-xl font-bold">
+                      {(user?.user_metadata?.full_name || "U")
+                        .charAt(0)
+                        .toUpperCase()}
                     </div>
                   )}
 
                   <div>
                     <p className="font-bold text-[#2F2A27] dark:text-white">
-                      {user?.user_metadata?.full_name || "Guest User"}
+                      {user?.user_metadata?.full_name || "User"}
                     </p>
 
                     <p className="text-sm text-[#72685F] dark:text-gray-400">
                       {user?.email}
                     </p>
+
+                    {user?.user_metadata?.role === "Administrator" && (
+                      <span className="inline-block mt-2 px-2 py-1 rounded-lg bg-[#8B5E3C] text-white text-xs font-semibold">
+                        Administrator
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* My Profile */}
               <button
                 onClick={() => {
                   setShowProfile(false);
                   navigate("/profile");
                 }}
                 className="
-        w-full
-        flex
-        items-center
-        gap-3
-        px-5
-        py-4
-        transition
-        hover:bg-[#F8F6F2]
-        dark:hover:bg-[#374151]
-        text-[#2F2A27]
-        dark:text-white
-      "
+          w-full
+          flex
+          items-center
+          gap-3
+          px-5
+          py-4
+          transition
+          hover:bg-[#F8F6F2]
+          dark:hover:bg-[#374151]
+          text-[#2F2A27]
+          dark:text-white
+        "
               >
                 <FiUser size={18} />
                 My Profile
               </button>
 
-              {/* Logout */}
               <button
-                onClick={async () => {
-                  const { error } = await supabase.auth.signOut();
-
-                  if (!error) {
-                    setShowProfile(false);
-                    navigate("/login");
-                  }
-                }}
+                onClick={handleLogout}
                 className="
-        w-full
-        flex
-        items-center
-        gap-3
-        px-5
-        py-4
-        transition
-        hover:bg-[#F8F6F2]
-        dark:hover:bg-[#374151]
-        text-[#8B5E3C]
-        dark:text-red-400
-      "
+          w-full
+          flex
+          items-center
+          gap-3
+          px-5
+          py-4
+          transition
+          hover:bg-[#F8F6F2]
+          dark:hover:bg-[#374151]
+          text-[#8B5E3C]
+          dark:text-red-400
+        "
               >
                 <FiLogOut size={18} />
                 Logout

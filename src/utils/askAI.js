@@ -11,7 +11,7 @@ export async function askAI(question, chunks) {
     console.log("========== OPENROUTER DEBUG ==========");
 
     const context = chunks
-      .slice(0, 3) // فقط 3 چانک
+      .slice(0, 3)
       .map((chunk) => chunk.content)
       .join("\n\n");
 

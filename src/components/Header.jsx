@@ -112,12 +112,12 @@ export default function Header({ setSidebarOpen }) {
   return (
     <header
       className="
-    bg-white
+    bg-[#5A3F2A]
     dark:bg-[#5A3F2A]
     border-b
     border-[#ECE6DE]
     dark:border-gray-700
-    text-[#2F2A27]
+    text-[#000000]
     dark:text-white
     px-4
     md:px-8
@@ -158,7 +158,7 @@ export default function Header({ setSidebarOpen }) {
             className="
           text-3xl
           font-bold
-          text-[#5A3F2A]
+          text-white
           dark:text-white
           px-4
           md:px-8
@@ -186,17 +186,15 @@ export default function Header({ setSidebarOpen }) {
       <div
         className="
       flex
-      flex-col
-      md:flex-row
-      items-stretch
-      md:items-center
-      gap-4
+      flex-wrap
+      items-center
+      gap-3
       w-full
       lg:w-auto
     "
       >
         {/* Search */}
-        <div className="relative w-full md:w-[420px]">
+        <div className="relative flex-1 min-w-0 lg:w-[420px]">
           <FiSearch
             onClick={handleSearch}
             size={20}
@@ -267,7 +265,7 @@ export default function Header({ setSidebarOpen }) {
           )}
         </button>
         {/* Notifications */}
-        <div className="relative self-end md:self-auto">
+        <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
             className="
@@ -369,7 +367,7 @@ export default function Header({ setSidebarOpen }) {
           )}
         </div>
         {/* User Profile */}
-        <div className="relative self-end md:self-auto">
+        <div className="relative">
           <button
             onClick={() => setShowProfile(!showProfile)}
             className="
@@ -430,7 +428,7 @@ export default function Header({ setSidebarOpen }) {
               </div>
             )}
 
-            <div className="hidden md:block text-left">
+            <div className="hidden lg:block text-left">
               <p className="font-semibold text-[#2F2A27] dark:text-white">
                 {user?.user_metadata?.full_name || "User"}
               </p>
@@ -448,28 +446,29 @@ export default function Header({ setSidebarOpen }) {
 
             <FiChevronDown
               size={18}
-              className="hidden md:block text-[#8B5E3C] dark:text-white"
+              className="hidden lg:block text-[#8B5E3C] dark:text-white"
             />
           </button>
 
           {showProfile && (
             <div
               className="
-        absolute
-        right-0
-        mt-3
-        w-72
-        max-w-[90vw]
-        bg-white
-        dark:bg-[#1F2937]
-        rounded-3xl
-        shadow-2xl
-        border
-        border-[#ECE6DE]
-        dark:border-gray-700
-        overflow-hidden
-        z-50
-      "
+absolute
+top-full
+right-0
+mt-3
+w-72
+max-w-[calc(100vw-24px)]
+bg-white
+dark:bg-[#1F2937]
+rounded-3xl
+shadow-2xl
+border
+border-[#ECE6DE]
+dark:border-gray-700
+overflow-hidden
+z-50
+"
             >
               <div className="p-5 border-b border-[#ECE6DE] dark:border-gray-700">
                 <div className="flex gap-4 items-center">
@@ -477,7 +476,7 @@ export default function Header({ setSidebarOpen }) {
                     <img
                       src={profile}
                       alt="Profile"
-                      className="w-14 h-14 rounded-full object-cover border-2 border-[#8B5E3C]"
+                      className="w-11 h-11 rounded-full object-cover border-2 border-[#8B5E3C]"
                     />
                   ) : user?.user_metadata?.avatar_url ? (
                     <img

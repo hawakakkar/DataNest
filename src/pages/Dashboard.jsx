@@ -80,12 +80,6 @@ export default function Dashboard() {
 
       setResponseTime(((endTime - startTime) / 1000).toFixed(2));
 
-      const bestSource = results.reduce((best, current) =>
-        current.similarity > best.similarity ? current : best,
-      );
-
-      setSources([bestSource]);
-
       setAnswer(aiAnswer);
 
       await supabase.from("questions").insert([
@@ -145,7 +139,10 @@ export default function Dashboard() {
         shadow-2xl 
       "
       >
-        <h1 className="text-3xl font-bold">Welcome to DataNest AI 🚀</h1>
+        <h1 className="flex items-center gap-3 text-4xl font-bold">
+          Welcome to DataNest AI
+          <FiCpu className="text-[#f1efec]" size={34} />
+        </h1>
 
         <p className="mt-3 max-w-2xl text-lg leading-8 text-gray-100">
           Centralize your organization's documents and ask AI-powered questions
@@ -486,23 +483,6 @@ export default function Dashboard() {
                 >
                   <FiRefreshCw />
                 </button>
-
-                <button
-                  onClick={downloadAnswer}
-                  className="
-                    rounded-lg
-                    bg-[#F8F6F2]
-                    dark:bg-[#374151]
-                    p-3
-                    text-[#8B5E3C]
-                    dark:text-white
-                    transition
-                    hover:bg-[#EFE7DE]
-                    dark:hover:bg-[#4B5563]
-                  "
-                >
-                  <FiDownload />
-                </button>
               </div>
             </div>
             {/* Answer */}
@@ -523,66 +503,6 @@ export default function Dashboard() {
                 {answer}
               </p>
             </div>
-
-            {/* Sources */}
-            {sources.length > 0 && (
-              <div className="border-t border-[#ECE6DE] dark:border-gray-700 px-4 sm:px-6 py-4 sm:py-6">
-                <h4 className="mb-4 text-base sm:text-lg font-bold text-[#5A3F2A] dark:text-white">
-                  📄 Sources
-                </h4>
-
-                <div className="space-y-3">
-                  {sources.map((source, index) => (
-                    <div
-                      key={index}
-                      className="
-flex
-flex-col
-sm:flex-row
-sm:items-center
-justify-between
-gap-3
-rounded-xl
-border
-border-[#ECE6DE]
-dark:border-gray-700
-bg-[#F8F6F2]
-dark:bg-[#1F2937]
-p-4
-transition
-hover:bg-[#EFE7DE]
-dark:hover:bg-[#374151]
-"
-                    >
-                      <div>
-                        <p className="font-semibold text-sm sm:text-base text-[#5A3F2A] dark:text-white">
-                          📄 {source.file_name}
-                        </p>
-
-                        <p className="mt-1 text-xs sm:text-sm text-[#7A746E] dark:text-gray-400">
-                          Similarity: {(source.similarity * 100).toFixed(1)}%
-                        </p>
-                      </div>
-
-                      <span
-                        className="
-                          self-start
-                          sm:self-auto
-                          rounded-full
-                          bg-[#8B5E3C]
-                          px-3
-                          py-1
-                          text-xs
-                          text-white
-                        "
-                      >
-                        Match {(source.similarity * 100).toFixed(0)}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </section>

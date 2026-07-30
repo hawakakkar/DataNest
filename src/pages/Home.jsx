@@ -17,6 +17,7 @@ import {
   FiMail,
   FiPhone,
   FiMapPin,
+  FiMenu,
 } from "react-icons/fi";
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
   });
 
   const [user, setUser] = useState(null);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
@@ -137,6 +139,16 @@ export default function Home() {
 
           <div className="flex items-center gap-2 sm:gap-5 ml-auto">
             <button
+              onClick={() => setMobileMenu(!mobileMenu)}
+              className={`lg:hidden w-11 h-11 rounded-xl flex items-center justify-center transition ${
+                darkMode
+                  ? "bg-[#2B2B2B] text-white"
+                  : "bg-[#F8F6F2] text-[#2F2A27]"
+              }`}
+            >
+              <FiMenu size={24} />
+            </button>
+            <button
               onClick={() => setDarkMode(!darkMode)}
               className={`w-12 h-12 rounded-xl flex items-center justify-center transition ${
                 darkMode
@@ -195,6 +207,97 @@ export default function Home() {
           </div>
         </div>
       </header>
+      {mobileMenu && (
+        <div
+          className={`lg:hidden border-b ${
+            darkMode
+              ? "bg-[#181818] border-[#333]"
+              : "bg-white border-[#ECE6DE]"
+          }`}
+        >
+          <div className="px-4 py-4 flex flex-col gap-3">
+            <a
+              href="#features"
+              onClick={() => setMobileMenu(false)}
+              className="py-2"
+            >
+              Features
+            </a>
+
+            <a
+              href="#workflow"
+              onClick={() => setMobileMenu(false)}
+              className="py-2"
+            >
+              Workflow
+            </a>
+
+            <a
+              href="#about"
+              onClick={() => setMobileMenu(false)}
+              className="py-2"
+            >
+              About
+            </a>
+
+            <a
+              href="#contact"
+              onClick={() => setMobileMenu(false)}
+              className="py-2"
+            >
+              Contact
+            </a>
+
+            <hr className={darkMode ? "border-[#333]" : "border-[#ECE6DE]"} />
+
+            {user ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenu(false)}
+                  className="bg-[#8B5E3C] text-white py-3 rounded-xl text-center"
+                >
+                  Dashboard
+                </Link>
+
+                <Link
+                  to="/upload"
+                  onClick={() => setMobileMenu(false)}
+                  className={`py-3 rounded-xl border text-center ${
+                    darkMode
+                      ? "border-[#444] text-white"
+                      : "border-[#D8D0C6] text-[#2F2A27]"
+                  }`}
+                >
+                  Upload
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenu(false)}
+                  className="bg-[#8B5E3C] text-white py-3 rounded-xl text-center"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  to="/register"
+                  onClick={() => setMobileMenu(false)}
+                  className={`py-3 rounded-xl border text-center ${
+                    darkMode
+                      ? "border-[#444] text-white"
+                      : "border-[#D8D0C6] text-[#2F2A27]"
+                  }`}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       {/* ================= HERO ================= */}
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">

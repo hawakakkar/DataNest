@@ -81,12 +81,12 @@ export default function Profile() {
 
   return (
     <div
-      className={`min-h-screen p-8 ${
-        darkMode ? "bg-[#121212] text-white" : "bg-[#F8F6F2] text-[#2F2A27]"
+      className={`w-full h-full p-8 ${
+        darkMode ? "text-white" : "text-[#2F2A27]"
       }`}
     >
       <div
-        className={`max-w-5xl mx-auto rounded-3xl shadow-xl p-10 ${
+        className={`w-full max-w-6xl mx-auto rounded-3xl shadow-xl p-10 ${
           darkMode ? "bg-[#1E1E1E]" : "bg-white"
         }`}
       >

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FiFileText,
   FiDatabase,
@@ -24,12 +24,19 @@ export default function Dashboard() {
   const [chunksCount, setChunksCount] = useState(0);
   const [questionsCount, setQuestionsCount] = useState(0);
 
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState(
+    localStorage.getItem("question") || "",
+  );
   const [answer, setAnswer] = useState("");
   const [loadingAnswer, setLoadingAnswer] = useState(false);
 
   const [sources, setSources] = useState([]);
   const [responseTime, setResponseTime] = useState(null);
+  const answerRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem("question", question);
+  }, [question]);
 
   useEffect(() => {
     loadStats();
@@ -76,11 +83,25 @@ export default function Dashboard() {
 
       const aiAnswer = await askAI(question, results);
 
-      const endTime = performance.now();
+      const fileName = results[0]?.file_name
+        ? results[0].file_name.replace(/^\d+-/, "")
+        : "Unknown document";
 
-      setResponseTime(((endTime - startTime) / 1000).toFixed(2));
+      setAnswer(
+        `${aiAnswer}
 
-      setAnswer(aiAnswer);
+--------------------
+
+This information is available in the document:
+
+${fileName}`,
+      );
+      setTimeout(() => {
+        answerRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 200);
 
       await supabase.from("questions").insert([
         {
@@ -348,6 +369,12 @@ export default function Dashboard() {
           <input
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSearch();
+              }
+            }}
             placeholder="Example: What is the leave policy?"
             className="
               flex-1
@@ -442,10 +469,7 @@ export default function Dashboard() {
                     </span>
                   )}
 
-                  <span className="flex items-center gap-2">
-                    <FiBookOpen />
-                    {sources.length} Sources
-                  </span>
+                  <FiBookOpen />
                 </div>
               </div>
 
@@ -486,7 +510,8 @@ export default function Dashboard() {
               </div>
             </div>
             {/* Answer */}
-            <div className="px-4 sm:px-6 py-4 sm:py-6">
+
+            <div ref={answerRef} className="px-4 sm:px-6 py-4 sm:py-6">
               <h4 className="mb-4 text-base sm:text-lg font-semibold text-[#5A3F2A] dark:text-white">
                 AI Answer
               </h4>

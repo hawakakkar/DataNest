@@ -13,7 +13,7 @@ export default function Upload() {
 
   const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
-  const onDrop = async (acceptedFiles) => {
+  const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
 
     if (!file) return;
@@ -24,6 +24,13 @@ export default function Upload() {
     }
 
     setSelectedFile(file);
+    setMessage("");
+    setUploadedChunks(null);
+  };
+
+  async function handleUpload() {
+    if (!selectedFile) return;
+
     setUploading(true);
     setMessage("");
     setUploadedChunks(null);
@@ -31,7 +38,21 @@ export default function Upload() {
     try {
       const startTime = performance.now();
 
-      const fileName = `${Date.now()}-${file.name}`;
+      const file = selectedFile;
+
+      const { data: existing } = await supabase
+        .from("documents")
+        .select("id")
+        .eq("file_name", file.name)
+        .maybeSingle();
+
+      if (existing) {
+        setMessage(
+          "A file with this name already exists. Please rename the file and upload again. ❌",
+        );
+        setUploading(false);
+        return;
+      }
 
       const extractedText = await extractText(file);
 
@@ -39,7 +60,7 @@ export default function Upload() {
 
       const { error: uploadError } = await supabase.storage
         .from("documents")
-        .upload(fileName, file);
+        .upload(file.name, file);
 
       if (uploadError) {
         setMessage("Upload failed ❌");
@@ -52,7 +73,7 @@ export default function Upload() {
         .insert([
           {
             title: file.name,
-            file_name: fileName,
+            file_name: file.name,
             uploaded_at: new Date(),
             text_content: extractedText,
           },
@@ -99,13 +120,15 @@ export default function Upload() {
       const seconds = ((endTime - startTime) / 1000).toFixed(2);
 
       setMessage(`Document uploaded successfully ✅ (${seconds}s)`);
+
+      setSelectedFile(null);
     } catch (error) {
       console.log(error);
       setMessage("Something went wrong ❌");
     }
 
     setUploading(false);
-  };
+  }
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -133,22 +156,22 @@ export default function Upload() {
         <div
           {...getRootProps()}
           className="
-                mt-10
-                bg-white
-                dark:bg-[#1F2937]
-                border-2
-                border-dashed
-                border-[#8B5E3C]
-                dark:border-gray-600
-                rounded-3xl
-                p-16
-                text-center
-                cursor-pointer
-                hover:bg-[#F8F6F2]
-                dark:hover:bg-[#374151]
-                transition-all
-                duration-300
-              "
+          mt-10
+          bg-white
+          dark:bg-[#1F2937]
+          border-2
+          border-dashed
+          border-[#8B5E3C]
+          dark:border-gray-600
+          rounded-3xl
+          p-16
+          text-center
+          cursor-pointer
+          hover:bg-[#F8F6F2]
+          dark:hover:bg-[#374151]
+          transition-all
+          duration-300
+        "
         >
           <input {...getInputProps()} />
 
@@ -171,15 +194,15 @@ export default function Upload() {
         {selectedFile && (
           <div
             className="
-                  mt-6
-                  bg-[#F8F6F2]
-                  dark:bg-[#1F2937]
-                  border
-                  border-[#ECE6DE]
-                  dark:border-gray-700
-                  rounded-3xl
-                  p-6
-                "
+            mt-6
+            bg-[#F8F6F2]
+            dark:bg-[#1F2937]
+            border
+            border-[#ECE6DE]
+            dark:border-gray-700
+            rounded-3xl
+            p-6
+          "
           >
             <h3 className="font-semibold text-[#8B5E3C] dark:text-[#D6A97A]">
               Selected File
@@ -194,33 +217,58 @@ export default function Upload() {
             </p>
 
             {!uploading && (
-              <button
-                onClick={() => {
-                  setSelectedFile(null);
-                  setMessage("");
-                  setUploadedChunks(null);
-                }}
-                className="mt-3 text-sm text-red-500 hover:text-red-700"
-              >
-                Remove File
-              </button>
+              <div className="flex gap-3 mt-5">
+                <button
+                  onClick={handleUpload}
+                  className="
+                  px-6
+                  py-3
+                  rounded-xl
+                  bg-[#8B5E3C]
+                  text-white
+                  hover:bg-[#70492C]
+                  transition
+                "
+                >
+                  Submit
+                </button>
+
+                <button
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setMessage("");
+                    setUploadedChunks(null);
+                  }}
+                  className="
+                  px-6
+                  py-3
+                  rounded-xl
+                  border
+                  border-red-500
+                  text-red-500
+                  hover:bg-red-50
+                  transition
+                "
+                >
+                  Remove
+                </button>
+              </div>
             )}
           </div>
         )}
-
         {/* Upload Status */}
         <div
           className="
-                bg-white
-                dark:bg-[#1F2937]
-                rounded-3xl
-                border
-                border-[#ECE6DE]
-                dark:border-gray-700
-                shadow-lg
-                mt-8
-                p-8
-              "
+          bg-white
+          dark:bg-[#1F2937]
+          rounded-3xl
+          border
+          border-[#ECE6DE]
+          dark:border-gray-700
+          shadow-lg
+          mt-8
+          p-8
+        "
         >
           <h2 className="font-bold text-2xl text-[#5A3F2A] dark:text-white">
             Upload Status
@@ -238,27 +286,29 @@ export default function Upload() {
             </div>
           ) : (
             <p className="mt-4 text-[#72685F] dark:text-gray-400">
-              Ready to upload.
+              {selectedFile
+                ? "Ready to upload. Click Submit."
+                : "Select a file first."}
             </p>
           )}
 
           {uploadedChunks && (
             <div
               className="
-                    mt-5
-                    bg-[#F8F6F2]
-                    dark:bg-[#111827]
-                    border
-                    border-[#ECE6DE]
-                    dark:border-gray-700
-                    rounded-2xl
-                    p-4
-                    text-[#8B5E3C]
-                    dark:text-[#D6A97A]
-                  "
+              mt-5
+              bg-[#F8F6F2]
+              dark:bg-[#111827]
+              border
+              border-[#ECE6DE]
+              dark:border-gray-700
+              rounded-2xl
+              p-4
+              text-[#8B5E3C]
+              dark:text-[#D6A97A]
+            "
             >
               Chunks created:
-              <span className="font-bold ml-2">{uploadedChunks}</span> ✅
+              <span className="font-bold ml-2">{uploadedChunks}</span>✅
             </div>
           )}
 

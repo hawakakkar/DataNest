@@ -8,25 +8,46 @@ export async function askAI(question, chunks) {
       throw new Error("OpenRouter API Key is missing.");
     }
 
-    console.log("========== OPENROUTER DEBUG ==========");
-
     const context = chunks
       .slice(0, 3)
-      .map((chunk) => chunk.content)
-      .join("\n\n");
+      .map(
+        (chunk) => `
+Document: ${chunk.file_name}
 
-    console.log("Context Length:", context.length);
+${chunk.content}
+`,
+      )
+      .join("\n\n");
 
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "openai/gpt-4o-mini",
+        model: "nvidia/nemotron-3-ultra-550b-a55b:free",
 
         messages: [
           {
             role: "system",
-            content:
-              "You are a helpful AI assistant. Answer ONLY using the provided document context. If the answer is not in the context, reply: I don't know.",
+            content: `
+You are a document assistant.
+
+Rules:
+
+- NEVER explain your thinking.
+- NEVER analyze the documents.
+- NEVER say:
+  "Looking at the documents"
+  "The user is asking"
+  "I need to answer"
+  "Based on the context"
+  "The second document"
+- NEVER list documents.
+- NEVER quote large sections.
+- ONLY answer the question naturally.
+
+At the END write exactly:
+
+
+`,
           },
           {
             role: "user",
@@ -34,9 +55,8 @@ export async function askAI(question, chunks) {
           },
         ],
 
-        temperature: 0.2,
-
-        max_tokens: 300,
+        temperature: 0,
+        max_tokens: 250,
       },
       {
         headers: {
@@ -46,22 +66,27 @@ export async function askAI(question, chunks) {
       },
     );
 
-    console.log(response.data);
+    let answer = response.data.choices[0].message.content;
 
-    return response.data.choices[0].message.content;
+    // حذف متن‌های اضافی
+    answer = answer
+      .replace(/Looking at the documents:?/gis, "")
+      .replace(/The user is asking.*?\./gis, "")
+      .replace(/I need to answer.*?\./gis, "")
+      .replace(/Based on the provided context.*?\./gis, "")
+      .replace(/The second document.*?\./gis, "")
+      .replace(/The first document.*?\./gis, "")
+      .replace(/Document \d+:.*?\n/gis, "")
+      .replace(/^\d+\.\s.*$/gm, "")
+      .trim();
+
+    return answer;
   } catch (error) {
-    console.log("========== ERROR ==========");
-
     if (error.response) {
-      console.log("Status:", error.response.status);
-      console.log(error.response.data);
-
       return (
         error.response.data?.error?.message || "OpenRouter request failed."
       );
     }
-
-    console.log(error.message);
 
     return error.message;
   }

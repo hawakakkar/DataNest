@@ -2,80 +2,114 @@
 
 An AI-powered Knowledge Management Platform built with **React**, **Supabase**, and **OpenRouter AI**.
 
-DataNest AI allows users to upload documents, manage their knowledge base, and ask AI questions using Retrieval-Augmented Generation (RAG). The project also includes a modern landing page for introducing the platform before entering the dashboard.
+DataNest AI allows users to upload documents, build a searchable knowledge base, and ask AI-powered questions using Retrieval-Augmented Generation (RAG).
+
+The platform provides document management, semantic search, AI answers, analytics, and system monitoring through a modern responsive interface.
 
 ---
 
 # 🚀 Features
 
-## Home Page
+## 🏠 Home Page
 
-- Modern responsive homepage
-- Beautiful hero section
-- Project introduction
+- Modern responsive landing page
+- Hero section with project introduction
 - Features overview
 - Smooth navigation
 - Call-to-Action buttons
 - Responsive design
 
-## Dashboard
+---
+
+## 📊 Dashboard
 
 - Overview of uploaded documents
 - Indexed chunks statistics
 - AI questions statistics
 - Quick access cards
+- Knowledge base overview
 
-## Upload
+---
+
+## 📤 Upload Documents
 
 - Upload PDF files
 - Upload DOCX files
 - Upload TXT files
+- Drag and drop support
+- File selection before uploading
+- Submit and Remove controls
 - Automatic text extraction
+- Document size validation
+- Duplicate filename detection
+- Text chunk generation
+- Vector embedding creation
 
-## Documents
+---
+
+## 📄 Documents
 
 - View uploaded documents
 - Search documents
 - Delete documents
 - Document summaries
+- Document management
 
-## Ask AI
+---
 
-- Ask questions about uploaded documents
-- Semantic Search
+## 🤖 Ask AI
+
+- Ask questions from uploaded documents
+- Semantic search
 - Retrieval-Augmented Generation (RAG)
-- AI-generated answers using OpenRouter
+- Context-based AI answers
+- OpenRouter AI integration
+- Source document reference
+- Answer copy functionality
+- Regenerate answers
+- Download answers
+- Question history storage
 
-## Analytics
+---
+
+## 📈 Analytics
 
 - Documents statistics
-- AI usage statistics
-- System health
+- Indexed chunks monitoring
+- AI questions statistics
+- System health monitoring
 - Recent uploads
-- Knowledge Base monitoring
+- Knowledge base status
+- AI performance information
 
-## Settings
+---
+
+## ⚙️ Settings
 
 - Administrator profile
-- Connected services
-- Export Questions
-- Export Documents
-- Clear AI History
-- Reset Application
+- Connected services status
+- Export questions
+- Export documents
+- Clear AI history
+- Reset application data
+- Theme settings
 
-## Upcoming Features
+---
 
-- 🌙 Dark Mode
-- User Authentication
-- Chat History
-- Favorites
-- Workspace Support
+## 🌙 User Interface
+
+- Modern UI design
+- Responsive layout
+- Light mode
+- Dark mode support
+- Smooth transitions
+- Tailwind CSS styling
 
 ---
 
 # 🛠️ Technologies
 
-### Frontend
+## Frontend
 
 - React
 - React Router DOM
@@ -83,18 +117,20 @@ DataNest AI allows users to upload documents, manage their knowledge base, and a
 - Axios
 - React Icons
 
-### Backend
+## Backend
 
 - Supabase
 - PostgreSQL
 - pgvector
+- Supabase Storage
 
-### AI
+## AI
 
 - OpenRouter API
-- GPT-4o Mini
+- NVIDIA Nemotron AI Model
+- Retrieval-Augmented Generation (RAG)
 
-### Libraries
+## Document Processing
 
 - pdfjs-dist
 - mammoth
@@ -106,20 +142,34 @@ DataNest AI allows users to upload documents, manage their knowledge base, and a
 ```
 src/
 │
-├── Components/
-├── Pages/
-│   ├── Landing
+├── components/
+│   ├── DocumentCard.jsx
+│   ├── Header.jsx
+│   └── Sidebar.jsx
+│
+├── pages/
+│   ├── Home
 │   ├── Dashboard
 │   ├── Upload
 │   ├── Documents
 │   ├── AskAI
 │   ├── Analytics
+│   ├── Profile
+│   ├── Register
+│   ├── Login
+│   ├── Search
 │   └── Settings
 │
 ├── Services/
 │   ├── supabase.js
-│   ├── openrouter.js
-│   └── extractText.js
+│   └── openrouter.js
+│
+├── utils/
+│   ├── extractText.js
+│   ├── chunkText.js
+│   ├── searchChunks.js
+├   ├── createEmbeddings.js
+│   └── askAI.js
 │
 └── App.jsx
 ```
@@ -166,23 +216,26 @@ src/
 
 ---
 
+---
+
 # 📖 Workflow
 
-1. User visits the Landing Page.
-2. User enters the Dashboard.
-3. Uploads documents.
-4. Text is extracted automatically.
-5. Documents are split into chunks.
-6. Chunks are stored in Supabase.
-7. Relevant chunks are retrieved.
-8. Context is sent to OpenRouter GPT-4o Mini.
-9. AI returns an answer based on the uploaded knowledge base.
+1. User enters the platform through the Landing Page.
+2. User uploads a document.
+3. The system extracts text automatically.
+4. Extracted text is divided into smaller chunks.
+5. Chunks are converted into vector embeddings.
+6. Data is stored in Supabase PostgreSQL with pgvector.
+7. User asks a question.
+8. Semantic search finds relevant document chunks.
+9. Context is sent to OpenRouter AI.
+10. AI generates an answer based only on the uploaded documents.
 
 ---
 
-## 🔐 Environment Variables
+# 🔐 Environment Variables
 
-Create a `.env` file in the project root and add:
+Create a `.env` file in the project root:
 
 ```env
 VITE_SUPABASE_URL=your_supabase_url
@@ -190,21 +243,8 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 VITE_OPENROUTER_API_KEY=your_openrouter_api_key
+
 ```
-
-# 🔮 Future Improvements
-
-- Dark Mode
-- Authentication
-- User Accounts
-- Chat History
-- Delete Individual Chunks
-- Favorite Documents
-- Better Analytics
-- Export Conversations
-- Mobile Optimization
-
----
 
 # 👩‍💻 Developer
 

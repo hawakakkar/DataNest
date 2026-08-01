@@ -39,10 +39,7 @@ export default function Analytics() {
     setRecentDocs(docs?.slice(0, 5) || []);
   }
 
-  const health =
-    documents === 0
-      ? 0
-      : Math.min(100, Math.round((chunks / Math.max(documents, 1)) * 10));
+  const health = documents > 0 ? 100 : 0;
 
   return (
     <div className="max-w-7xl mx-auto px-8 py-6 space-y-8 bg-[#F8F6F2] dark:bg-[#111827] min-h-screen transition-colors">

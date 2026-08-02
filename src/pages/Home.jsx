@@ -384,16 +384,20 @@ export default function Home() {
             {/* Floating Card */}
 
             <div
-              className={`flex absolute top-4 left-2 lg:top-8 lg:-left-20 rounded-2xl border shadow-xl px-4 lg:px-6 py-4 lg:py-5 items-center gap-3 lg:gap-4 ${
-                darkMode
-                  ? "bg-[#1E1E1E] border-[#333]"
-                  : "bg-white border-[#ECE6DE]"
-              }`}
-            >
-              <div
-                className={`w-14 h-14 rounded-xl flex items-center justify-center ${
-                  darkMode ? "bg-[#2B2B2B]" : "bg-[#EFE7DE]"
-                }`}
+              className={`absolute
+top-4 left-4
+sm:top-6 sm:left-6
+lg:top-8 lg:-left-20
+w-[180px] sm:w-[210px] lg:w-auto
+rounded-2xl border shadow-xl
+px-4 py-3 lg:px-6 lg:py-5
+flex items-center gap-3 lg:gap-4
+z-20
+${
+  darkMode
+    ? "bg-[#1E1E1E] border-[#333]"
+    : "bg-white border-[#ECE6DE]"
+}`}
               >
                 <FiDatabase className="text-[#8B5E3C]" size={24} />
               </div>
@@ -420,11 +424,15 @@ export default function Home() {
             {/* Floating Card */}
 
             <div
-              className={`flex absolute bottom-4 right-2 lg:bottom-8 lg:-right-20 rounded-2xl border shadow-xl px-4 lg:px-6 py-4 lg:py-5 items-center gap-3 lg:gap-4 ${
-                darkMode
-                  ? "bg-[#1E1E1E] border-[#333]"
-                  : "bg-white border-[#ECE6DE]"
-              }`}
+              className={`absolute
+    bottom-3 right-3
+    sm:bottom-5 sm:right-5
+    lg:bottom-8 lg:-right-14
+    scale-75 sm:scale-90 lg:scale-100
+    origin-bottom-right
+    rounded-2xl border shadow-xl px-4 py-4 lg:px-6 lg:py-5 flex items-center gap-4 ${
+      darkMode ? "bg-[#1E1E1E] border-[#333]" : "bg-white border-[#ECE6DE]"
+    }`}
             >
               <div
                 className={`w-14 h-14 rounded-xl flex items-center justify-center ${

@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../Services/supabase";
-import { FiFileText, FiTrash2, FiEye, FiEyeOff } from "react-icons/fi";
+import {
+  FiFileText,
+  FiTrash2,
+  FiEye,
+  FiEyeOff,
+  FiDownload,
+  FiMessageSquare,
+} from "react-icons/fi";
 import { useSearch } from "../context/SearchContext";
 
 export default function Documents() {
@@ -11,6 +18,7 @@ export default function Documents() {
 
   const [searchParams] = useSearchParams();
   const { search } = useSearch();
+  const navigate = useNavigate();
 
   const keyword =
     search.trim() === ""
@@ -61,7 +69,25 @@ export default function Documents() {
       setSelectedDocument(null);
     }
   }
+  async function downloadDocument(fileName) {
+    const { data } = supabase.storage.from("documents").getPublicUrl(fileName);
 
+    if (!data?.publicUrl) return;
+
+    const response = await fetch(data.publicUrl);
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName.replace(/^\d+[-_]/, "");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+  }
   function highlight(text) {
     if (!keyword) return text;
 
@@ -266,7 +292,47 @@ export default function Documents() {
                           <FiEyeOff size={20} />
                         )}
                       </button>
-
+                      <button
+                        onClick={() => downloadDocument(doc.file_name)}
+                        className=" w-10
+                                    h-10
+                                   rounded-xl
+                                   bg-[#F8F6F2]
+                                   dark:bg-[#374151]
+                                   hover:bg-[#EFE7DE]
+                                   dark:hover:bg-[#4B5563]
+                                   text-[#8B5E3C]
+                                   dark:text-white
+                                   flex
+                                   items-center
+                                   justify-center
+                                   transition
+                                   "
+                        title="Download Document"
+                      >
+                        <FiDownload size={20} />
+                      </button>
+                      <button
+                        onClick={() => navigate(`/document-chat/${doc.id}`)}
+                        className="
+      w-10
+      h-10
+      rounded-xl
+      bg-[#F8F6F2]
+      dark:bg-[#374151]
+      hover:bg-[#EFE7DE]
+      dark:hover:bg-[#4B5563]
+      text-[#8B5E3C]
+      dark:text-white
+      flex
+      items-center
+      justify-center
+      transition
+  "
+                        title="Ask AI"
+                      >
+                        <FiMessageSquare size={20} />
+                      </button>
                       <button
                         onClick={() => deleteDocument(doc.id)}
                         className="

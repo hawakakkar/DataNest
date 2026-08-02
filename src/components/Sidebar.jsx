@@ -83,7 +83,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               className="flex items-center gap-4 rounded-2xl px-5 py-4 transition hover:bg-white/10 dark:hover:bg-gray-700"
             >
               <FiMessageSquare size={22} />
-              <span>Ask AI</span>
+              <span>AI History</span>
             </Link>
 
             <Link

@@ -116,7 +116,7 @@ function Search() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-4xl font-bold text-[#5A3F2A] dark:text-white">
-            Ask AI History
+            AI History
           </h1>
 
           <p className="text-gray-500 dark:text-gray-400 mt-2">

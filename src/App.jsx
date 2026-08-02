@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
+import DocumentChat from "./pages/DocumentChat";
 
 function App() {
   return (
@@ -20,12 +21,12 @@ function App() {
       {/* Landing Page */}
       <Route path="/" element={<Home />} />
 
-      {/* Authentication Pages (بدون Layout) */}
+      {/* Authentication */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* Dashboard Pages (با Layout) */}
+      {/* Dashboard Pages */}
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/upload" element={<Upload />} />
@@ -34,6 +35,9 @@ function App() {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
+
+        {/* Document Chat */}
+        <Route path="/document-chat/:id" element={<DocumentChat />} />
       </Route>
     </Routes>
   );

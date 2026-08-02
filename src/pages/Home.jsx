@@ -384,7 +384,7 @@ export default function Home() {
             {/* Floating Card */}
 
             <div
-              className={`hidden lg:flex absolute top-10 -left-8 rounded-2xl border shadow-xl px-6 py-5 items-center gap-4 ${
+              className={`flex absolute top-4 left-20 lg:top-8 lg:-left-15 rounded-2xl border shadow-xl px-4 lg:px-6 py-4 lg:py-5 items-center gap-3 lg:gap-4 ${
                 darkMode
                   ? "bg-[#1E1E1E] border-[#333]"
                   : "bg-white border-[#ECE6DE]"
@@ -420,7 +420,7 @@ export default function Home() {
             {/* Floating Card */}
 
             <div
-              className={`hidden lg:flex absolute bottom-10 -right-8 rounded-2xl border shadow-xl px-6 py-5 items-center gap-4 ${
+              className={`flex absolute bottom-4 right-20 lg:bottom-8 lg:-right-15 rounded-2xl border shadow-xl px-4 lg:px-6 py-4 lg:py-5 items-center gap-3 lg:gap-4 ${
                 darkMode
                   ? "bg-[#1E1E1E] border-[#333]"
                   : "bg-white border-[#ECE6DE]"

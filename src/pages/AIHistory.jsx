@@ -61,7 +61,7 @@ export default function AIHistory() {
           doc?.file_name?.replace(/^\d+[-_]/, "") || "Unknown Document";
       }
 
-      if (item.chat_type === "general") {
+      if (!item.document_id) {
         generalChats.push(item);
         continue;
       }
@@ -110,7 +110,7 @@ export default function AIHistory() {
     let query = supabase.from("chat_history").delete().eq("user_id", user.id);
 
     if (documentId === "general") {
-      query = query.eq("chat_type", "general");
+      query = query.is("document_id", null);
     } else {
       query = query.eq("document_id", documentId);
     }

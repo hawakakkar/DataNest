@@ -89,6 +89,9 @@ export default function Dashboard() {
 
       setAnswer(
         `${aiAnswer}
+        
+
+        
 
 --------------------
 
@@ -102,6 +105,27 @@ ${fileName}`,
           block: "start",
         });
       }, 200);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        await supabase.from("chat_history").insert({
+          user_id: user.id,
+          document_id: null,
+          document_name: null,
+          role: "user",
+          content: question,
+        });
+
+        await supabase.from("chat_history").insert({
+          user_id: user.id,
+          document_id: null,
+          document_name: null,
+          role: "assistant",
+          content: aiAnswer,
+        });
+      }
 
       await supabase.from("questions").insert([
         {

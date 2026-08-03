@@ -78,7 +78,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
             </Link>
 
             <Link
-              to="/search"
+              to="/ai-history"
               onClick={() => setSidebarOpen(false)}
               className="flex items-center gap-4 rounded-2xl px-5 py-4 transition hover:bg-white/10 dark:hover:bg-gray-700"
             >

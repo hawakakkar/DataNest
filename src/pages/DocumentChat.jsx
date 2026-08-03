@@ -5,7 +5,6 @@ import { supabase } from "../Services/supabase";
 
 export default function DocumentChat() {
   const { id } = useParams();
-
   const [document, setDocument] = useState(null);
   const [chunks, setChunks] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -43,12 +42,48 @@ export default function DocumentChat() {
 
     setDocument(doc);
     setChunks(chunkData || []);
+
+    await loadChatHistory();
+
     console.log("DOCUMENT:", doc);
     console.log("CHUNKS:", chunkData);
+  }
+  async function loadChatHistory() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("chat_history")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("document_id", id)
+      .order("created_at", {
+        ascending: true,
+      });
+
+    if (data) {
+      setMessages(
+        data.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+      );
+    }
   }
 
   async function askAI() {
     if (!question.trim()) return;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
 
     const userMessage = {
       role: "user",
@@ -56,6 +91,13 @@ export default function DocumentChat() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    await supabase.from("chat_history").insert({
+      user_id: user.id,
+      document_id: document.id,
+      document_name: document.file_name.replace(/^\d+[-_]/, ""),
+      role: "user",
+      content: question,
+    });
 
     setLoading(true);
 
@@ -133,6 +175,14 @@ ${context}
           content: aiAnswer,
         },
       ]);
+
+      await supabase.from("chat_history").insert({
+        user_id: user.id,
+        document_id: document.id,
+        document_name: document.file_name.replace(/^\d+[-_]/, ""),
+        role: "assistant",
+        content: aiAnswer,
+      });
 
       setQuestion("");
     } catch (err) {

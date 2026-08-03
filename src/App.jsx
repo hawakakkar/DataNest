@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
 import DocumentChat from "./pages/DocumentChat";
+import AIHistory from "./pages/AIHistory";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
 
         {/* Document Chat */}
         <Route path="/document-chat/:id" element={<DocumentChat />} />
+        <Route path="/ai-history" element={<AIHistory />} />
       </Route>
     </Routes>
   );

@@ -75,6 +75,11 @@ export default function Dashboard() {
       setResponseTime(null);
 
       const results = await searchChunks(question);
+      const firstDocumentId = results[0]?.document_id || null;
+
+      const documentNames = [
+        ...new Set(results.map((r) => r.file_name).filter(Boolean)),
+      ];
 
       if (!results || results.length === 0) {
         setAnswer("No matching information found.");
@@ -83,22 +88,19 @@ export default function Dashboard() {
 
       const aiAnswer = await askAI(question, results);
 
-      const fileName = results[0]?.file_name
-        ? results[0].file_name.replace(/^\d+-/, "")
-        : "Unknown document";
+      const fileNames = [
+        ...new Set(
+          results.map((r) => r.file_name?.replace(/^\d+-/, "")).filter(Boolean),
+        ),
+      ].join("\n• ");
 
-      setAnswer(
-        `${aiAnswer}
-        
-
-        
+      setAnswer(`${aiAnswer}
 
 --------------------
 
-This information is available in the document:
+This information was found in the following documents:
 
-${fileName}`,
-      );
+• ${fileNames}`);
       setTimeout(() => {
         answerRef.current?.scrollIntoView({
           behavior: "smooth",
@@ -110,21 +112,32 @@ ${fileName}`,
       } = await supabase.auth.getUser();
 
       if (user) {
-        await supabase.from("chat_history").insert({
-          user_id: user.id,
-          document_id: null,
-          document_name: null,
-          role: "user",
-          content: question,
-        });
+        const mainDocumentId = results[0]?.document_id || null;
 
-        await supabase.from("chat_history").insert({
-          user_id: user.id,
-          document_id: null,
-          document_name: null,
-          role: "assistant",
-          content: aiAnswer,
-        });
+        const allDocumentNames = [
+          ...new Set(
+            results
+              .map((r) => r.file_name?.replace(/^\d+-/, ""))
+              .filter(Boolean),
+          ),
+        ].join(", ");
+
+        await supabase.from("chat_history").insert([
+          {
+            user_id: user.id,
+            document_id: firstDocumentId,
+            document_name: documentNames.join(", "),
+            role: "user",
+            content: question,
+          },
+          {
+            user_id: user.id,
+            document_id: firstDocumentId,
+            document_name: documentNames.join(", "),
+            role: "assistant",
+            content: aiAnswer,
+          },
+        ]);
       }
 
       await supabase.from("questions").insert([

@@ -454,12 +454,12 @@ export default function Settings() {
         className="
           bg-white dark:bg-[#1F2937]
           rounded-3xl
-          border border-red-200 dark:border-red-800
+          border border-[#85453e] dark:border-[#5A3F2A]
           shadow-lg
           p-8
         "
       >
-        <h2 className="text-2xl font-bold text-red-600 mb-8">Danger Zone</h2>
+        <h2 className="text-2xl font-bold text-[#85453e] mb-8">Danger Zone</h2>
 
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
@@ -476,8 +476,8 @@ export default function Settings() {
             <button
               onClick={clearAIHistory}
               className="
-                bg-red-500
-                hover:bg-red-600
+                bg-[#8f362c]
+                hover:bg-[#7d3830]
                 text-white
                 px-6
                 py-3
@@ -504,8 +504,8 @@ export default function Settings() {
             <button
               onClick={resetApplication}
               className="
-                bg-red-700
-                hover:bg-red-800
+                bg-[#8f362c]
+                hover:bg-[#7d3830]
                 text-white
                 px-6
                 py-3

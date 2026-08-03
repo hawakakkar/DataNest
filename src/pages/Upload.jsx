@@ -244,9 +244,9 @@ export default function Upload() {
                   py-3
                   rounded-xl
                   border
-                  border-red-500
-                  text-red-500
-                  hover:bg-red-50
+                  border-[#8f362c]
+                  text-[#000000]
+                  hover:bg-[#8f362c]
                   transition
                 "
                 >

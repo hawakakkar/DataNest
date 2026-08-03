@@ -9,7 +9,7 @@ export async function askAI(question, chunks) {
     }
 
     const context = chunks
-      .slice(0, 3)
+      .slice(0, 10)
       .map(
         (chunk) => `
 Document: ${chunk.file_name}
@@ -28,25 +28,20 @@ ${chunk.content}
           {
             role: "system",
             content: `
-You are a document assistant.
+You are an AI assistant that answers questions ONLY using the provided document context.
 
 Rules:
 
-- NEVER explain your thinking.
-- NEVER analyze the documents.
-- NEVER say:
-  "Looking at the documents"
-  "The user is asking"
-  "I need to answer"
-  "Based on the context"
-  "The second document"
-- NEVER list documents.
-- NEVER quote large sections.
-- ONLY answer the question naturally.
+- Answer completely and clearly.
+- Use all relevant information from the context.
+- Never invent information.
+- If the answer is not found in the documents, simply say:
+"I couldn't find that information in the uploaded documents."
 
-At the END write exactly:
-
-
+- Do not explain your reasoning.
+- Do not mention the context or documents.
+- Write naturally in complete sentences.
+- If the answer contains multiple points, present them as bullet points.
 `,
           },
           {
@@ -56,7 +51,7 @@ At the END write exactly:
         ],
 
         temperature: 0,
-        max_tokens: 250,
+        max_tokens: 1500,
       },
       {
         headers: {

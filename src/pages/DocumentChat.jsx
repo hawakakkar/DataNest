@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FiSend, FiFileText } from "react-icons/fi";
 import { supabase } from "../Services/supabase";
+import { saveDocumentChat } from "../Services/chatService";
 
 export default function DocumentChat() {
   const { id } = useParams();
@@ -91,13 +92,6 @@ export default function DocumentChat() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    await supabase.from("chat_history").insert({
-      user_id: user.id,
-      document_id: document.id,
-      document_name: document.file_name.replace(/^\d+[-_]/, ""),
-      role: "user",
-      content: question,
-    });
 
     setLoading(true);
 
@@ -176,13 +170,14 @@ ${context}
         },
       ]);
 
-      await supabase.from("chat_history").insert({
-        user_id: user.id,
-        document_id: document.id,
-        document_name: document.file_name.replace(/^\d+[-_]/, ""),
-        role: "assistant",
-        content: aiAnswer,
-      });
+      console.log("Document Object:", document);
+
+      await saveDocumentChat(
+        document?.id,
+        document?.file_name,
+        question,
+        aiAnswer,
+      );
 
       setQuestion("");
     } catch (err) {

@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../Services/supabase";
 import { searchChunks } from "../utils/searchChunks";
 import { askAI } from "../utils/askAI";
+import { saveGeneralChat } from "../Services/chatService";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -75,11 +76,8 @@ export default function Dashboard() {
       setResponseTime(null);
 
       const results = await searchChunks(question);
-      const firstDocumentId = results[0]?.document_id || null;
-
-      const documentNames = [
-        ...new Set(results.map((r) => r.file_name).filter(Boolean)),
-      ];
+      const firstDocumentId = null;
+      const documentNames = [];
 
       if (!results || results.length === 0) {
         setAnswer("No matching information found.");
@@ -107,38 +105,8 @@ This information was found in the following documents:
           block: "start",
         });
       }, 200);
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
 
-      if (user) {
-        const mainDocumentId = results[0]?.document_id || null;
-
-        const allDocumentNames = [
-          ...new Set(
-            results
-              .map((r) => r.file_name?.replace(/^\d+-/, ""))
-              .filter(Boolean),
-          ),
-        ].join(", ");
-
-        await supabase.from("chat_history").insert([
-          {
-            user_id: user.id,
-            document_id: firstDocumentId,
-            document_name: documentNames.join(", "),
-            role: "user",
-            content: question,
-          },
-          {
-            user_id: user.id,
-            document_id: firstDocumentId,
-            document_name: documentNames.join(", "),
-            role: "assistant",
-            content: aiAnswer,
-          },
-        ]);
-      }
+      await saveGeneralChat(question, aiAnswer);
 
       await supabase.from("questions").insert([
         {

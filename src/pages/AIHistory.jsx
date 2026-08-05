@@ -14,6 +14,7 @@ export default function AIHistory() {
   });
 
   const [loading, setLoading] = useState(true);
+
   const [openGroups, setOpenGroups] = useState({});
 
   useEffect(() => {
@@ -39,53 +40,40 @@ export default function AIHistory() {
       .order("created_at", { ascending: true });
 
     if (error) {
-      console.log(error);
+      console.error(error);
       setLoading(false);
       return;
     }
 
-    const documentGroups = {};
-    const generalChats = [];
+    const docs = {};
+    const general = [];
 
-    for (const item of data) {
-      let documentName = item.document_name;
-
-      if (!documentName && item.document_id) {
-        const { data: doc } = await supabase
-          .from("documents")
-          .select("file_name")
-          .eq("id", item.document_id)
-          .single();
-
-        documentName =
-          doc?.file_name?.replace(/^\d+[-_]/, "") || "Unknown Document";
-      }
-
+    data.forEach((item) => {
       if (!item.document_id) {
-        generalChats.push(item);
-        continue;
+        general.push(item);
+        return;
       }
 
-      if (!documentGroups[item.document_id]) {
-        documentGroups[item.document_id] = {
+      if (!docs[item.document_id]) {
+        docs[item.document_id] = {
           document_id: item.document_id,
-          document_name: documentName,
+          document_name: item.document_name || "Unknown Document",
           chats: [],
         };
       }
 
-      documentGroups[item.document_id].chats.push(item);
-    }
+      docs[item.document_id].chats.push(item);
+    });
 
     setGroups({
-      documents: Object.values(documentGroups),
-      general: generalChats,
+      documents: Object.values(docs),
+      general,
     });
 
     const opened = {};
 
-    Object.values(documentGroups).forEach((g) => {
-      opened[g.document_id] = true;
+    Object.values(docs).forEach((d) => {
+      opened[d.document_id] = true;
     });
 
     setOpenGroups(opened);
@@ -127,7 +115,6 @@ export default function AIHistory() {
       </div>
     );
   }
-
   return (
     <div className="p-8 bg-[#F8F6F2] dark:bg-[#111827] min-h-screen">
       <h1 className="text-4xl font-bold mb-2 text-[#5A3F2A] dark:text-white">
@@ -164,7 +151,7 @@ export default function AIHistory() {
                 <FiChevronRight size={22} />
               )}
 
-              <FiFileText size={22} className="text-[#8B5E3C]" />
+              <FiFileText size={22} />
 
               <div className="text-left">
                 <h2 className="font-bold text-lg">
@@ -172,7 +159,7 @@ export default function AIHistory() {
                 </h2>
 
                 <p className="text-sm text-gray-500">
-                  {group.chats.length} messages
+                  {Math.floor(group.chats.length / 2)} conversations
                 </p>
               </div>
             </button>
@@ -187,28 +174,43 @@ export default function AIHistory() {
 
           {openGroups[group.document_id] && (
             <div className="border-t dark:border-gray-700">
-              {group.chats.map((chat) => (
-                <div
-                  key={chat.id}
-                  className="p-6 border-b dark:border-gray-700"
-                >
+              {(() => {
+                const conversations = [];
+
+                for (let i = 0; i < group.chats.length; i += 2) {
+                  conversations.push({
+                    question: group.chats[i],
+                    answer: group.chats[i + 1],
+                  });
+                }
+
+                return conversations.map((chat, index) => (
                   <div
-                    className={`mb-4 font-semibold ${
-                      chat.role === "user" ? "text-[#8B5E3C]" : "text-[#2563EB]"
-                    }`}
+                    key={index}
+                    className="p-6 border-b dark:border-gray-700"
                   >
-                    {chat.role === "user" ? "Question" : "AI Answer"}
-                  </div>
+                    <div className="font-semibold text-[#8B5E3C]">
+                      {" "}
+                      AI Question
+                    </div>
 
-                  <div className="whitespace-pre-wrap leading-8">
-                    {chat.content}
-                  </div>
+                    <p className="mt-2 whitespace-pre-wrap">
+                      {chat.answer?.content}
+                    </p>
 
-                  <div className="text-xs text-gray-400 mt-4">
-                    {new Date(chat.created_at).toLocaleString()}
+                    <div className="mt-6 font-semibold text-blue-600">
+                      AI Answer
+                    </div>
+                    <p className="mt-2 whitespace-pre-wrap">
+                      {chat.question?.content}
+                    </p>
+
+                    <div className="text-xs text-gray-400 mt-4">
+                      {new Date(chat.question?.created_at).toLocaleString()}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ));
+              })()}
             </div>
           )}
         </div>
@@ -223,28 +225,37 @@ export default function AIHistory() {
         </div>
       ) : (
         <div className="bg-white dark:bg-[#1F2937] rounded-3xl shadow-lg overflow-hidden">
-          {groups.general.map((chat) => (
-            <div
-              key={chat.id}
-              className="p-6 border-b last:border-b-0 dark:border-gray-700"
-            >
-              <div
-                className={`mb-4 font-semibold ${
-                  chat.role === "user" ? "text-[#8B5E3C]" : "text-[#2563EB]"
-                }`}
-              >
-                {chat.role === "user" ? "Question" : "AI Answer"}
-              </div>
+          {(() => {
+            const conversations = [];
 
-              <div className="whitespace-pre-wrap leading-8 text-[#2F2A27] dark:text-white">
-                {chat.content}
-              </div>
+            for (let i = 0; i < groups.general.length; i += 2) {
+              conversations.push({
+                question: groups.general[i],
+                answer: groups.general[i + 1],
+              });
+            }
 
-              <div className="text-xs text-gray-400 mt-4">
-                {new Date(chat.created_at).toLocaleString()}
+            return conversations.map((chat, index) => (
+              <div key={index} className="p-6 border-b dark:border-gray-700">
+                <div className="font-semibold text-[#8B5E3C]">AI Question</div>
+
+                <p className="mt-2 whitespace-pre-wrap">
+                  {chat.answer?.content}
+                </p>
+
+                <div className="mt-6 font-semibold text-blue-600">
+                  AI Answer
+                </div>
+                <p className="mt-2 whitespace-pre-wrap">
+                  {chat.question?.content}
+                </p>
+
+                <div className="text-xs text-gray-400 mt-4">
+                  {new Date(chat.question?.created_at).toLocaleString()}
+                </div>
               </div>
-            </div>
-          ))}
+            ));
+          })()}
 
           <div className="flex justify-end p-6 border-t dark:border-gray-700">
             <button

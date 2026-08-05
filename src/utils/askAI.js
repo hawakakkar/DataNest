@@ -51,7 +51,7 @@ Rules:
         ],
 
         temperature: 0,
-        max_tokens: 1500,
+        max_tokens: 2500,
       },
       {
         headers: {
@@ -63,7 +63,6 @@ Rules:
 
     let answer = response.data.choices[0].message.content;
 
-    // حذف متن‌های اضافی
     answer = answer
       .replace(/Looking at the documents:?/gis, "")
       .replace(/The user is asking.*?\./gis, "")

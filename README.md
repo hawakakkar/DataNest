@@ -210,7 +210,7 @@ src/
 
 ![Settings](screenshots/settings.png)
 
-## Dark Mode _(Coming Soon)_
+## Dark Mode
 
 ![Dark Mode](screenshots/dark-mode.png)
 

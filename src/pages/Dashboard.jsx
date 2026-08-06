@@ -85,6 +85,7 @@ export default function Dashboard() {
       }
 
       const aiAnswer = await askAI(question, results);
+      await saveGeneralChat(question, aiAnswer);
 
       const fileNames = [
         ...new Set(
@@ -106,8 +107,6 @@ This information was found in the following documents:
         });
       }, 200);
 
-      await saveGeneralChat(question, aiAnswer);
-
       await supabase.from("questions").insert([
         {
           query: question,
@@ -116,6 +115,8 @@ This information was found in the following documents:
       ]);
 
       loadStats();
+      setQuestion("");
+      localStorage.removeItem("question");
     } catch (error) {
       console.error(error);
 

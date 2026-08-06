@@ -107,6 +107,41 @@ export default function AIHistory() {
 
     loadHistory();
   }
+  async function deleteSingleConversation(questionId) {
+    if (!window.confirm("Delete this question?")) return;
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data: question } = await supabase
+      .from("chat_history")
+      .select("*")
+      .eq("id", questionId)
+      .single();
+
+    if (!question) return;
+
+    const { data: answer } = await supabase
+      .from("chat_history")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("role", "assistant")
+      .eq("document_id", question.document_id)
+      .gt("created_at", question.created_at)
+      .order("created_at", { ascending: true })
+      .limit(1);
+
+    await supabase.from("chat_history").delete().eq("id", question.id);
+
+    if (answer?.length) {
+      await supabase.from("chat_history").delete().eq("id", answer[0].id);
+    }
+
+    loadHistory();
+  }
 
   if (loading) {
     return (
@@ -159,7 +194,8 @@ export default function AIHistory() {
                 </h2>
 
                 <p className="text-sm text-gray-500">
-                  {Math.floor(group.chats.length / 2)} conversations
+                  {group.chats.filter((m) => m.role === "user").length}{" "}
+                  conversations
                 </p>
               </div>
             </button>
@@ -177,32 +213,49 @@ export default function AIHistory() {
               {(() => {
                 const conversations = [];
 
-                for (let i = 0; i < group.chats.length; i += 2) {
-                  conversations.push({
-                    question: group.chats[i],
-                    answer: group.chats[i + 1],
-                  });
-                }
+                let current = null;
+
+                group.chats.forEach((msg) => {
+                  if (msg.role === "user") {
+                    current = {
+                      question: msg,
+                      answer: null,
+                    };
+                    conversations.push(current);
+                  } else if (msg.role === "assistant" && current) {
+                    current.answer = msg;
+                  }
+                });
 
                 return conversations.map((chat, index) => (
                   <div
                     key={index}
                     className="p-6 border-b dark:border-gray-700"
                   >
-                    <div className="font-semibold text-[#8B5E3C]">
-                      {" "}
-                      AI Question
-                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="font-semibold text-[#8B5E3C]">
+                        AI Question
+                      </div>
 
+                      <button
+                        onClick={() =>
+                          deleteSingleConversation(chat.question.id)
+                        }
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <FiTrash2 size={18} />
+                      </button>
+                    </div>
                     <p className="mt-2 whitespace-pre-wrap">
-                      {chat.answer?.content}
+                      {chat.question?.content || "No Question"}
                     </p>
 
                     <div className="mt-6 font-semibold text-blue-600">
                       AI Answer
                     </div>
+
                     <p className="mt-2 whitespace-pre-wrap">
-                      {chat.question?.content}
+                      {chat.answer?.content || "No Answer"}
                     </p>
 
                     <div className="text-xs text-gray-400 mt-4">
@@ -228,26 +281,45 @@ export default function AIHistory() {
           {(() => {
             const conversations = [];
 
-            for (let i = 0; i < groups.general.length; i += 2) {
-              conversations.push({
-                question: groups.general[i],
-                answer: groups.general[i + 1],
-              });
-            }
+            let current = null;
+
+            groups.general.forEach((msg) => {
+              if (msg.role === "user") {
+                current = {
+                  question: msg,
+                  answer: null,
+                };
+
+                conversations.push(current);
+              } else if (msg.role === "assistant" && current) {
+                current.answer = msg;
+              }
+            });
 
             return conversations.map((chat, index) => (
               <div key={index} className="p-6 border-b dark:border-gray-700">
-                <div className="font-semibold text-[#8B5E3C]">AI Question</div>
+                <div className="flex justify-between items-center">
+                  <div className="font-semibold text-[#8B5E3C]">
+                    AI Question
+                  </div>
 
+                  <button
+                    onClick={() => deleteSingleConversation(chat.question.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FiTrash2 size={18} />
+                  </button>
+                </div>
                 <p className="mt-2 whitespace-pre-wrap">
-                  {chat.answer?.content}
+                  {chat.question?.content || "No Question"}
                 </p>
 
                 <div className="mt-6 font-semibold text-blue-600">
                   AI Answer
                 </div>
+
                 <p className="mt-2 whitespace-pre-wrap">
-                  {chat.question?.content}
+                  {chat.answer?.content || "No Answer"}
                 </p>
 
                 <div className="text-xs text-gray-400 mt-4">

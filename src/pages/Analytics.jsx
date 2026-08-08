@@ -30,11 +30,22 @@ export default function Analytics() {
 
     const { data: chunkData } = await supabase.from("chunks").select("id");
 
-    const { data: questionData } = await supabase.from("questions").select("*");
+    const { data: questionData } = await supabase
+      .from("questions")
+      .select("id");
+
+    const { data: documentQuestionData } = await supabase
+      .from("chat_history")
+      .select("id")
+      .eq("role", "user")
+      .not("document_id", "is", null);
+
+    const totalQuestions =
+      (questionData?.length || 0) + (documentQuestionData?.length || 0);
 
     setDocuments(docs?.length || 0);
     setChunks(chunkData?.length || 0);
-    setQuestions(questionData?.length || 0);
+    setQuestions(totalQuestions);
 
     setRecentDocs(docs?.slice(0, 5) || []);
   }

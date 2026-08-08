@@ -95,6 +95,14 @@ export default function AIHistory() {
       data: { user },
     } = await supabase.auth.getUser();
 
+    if (!user) {
+      alert("Please login first.");
+      return;
+    }
+
+    console.log("Deleting document:", documentId);
+    console.log("Current user:", user.id);
+
     let query = supabase.from("chat_history").delete().eq("user_id", user.id);
 
     if (documentId === "general") {
@@ -103,9 +111,27 @@ export default function AIHistory() {
       query = query.eq("document_id", documentId);
     }
 
-    await query;
+    const { data, error } = await query.select();
 
-    loadHistory();
+    console.log("DELETE RESULT:", data);
+    console.log("DELETE ERROR:", error);
+
+    if (error) {
+      console.error("DELETE GROUP ERROR:", error);
+      alert(`Could not delete conversation: ${error.message}`);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      alert(
+        "Nothing was deleted. Check the Supabase DELETE RLS policy for chat_history.",
+      );
+      return;
+    }
+
+    console.log("Deleted rows:", data.length);
+
+    await loadHistory();
   }
   async function deleteSingleConversation(questionId) {
     if (!window.confirm("Delete this question?")) return;
@@ -239,7 +265,10 @@ export default function AIHistory() {
 
                       <button
                         onClick={() =>
-                          deleteSingleConversation(chat.question.id)
+                          deleteSingleConversation(
+                            chat.question.id,
+                            chat.answer?.id,
+                          )
                         }
                         className="text-red-500 hover:text-red-700"
                       >
@@ -304,7 +333,12 @@ export default function AIHistory() {
                   </div>
 
                   <button
-                    onClick={() => deleteSingleConversation(chat.question.id)}
+                    onClick={() =>
+                      deleteSingleConversation(
+                        chat.question.id,
+                        chat.answer?.id,
+                      )
+                    }
                     className="text-red-500 hover:text-red-700"
                   >
                     <FiTrash2 size={18} />

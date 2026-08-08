@@ -76,7 +76,10 @@ export default function DocumentChat() {
   }
 
   async function askAI() {
-    if (!question.trim()) return;
+    const currentQuestion = question.trim();
+
+    if (!currentQuestion) return;
+    setQuestion("");
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -88,7 +91,7 @@ export default function DocumentChat() {
 
     const userMessage = {
       role: "user",
-      content: question,
+      content: currentQuestion,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -135,7 +138,7 @@ ${context}
 
               {
                 role: "user",
-                content: question,
+                content: currentQuestion,
               },
             ],
           }),
@@ -175,11 +178,9 @@ ${context}
       await saveDocumentChat(
         document?.id,
         document?.file_name,
-        question,
+        currentQuestion,
         aiAnswer,
       );
-
-      setQuestion("");
     } catch (err) {
       setMessages((prev) => [
         ...prev,

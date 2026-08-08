@@ -52,13 +52,24 @@ export default function Dashboard() {
       .from("chunks")
       .select("*", { count: "exact", head: true });
 
-    const { count: questions } = await supabase
+    // Questions asked from Dashboard / General AI
+    const { count: generalQuestions } = await supabase
       .from("questions")
       .select("*", { count: "exact", head: true });
 
+    // Questions asked from Document Chat
+    const { count: documentQuestions } = await supabase
+      .from("chat_history")
+      .select("*", { count: "exact", head: true })
+      .not("document_id", "is", null)
+      .eq("role", "user");
+
+    // Total = General questions + Document questions
+    const totalQuestions = (generalQuestions || 0) + (documentQuestions || 0);
+
     setDocumentsCount(docs || 0);
     setChunksCount(chunks || 0);
-    setQuestionsCount(questions || 0);
+    setQuestionsCount(totalQuestions);
   }
 
   async function handleSearch() {

@@ -112,448 +112,678 @@ export default function Header({ setSidebarOpen }) {
   return (
     <header
       className="
-    bg-[#5A3F2A]
-    dark:bg-[#5A3F2A]
-    border-b
-    border-[#ECE6DE]
-    dark:border-gray-700
-    text-[#000000]
-    dark:text-white
-    px-4
-    md:px-8
-    py-4
-    flex
-    flex-col
-    lg:flex-row
-    lg:items-center
-    lg:justify-between
-    gap-5
-  "
-    >
-      {/* Left */}
-      <div className="flex items-center gap-4">
-        {/* Mobile Menu */}
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="
-        lg:hidden
-        w-11
-        h-11
-        rounded-xl
-        bg-[#F8F6F2]
-        hover:bg-[#EFE7DE]
-        dark:bg-[#1F2937]
-        dark:hover:bg-[#374151]
-        transition
-        flex
-        items-center
-        justify-center
+        w-full
+        border-b
+        border-[#4A3021]
+        bg-[#F8F3EC]
+        text-[#3E2A1E]
+        dark:border-[#493326]
+        dark:bg-[#17110D]
+        dark:text-white
+        px-4
+        sm:px-6
+        lg:px-8
+        py-4
       "
-        >
-          <FiMenu size={24} className="text-[#8B5E3C] dark:text-white" />
-        </button>
-
-        <div>
-          <h1
-            className="
-          text-3xl
-          font-bold
-          text-white
-          dark:text-white
-          px-4
-          md:px-8
-        "
-          >
-            Dashboard
-          </h1>
-
-          <p
-            className="
-          text-[#72685F]
-          dark:text-gray-400
-          text-sm
-          mt-1
-          px-4
-          md:px-8
-        "
-          >
-            Welcome to DataNest AI
-          </p>
-        </div>
-      </div>
-
-      {/* Right */}
+    >
       <div
         className="
-      flex
-      flex-wrap
-      items-center
-      gap-3
-      w-full
-      lg:w-auto
-    "
-      >
-        {/* Search */}
-        <div className="relative flex-1 min-w-0 lg:w-[420px]">
-          <FiSearch
-            onClick={handleSearch}
-            size={20}
-            className="
-          absolute
-          left-4
-          top-1/2
-          -translate-y-1/2
-          cursor-pointer
-          text-[#8B5E3C]
-          dark:text-white
-        "
-          />
-
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch();
-              }
-            }}
-            placeholder="Search documents..."
-            className="
-          w-full
-          rounded-2xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          bg-[#F8F6F2]
-          dark:bg-[#1F2937]
-          py-3
-          pl-12
-          pr-4
-          text-[#2F2A27]
-          dark:text-white
-          placeholder:text-[#9B938C]
-          dark:placeholder:text-gray-400
-          focus:outline-none
-          focus:ring-2
-          focus:ring-[#8B5E3C]
-        "
-          />
-        </div>
-
-        {/* Dark Mode */}
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="
-        w-12
-        h-12
-        rounded-xl
-        bg-[#F8F6F2]
-        dark:bg-[#1F2937]
-        hover:bg-[#EFE7DE]
-        dark:hover:bg-[#374151]
-        transition
-        flex
-        items-center
-        justify-center
-      "
-        >
-          {darkMode ? (
-            <FiSun size={22} className="text-yellow-400" />
-          ) : (
-            <FiMoon size={22} className="text-[#8B5E3C]" />
-          )}
-        </button>
-        {/* Notifications */}
-        <div className="relative">
-          <button
-            onClick={() => setShowNotifications(!showNotifications)}
-            className="
-          relative
-          w-12
-          h-12
-          rounded-xl
           flex
-          items-center
-          justify-center
-          transition
-          hover:bg-[#F4EEE8]
-          dark:hover:bg-[#374151]
+          w-full
+          flex-col
+          gap-4
+          lg:flex-row
+          lg:items-center
+          lg:justify-between
         "
-          >
-            <FiBell size={24} className="text-[#2F2A27] dark:text-white" />
-
-            {questionsCount > 0 && (
-              <span
-                className="
-              absolute
-              -top-1
-              -right-1
-              bg-[#8B5E3C]
-              text-white
-              text-[10px]
-              min-w-[18px]
-              h-[18px]
-              px-1
-              rounded-full
+      >
+        {/* =========================
+            LEFT SIDE
+        ========================== */}
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          {/* Mobile Menu */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="
               flex
+              h-11
+              w-11
+              shrink-0
               items-center
               justify-center
+              rounded-[14px]
+              border
+              border-[#E8DED3]
+              bg-white
+              text-[#8B5E3C]
+              transition
+              hover:bg-[#F1E7DD]
+              dark:border-[#493326]
+              dark:bg-[#30241C]
+              dark:text-[#D8A778]
+              dark:hover:bg-[#3A2A20]
+              lg:hidden
             "
-              >
-                {questionsCount}
-              </span>
+          >
+            <FiMenu size={23} strokeWidth={1.8} />
+          </button>
+
+          <div className="min-w-0">
+            <h1
+              className="
+                truncate
+                text-2xl
+                font-bold
+                tracking-tight
+                text-[#3E2A1E]
+                dark:text-white
+                sm:text-3xl
+              "
+            >
+              Dashboard
+            </h1>
+
+            <p
+              className="
+                mt-1
+                truncate
+                text-xs
+                font-medium
+                text-[#806A59]
+                dark:text-[#B9AAA0]
+                sm:text-sm
+              "
+            >
+              Welcome to DataNest AI
+            </p>
+          </div>
+        </div>
+
+        {/* =========================
+            RIGHT SIDE
+        ========================== */}
+        <div
+          className="
+            flex
+            w-full
+            flex-wrap
+            items-center
+            gap-2
+            sm:gap-3
+            lg:w-auto
+            lg:justify-end
+          "
+        >
+          {/* =========================
+              SEARCH
+          ========================== */}
+          <div
+            className="
+              relative
+              min-w-0
+              flex-1
+              sm:min-w-[260px]
+              lg:w-[360px]
+              lg:flex-none
+              xl:w-[420px]
+            "
+          >
+            <FiSearch
+              onClick={handleSearch}
+              size={19}
+              strokeWidth={1.8}
+              className="
+                absolute
+                left-4
+                top-1/2
+                -translate-y-1/2
+                cursor-pointer
+                text-[#8B5E3C]
+                transition
+                hover:text-[#6F472D]
+                dark:text-[#D8A778]
+                dark:hover:text-white
+              "
+            />
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+              placeholder="Search anything..."
+              className="
+                h-11
+                w-full
+                rounded-[15px]
+                border
+                border-[#E8DED3]
+                bg-white
+                py-2.5
+                pl-11
+                pr-4
+                text-sm
+                text-[#3E2A1E]
+                outline-none
+                transition
+                placeholder:text-[#A99D92]
+                hover:border-[#D8C7B8]
+                focus:border-[#B98A62]
+                focus:ring-2
+                focus:ring-[#D8B79A]/30
+                dark:border-[#493326]
+                dark:bg-[#30241C]
+                dark:text-white
+                dark:placeholder:text-[#9E8D80]
+                dark:hover:border-[#634737]
+                dark:focus:border-[#A87954]
+                dark:focus:ring-[#A87954]/20
+              "
+            />
+          </div>
+
+          {/* =========================
+              DARK MODE
+          ========================== */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="
+              flex
+              h-11
+              w-11
+              shrink-0
+              items-center
+              justify-center
+              rounded-[14px]
+              border
+              border-[#E8DED3]
+              bg-white
+              transition
+              hover:bg-[#F1E7DD]
+              dark:border-[#493326]
+              dark:bg-[#30241C]
+              dark:hover:bg-[#3A2A20]
+            "
+          >
+            {darkMode ? (
+              <FiSun size={21} strokeWidth={1.8} className="text-[#D8A778]" />
+            ) : (
+              <FiMoon size={21} strokeWidth={1.8} className="text-[#8B5E3C]" />
             )}
           </button>
 
-          {showNotifications && (
-            <div
+          {/* =========================
+              NOTIFICATIONS
+          ========================== */}
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setShowNotifications(!showNotifications)}
               className="
-            absolute
-            right-0
-            mt-3
-            w-[320px]
-            max-w-[90vw]
-            bg-white
-            dark:bg-[#1F2937]
-            rounded-3xl
-            shadow-2xl
-            border
-            border-[#ECE6DE]
-            dark:border-gray-700
-            p-4
-            z-50
-          "
+                relative
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-[14px]
+                border
+                border-[#E8DED3]
+                bg-white
+                text-[#5F5148]
+                transition
+                hover:bg-[#F1E7DD]
+                dark:border-[#493326]
+                dark:bg-[#30241C]
+                dark:text-white
+                dark:hover:bg-[#3A2A20]
+              "
             >
-              <h3 className="font-bold text-[#2F2A27] dark:text-white text-lg mb-4">
-                Recent AI Questions
-              </h3>
+              <FiBell size={21} strokeWidth={1.8} />
 
-              {notifications.length === 0 ? (
-                <p className="text-sm text-[#72685F] dark:text-gray-400">
-                  No questions yet.
-                </p>
-              ) : (
-                <div className="space-y-3 max-h-80 overflow-y-auto">
-                  {notifications.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => {
-                        navigate(`/search?q=${encodeURIComponent(item.query)}`);
-                        setShowNotifications(false);
-                      }}
-                      className="
-                    w-full
-                    text-left
-                    p-3
-                    rounded-2xl
-                    transition
-                    hover:bg-[#F8F6F2]
-                    dark:hover:bg-[#374151]
+              {questionsCount > 0 && (
+                <span
+                  className="
+                    absolute
+                    -right-1
+                    -top-1
+                    flex
+                    h-[18px]
+                    min-w-[18px]
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-[#70472D]
+                    px-1
+                    text-[10px]
+                    font-bold
+                    text-white
+                    shadow-sm
+                    dark:bg-[#70472D]
                   "
-                    >
-                      <p className="text-sm font-medium line-clamp-2 text-[#2F2A27] dark:text-white">
-                        {item.query}
-                      </p>
-
-                      <p className="text-xs text-[#9B938C] dark:text-gray-400 mt-2">
-                        {new Date(item.created_at).toLocaleString()}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-        {/* User Profile */}
-        <div className="relative">
-          <button
-            onClick={() => setShowProfile(!showProfile)}
-            className="
-      flex
-      items-center
-      gap-3
-      px-3
-      py-2
-      rounded-2xl
-      transition
-      hover:bg-[#F8F6F2]
-      dark:hover:bg-[#374151]
-    "
-          >
-            {isAdmin ? (
-              <img
-                src={profile}
-                alt="Profile"
-                className="
-          w-11
-          h-11
-          rounded-full
-          object-cover
-          border-2
-          border-[#8B5E3C]
-        "
-              />
-            ) : user?.user_metadata?.avatar_url ? (
-              <img
-                src={user.user_metadata.avatar_url}
-                alt="Profile"
-                className="
-          w-11
-          h-11
-          rounded-full
-          object-cover
-          border-2
-          border-[#8B5E3C]
-        "
-              />
-            ) : (
-              <div
-                className="
-          w-11
-          h-11
-          rounded-full
-          bg-[#8B5E3C]
-          text-white
-          flex
-          items-center
-          justify-center
-          font-bold
-        "
-              >
-                {(user?.user_metadata?.full_name || "U")
-                  .charAt(0)
-                  .toUpperCase()}
-              </div>
-            )}
-
-            <div className="hidden lg:block text-left">
-              <p className="font-semibold text-[#2F2A27] dark:text-white">
-                {user?.user_metadata?.full_name || "User"}
-              </p>
-
-              <p className="text-xs text-[#72685F] dark:text-gray-400">
-                {user?.email}
-              </p>
-
-              {user?.user_metadata?.role === "Administrator" && (
-                <span className="inline-block mt-1 px-2 py-1 rounded-lg bg-[#8B5E3C] text-white text-[10px] font-semibold">
-                  Administrator
+                >
+                  {questionsCount}
                 </span>
               )}
-            </div>
+            </button>
 
-            <FiChevronDown
-              size={18}
-              className="hidden lg:block text-[#8B5E3C] dark:text-white"
-            />
-          </button>
-
-          {showProfile && (
-            <div
-              className="
-absolute
-top-full
-right-0
-mt-3
-w-72
-max-w-[calc(100vw-24px)]
-bg-white
-dark:bg-[#1F2937]
-rounded-3xl
-shadow-2xl
-border
-border-[#ECE6DE]
-dark:border-gray-700
-overflow-hidden
-z-50
-"
-            >
-              <div className="p-5 border-b border-[#ECE6DE] dark:border-gray-700">
-                <div className="flex gap-4 items-center">
-                  {isAdmin ? (
-                    <img
-                      src={profile}
-                      alt="Profile"
-                      className="w-11 h-11 rounded-full object-cover border-2 border-[#8B5E3C]"
-                    />
-                  ) : user?.user_metadata?.avatar_url ? (
-                    <img
-                      src={user.user_metadata.avatar_url}
-                      alt="Profile"
-                      className="w-14 h-14 rounded-full object-cover border-2 border-[#8B5E3C]"
-                    />
-                  ) : (
-                    <div className="w-14 h-14 rounded-full bg-[#8B5E3C] text-white flex items-center justify-center text-xl font-bold">
-                      {(user?.user_metadata?.full_name || "U")
-                        .charAt(0)
-                        .toUpperCase()}
-                    </div>
-                  )}
-
-                  <div>
-                    <p className="font-bold text-[#2F2A27] dark:text-white">
-                      {user?.user_metadata?.full_name || "User"}
-                    </p>
-
-                    <p className="text-sm text-[#72685F] dark:text-gray-400">
-                      {user?.email}
-                    </p>
-
-                    {user?.user_metadata?.role === "Administrator" && (
-                      <span className="inline-block mt-2 px-2 py-1 rounded-lg bg-[#8B5E3C] text-white text-xs font-semibold">
-                        Administrator
-                      </span>
-                    )}
-                  </div>
+            {showNotifications && (
+              <div
+                className="
+                  absolute
+                  right-0
+                  top-full
+                  z-50
+                  mt-3
+                  w-[320px]
+                  max-w-[calc(100vw-24px)]
+                  overflow-hidden
+                  rounded-[22px]
+                  border
+                  border-[#E8DED3]
+                  bg-white
+                  shadow-2xl
+                  dark:border-[#493326]
+                  dark:bg-[#30241C]
+                "
+              >
+                <div
+                  className="
+                    border-b
+                    border-[#E8DED3]
+                    p-4
+                    dark:border-[#493326]
+                  "
+                >
+                  <h3
+                    className="
+                      text-base
+                      font-bold
+                      text-[#3E2A1E]
+                      dark:text-white
+                    "
+                  >
+                    Recent AI Questions
+                  </h3>
                 </div>
+
+                {notifications.length === 0 ? (
+                  <p
+                    className="
+                      p-4
+                      text-sm
+                      text-[#806A59]
+                      dark:text-[#B9AAA0]
+                    "
+                  >
+                    No questions yet.
+                  </p>
+                ) : (
+                  <div className="max-h-80 space-y-1 overflow-y-auto p-2">
+                    {notifications.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          navigate(
+                            `/search?q=${encodeURIComponent(item.query)}`,
+                          );
+                          setShowNotifications(false);
+                        }}
+                        className="
+                          w-full
+                          rounded-[14px]
+                          p-3
+                          text-left
+                          transition
+                          hover:bg-[#F8F4EE]
+                          dark:hover:bg-[#3A2A20]
+                        "
+                      >
+                        <p
+                          className="
+                            line-clamp-2
+                            text-sm
+                            font-medium
+                            text-[#3E2A1E]
+                            dark:text-white
+                          "
+                        >
+                          {item.query}
+                        </p>
+
+                        <p
+                          className="
+                            mt-1.5
+                            text-xs
+                            text-[#A99D92]
+                            dark:text-[#9E8D80]
+                          "
+                        >
+                          {new Date(item.created_at).toLocaleString()}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* =========================
+              USER PROFILE
+          ========================== */}
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setShowProfile(!showProfile)}
+              className="
+                flex
+                items-center
+                gap-2
+                rounded-[15px]
+                border
+                border-transparent
+                px-2
+                py-1.5
+                transition
+                hover:border-[#E8DED3]
+                hover:bg-white
+                dark:hover:border-[#493326]
+                dark:hover:bg-[#30241C]
+                sm:gap-3
+                sm:px-2.5
+              "
+            >
+              {/* Profile Image */}
+              {isAdmin ? (
+                <img
+                  src={profile}
+                  alt="Profile"
+                  className="
+                    h-10
+                    w-10
+                    rounded-full
+                    border-2
+                    border-[#70472D]
+                    object-cover
+                    sm:h-11
+                    sm:w-11
+                  "
+                />
+              ) : user?.user_metadata?.avatar_url ? (
+                <img
+                  src={user.user_metadata.avatar_url}
+                  alt="Profile"
+                  className="
+                    h-10
+                    w-10
+                    rounded-full
+                    border-2
+                    border-[#70472D]
+                    object-cover
+                    sm:h-11
+                    sm:w-11
+                  "
+                />
+              ) : (
+                <div
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-[#70472D]
+                    text-sm
+                    font-bold
+                    text-white
+                    sm:h-11
+                    sm:w-11
+                  "
+                >
+                  {(user?.user_metadata?.full_name || "U")
+                    .charAt(0)
+                    .toUpperCase()}
+                </div>
+              )}
+
+              {/* User Information */}
+              <div className="hidden text-left xl:block">
+                <p
+                  className="
+                    max-w-[150px]
+                    truncate
+                    text-sm
+                    font-semibold
+                    text-[#3E2A1E]
+                    dark:text-white
+                  "
+                >
+                  {user?.user_metadata?.full_name || "User"}
+                </p>
+
+                <p
+                  className="
+                    max-w-[150px]
+                    truncate
+                    text-[11px]
+                    text-[#806A59]
+                    dark:text-[#A99D92]
+                  "
+                >
+                  {user?.email}
+                </p>
+
+                {user?.user_metadata?.role === "Administrator" && (
+                  <span
+                    className="
+                      mt-1
+                      inline-block
+                      rounded-lg
+                      bg-[#70472D]
+                      px-2
+                      py-0.5
+                      text-[9px]
+                      font-semibold
+                      text-white
+                    "
+                  >
+                    Administrator
+                  </span>
+                )}
               </div>
 
-              <button
-                onClick={() => {
-                  setShowProfile(false);
-                  navigate("/profile");
-                }}
+              <FiChevronDown
+                size={17}
+                strokeWidth={1.8}
                 className="
-          w-full
-          flex
-          items-center
-          gap-3
-          px-5
-          py-4
-          transition
-          hover:bg-[#F8F6F2]
-          dark:hover:bg-[#374151]
-          text-[#2F2A27]
-          dark:text-white
-        "
-              >
-                <FiUser size={18} />
-                My Profile
-              </button>
+                  hidden
+                  text-[#8B5E3C]
+                  dark:text-[#D8A778]
+                  xl:block
+                "
+              />
+            </button>
 
-              <button
-                onClick={handleLogout}
+            {/* Profile Dropdown */}
+            {showProfile && (
+              <div
                 className="
-          w-full
-          flex
-          items-center
-          gap-3
-          px-5
-          py-4
-          transition
-          hover:bg-[#F8F6F2]
-          dark:hover:bg-[#374151]
-          text-[#8B5E3C]
-          dark:text-red-400
-        "
+                  absolute
+                  right-0
+                  top-full
+                  z-50
+                  mt-3
+                  w-72
+                  max-w-[calc(100vw-24px)]
+                  overflow-hidden
+                  rounded-[22px]
+                  border
+                  border-[#E8DED3]
+                  bg-white
+                  shadow-2xl
+                  dark:border-[#493326]
+                  dark:bg-[#30241C]
+                "
               >
-                <FiLogOut size={18} />
-                Logout
-              </button>
-            </div>
-          )}
+                {/* Profile Info */}
+                <div
+                  className="
+                    border-b
+                    border-[#E8DED3]
+                    p-5
+                    dark:border-[#493326]
+                  "
+                >
+                  <div className="flex items-center gap-4">
+                    {isAdmin ? (
+                      <img
+                        src={profile}
+                        alt="Profile"
+                        className="
+                          h-12
+                          w-12
+                          rounded-full
+                          border-2
+                          border-[#70472D]
+                          object-cover
+                        "
+                      />
+                    ) : user?.user_metadata?.avatar_url ? (
+                      <img
+                        src={user.user_metadata.avatar_url}
+                        alt="Profile"
+                        className="
+                          h-14
+                          w-14
+                          rounded-full
+                          border-2
+                          border-[#70472D]
+                          object-cover
+                        "
+                      />
+                    ) : (
+                      <div
+                        className="
+                          flex
+                          h-14
+                          w-14
+                          items-center
+                          justify-center
+                          rounded-full
+                          bg-[#70472D]
+                          text-xl
+                          font-bold
+                          text-white
+                        "
+                      >
+                        {(user?.user_metadata?.full_name || "U")
+                          .charAt(0)
+                          .toUpperCase()}
+                      </div>
+                    )}
+
+                    <div className="min-w-0">
+                      <p
+                        className="
+                          truncate
+                          font-bold
+                          text-[#3E2A1E]
+                          dark:text-white
+                        "
+                      >
+                        {user?.user_metadata?.full_name || "User"}
+                      </p>
+
+                      <p
+                        className="
+                          mt-1
+                          truncate
+                          text-sm
+                          text-[#806A59]
+                          dark:text-[#A99D92]
+                        "
+                      >
+                        {user?.email}
+                      </p>
+
+                      {user?.user_metadata?.role === "Administrator" && (
+                        <span
+                          className="
+                            mt-2
+                            inline-block
+                            rounded-lg
+                            bg-[#70472D]
+                            px-2
+                            py-1
+                            text-[10px]
+                            font-semibold
+                            text-white
+                          "
+                        >
+                          Administrator
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* My Profile */}
+                <button
+                  onClick={() => {
+                    setShowProfile(false);
+                    navigate("/profile");
+                  }}
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    gap-3
+                    px-5
+                    py-4
+                    text-left
+                    text-[#3E2A1E]
+                    transition
+                    hover:bg-[#F8F4EE]
+                    dark:text-white
+                    dark:hover:bg-[#3A2A20]
+                  "
+                >
+                  <FiUser
+                    size={18}
+                    strokeWidth={1.8}
+                    className="text-[#8B5E3C] dark:text-[#D8A778]"
+                  />
+                  My Profile
+                </button>
+
+                {/* Logout */}
+                <button
+                  onClick={handleLogout}
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    gap-3
+                    px-5
+                    py-4
+                    text-left
+                    text-[#8B5E3C]
+                    transition
+                    hover:bg-[#F8F4EE]
+                    dark:text-red-400
+                    dark:hover:bg-[#3A2A20]
+                  "
+                >
+                  <FiLogOut size={18} strokeWidth={1.8} />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

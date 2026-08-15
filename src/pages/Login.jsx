@@ -48,7 +48,7 @@ export default function Login() {
       >
         {/* Logo */}
         <div className="text-center">
-          <div className="mx-auto w-20 h-20 rounded-3xl bg-[#8B5E3C] flex items-center justify-center text-white">
+          <div className="mx-auto w-20 h-20 rounded-3xl bg-[#4A3021] flex items-center justify-center text-white">
             <FiCpu size={36} />
           </div>
 
@@ -80,7 +80,7 @@ export default function Login() {
             </label>
 
             <div className="relative mt-2">
-              <FiMail className="absolute left-4 top-4 text-[#8B5E3C]" />
+              <FiMail className="absolute left-4 top-4 text-[#4A3021]" />
 
               <input
                 type="email"
@@ -108,7 +108,7 @@ export default function Login() {
             </label>
 
             <div className="relative mt-2">
-              <FiLock className="absolute left-4 top-4 text-[#8B5E3C]" />
+              <FiLock className="absolute left-4 top-4 text-[#4A3021]" />
 
               <input
                 type={showPassword ? "text" : "password"}
@@ -137,7 +137,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-[#8B5E3C] py-4 text-white font-semibold hover:bg-[#70492C] transition"
+            className="w-full rounded-2xl bg-[#4A3021] py-4 text-white font-semibold hover:bg-[#70492C] transition"
           >
             {loading ? "Signing In..." : "Sign In"}
           </button>
@@ -147,7 +147,7 @@ export default function Login() {
         <div className="mt-8 text-center">
           <Link
             to="/forgot-password"
-            className="text-[#8B5E3C] hover:underline"
+            className="text-[#4A3021] hover:underline"
           >
             Forgot Password?
           </Link>
@@ -158,7 +158,7 @@ export default function Login() {
             Don't have an account?
             <Link
               to="/register"
-              className="ml-2 text-[#8B5E3C] font-semibold hover:underline"
+              className="ml-2 text-[#4A3021] font-semibold hover:underline"
             >
               Register
             </Link>

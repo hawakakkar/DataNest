@@ -16,6 +16,7 @@ export default function AIHistory() {
   const [loading, setLoading] = useState(true);
 
   const [openGroups, setOpenGroups] = useState({});
+  const [generalOpen, setGeneralOpen] = useState(false);
 
   useEffect(() => {
     loadHistory();
@@ -133,6 +134,7 @@ export default function AIHistory() {
 
     await loadHistory();
   }
+
   async function deleteSingleConversation(questionId) {
     if (!window.confirm("Delete this question?")) return;
 
@@ -171,27 +173,32 @@ export default function AIHistory() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-[#F8F3EC] dark:bg-[#17110D] text-[#5A3F2A] dark:text-white">
         Loading AI History...
       </div>
     );
   }
+
   return (
-    <div className="p-8 bg-[#F8F6F2] dark:bg-[#111827] min-h-screen">
-      <h1 className="text-4xl font-bold mb-2 text-[#5A3F2A] dark:text-white">
+    <div className="p-8 bg-[#F8F3EC] dark:bg-[#0F0B08] min-h-screen transition-colors duration-300">
+      <h1 className="text-4xl font-bold mb-2 text-[#4A3021] dark:text-white">
         AI History
       </h1>
 
-      <p className="text-gray-500 dark:text-gray-400 mb-10">
+      <p className="text-[#8A7A6A] dark:text-gray-400 mb-10">
         All your previous conversations.
       </p>
 
-      <h2 className="text-2xl font-bold mb-6 text-[#5A3F2A] dark:text-white">
+      {/* ============================= */}
+      {/* DOCUMENT HISTORY */}
+      {/* ============================= */}
+
+      <h2 className="text-2xl font-bold mb-6 text-[#4A3021] dark:text-white">
         The History of Documents
       </h2>
 
       {groups.documents.length === 0 && (
-        <div className="bg-white dark:bg-[#1F2937] rounded-3xl p-6 shadow mb-10">
+        <div className="bg-white dark:bg-[#30241C] rounded-3xl p-6 shadow mb-10 border border-[#ECE6DE] dark:border-[#4A3021]">
           No document conversations found.
         </div>
       )}
@@ -199,7 +206,7 @@ export default function AIHistory() {
       {groups.documents.map((group) => (
         <div
           key={group.document_id}
-          className="mb-6 bg-white dark:bg-[#1F2937] rounded-3xl shadow-lg overflow-hidden"
+          className="mb-6 bg-white dark:bg-[#30241C] rounded-3xl shadow-lg overflow-hidden border border-[#ECE6DE] dark:border-[#4A3021]"
         >
           <div className="flex items-center justify-between p-6">
             <button
@@ -207,19 +214,28 @@ export default function AIHistory() {
               className="flex items-center gap-4"
             >
               {openGroups[group.document_id] ? (
-                <FiChevronDown size={22} />
+                <FiChevronDown
+                  size={22}
+                  className="text-[#4A3021] dark:text-white"
+                />
               ) : (
-                <FiChevronRight size={22} />
+                <FiChevronRight
+                  size={22}
+                  className="text-[#4A3021] dark:text-white"
+                />
               )}
 
-              <FiFileText size={22} />
+              <FiFileText
+                size={22}
+                className="text-[#8B5E3C] dark:text-[#C08A52]"
+              />
 
               <div className="text-left">
-                <h2 className="font-bold text-lg">
+                <h2 className="font-bold text-lg text-[#4A3021] dark:text-white">
                   Chat with: {group.document_name}
                 </h2>
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#8A7A6A] dark:text-gray-400">
                   {group.chats.filter((m) => m.role === "user").length}{" "}
                   conversations
                 </p>
@@ -228,14 +244,32 @@ export default function AIHistory() {
 
             <button
               onClick={() => deleteGroup(group.document_id)}
-              className="text-red-500 hover:text-red-700"
+              className="
+                          w-10
+                          h-10
+                          rounded-xl
+                          bg-[#F8F3ED]
+                          dark:bg-[#3A1D19]
+                          hover:bg-[#874239]
+                          dark:hover:bg-[#51241E]
+                          border
+                          border-red-100
+                          dark:border-[#713128]
+                          text-[#4A3021]
+                          dark:text-[#E5BE99]
+                          flex
+                          items-center
+                          justify-center
+                          transition-all
+                          duration-200
+                        "
             >
               <FiTrash2 size={22} />
             </button>
           </div>
 
           {openGroups[group.document_id] && (
-            <div className="border-t dark:border-gray-700">
+            <div className="border-t border-[#ECE6DE] dark:border-[#4A3021]">
               {(() => {
                 const conversations = [];
 
@@ -247,6 +281,7 @@ export default function AIHistory() {
                       question: msg,
                       answer: null,
                     };
+
                     conversations.push(current);
                   } else if (msg.role === "assistant" && current) {
                     current.answer = msg;
@@ -256,34 +291,50 @@ export default function AIHistory() {
                 return conversations.map((chat, index) => (
                   <div
                     key={index}
-                    className="p-6 border-b dark:border-gray-700"
+                    className="p-6 border-b border-[#ECE6DE] dark:border-[#4A3021]"
                   >
                     <div className="flex justify-between items-center">
-                      <div className="font-semibold text-[#8B5E3C]">
+                      <div className="font-semibold text-[#8B5E3C] dark:text-[#C08A52]">
                         AI Question
                       </div>
 
                       <button
                         onClick={() =>
-                          deleteSingleConversation(
-                            chat.question.id,
-                            chat.answer?.id,
-                          )
+                          deleteSingleConversation(chat.question.id)
                         }
-                        className="text-red-500 hover:text-red-700"
+                        className="
+                          w-10
+                          h-10
+                          rounded-xl
+                          bg-[#F8F3ED]
+                          dark:bg-[#3A1D19]
+                          hover:bg-[#874239]
+                          dark:hover:bg-[#51241E]
+                          border
+                          border-red-100
+                          dark:border-[#713128]
+                          text-[#4A3021]
+                          dark:text-[#E5BE99]
+                          flex
+                          items-center
+                          justify-center
+                          transition-all
+                          duration-200
+                        "
                       >
                         <FiTrash2 size={18} />
                       </button>
                     </div>
-                    <p className="mt-2 whitespace-pre-wrap">
+
+                    <p className="mt-2 whitespace-pre-wrap text-[#4A3021] dark:text-gray-200">
                       {chat.question?.content || "No Question"}
                     </p>
 
-                    <div className="mt-6 font-semibold text-blue-600">
+                    <div className="mt-6 font-semibold text-[#4A3021] dark:text-[#C08A52]">
                       AI Answer
                     </div>
 
-                    <p className="mt-2 whitespace-pre-wrap">
+                    <p className="mt-2 whitespace-pre-wrap text-[#6B625B] dark:text-gray-300">
                       {chat.answer?.content || "No Answer"}
                     </p>
 
@@ -297,81 +348,166 @@ export default function AIHistory() {
           )}
         </div>
       ))}
-      <h2 className="text-2xl font-bold mt-12 mb-6 text-[#5A3F2A] dark:text-white">
+
+      {/* ============================= */}
+      {/* GENERAL HISTORY */}
+      {/* ============================= */}
+
+      <h2 className="text-2xl font-bold mt-12 mb-6 text-[#4A3021] dark:text-white">
         The General History
       </h2>
 
       {groups.general.length === 0 ? (
-        <div className="bg-white dark:bg-[#1F2937] rounded-3xl p-6 shadow">
+        <div className="bg-white dark:bg-[#30241C] rounded-3xl p-6 shadow border border-[#ECE6DE] dark:border-[#4A3021]">
           No general conversations found.
         </div>
       ) : (
-        <div className="bg-white dark:bg-[#1F2937] rounded-3xl shadow-lg overflow-hidden">
-          {(() => {
-            const conversations = [];
+        <div className="bg-white dark:bg-[#30241C] rounded-3xl shadow-lg overflow-hidden border border-[#ECE6DE] dark:border-[#4A3021]">
+          {/* General History Header */}
 
-            let current = null;
+          <div className="flex items-center justify-between p-6">
+            <button
+              onClick={() => setGeneralOpen((prev) => !prev)}
+              className="flex items-center gap-4 text-left"
+            >
+              {generalOpen ? (
+                <FiChevronDown
+                  size={22}
+                  className="text-[#4A3021] dark:text-white"
+                />
+              ) : (
+                <FiChevronRight
+                  size={22}
+                  className="text-[#4A3021] dark:text-white"
+                />
+              )}
 
-            groups.general.forEach((msg) => {
-              if (msg.role === "user") {
-                current = {
-                  question: msg,
-                  answer: null,
-                };
-
-                conversations.push(current);
-              } else if (msg.role === "assistant" && current) {
-                current.answer = msg;
-              }
-            });
-
-            return conversations.map((chat, index) => (
-              <div key={index} className="p-6 border-b dark:border-gray-700">
-                <div className="flex justify-between items-center">
-                  <div className="font-semibold text-[#8B5E3C]">
-                    AI Question
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      deleteSingleConversation(
-                        chat.question.id,
-                        chat.answer?.id,
-                      )
-                    }
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FiTrash2 size={18} />
-                  </button>
-                </div>
-                <p className="mt-2 whitespace-pre-wrap">
-                  {chat.question?.content || "No Question"}
-                </p>
-
-                <div className="mt-6 font-semibold text-blue-600">
-                  AI Answer
-                </div>
-
-                <p className="mt-2 whitespace-pre-wrap">
-                  {chat.answer?.content || "No Answer"}
-                </p>
-
-                <div className="text-xs text-gray-400 mt-4">
-                  {new Date(chat.question?.created_at).toLocaleString()}
-                </div>
+              <div className="w-12 h-12 rounded-2xl bg-[#EFE7DE] dark:bg-[#4A3021] flex items-center justify-center">
+                <FiFileText
+                  size={22}
+                  className="text-[#8B5E3C] dark:text-[#C08A52]"
+                />
               </div>
-            ));
-          })()}
 
-          <div className="flex justify-end p-6 border-t dark:border-gray-700">
+              <div>
+                <h2 className="font-bold text-lg text-[#4A3021] dark:text-white">
+                  General AI Conversations
+                </h2>
+
+                <p className="text-sm text-[#8A7A6A] dark:text-gray-400">
+                  {groups.general.filter((m) => m.role === "user").length}{" "}
+                  conversations
+                </p>
+              </div>
+            </button>
+
             <button
               onClick={() => deleteGroup("general")}
-              className="flex items-center gap-2 text-red-500 hover:text-red-700"
+              className="
+                          w-10
+                          h-10
+                          rounded-xl
+                          bg-[#F8F3ED]
+                          dark:bg-[#3A1D19]
+                          hover:bg-[#874239]
+                          dark:hover:bg-[#51241E]
+                          border
+                          border-red-100
+                          dark:border-[#713128]
+                          text-[#4A3021]
+                          dark:text-[#E5BE99]
+                          flex
+                          items-center
+                          justify-center
+                          transition-all
+                          duration-200
+                        "
+              title="Delete General History"
             >
-              <FiTrash2 size={20} />
-              Delete General History
+              <FiTrash2 size={22} />
             </button>
           </div>
+
+          {/* General Questions & Answers */}
+
+          {generalOpen && (
+            <div className="border-t border-[#ECE6DE] dark:border-[#4A3021]">
+              {(() => {
+                const conversations = [];
+
+                let current = null;
+
+                groups.general.forEach((msg) => {
+                  if (msg.role === "user") {
+                    current = {
+                      question: msg,
+                      answer: null,
+                    };
+
+                    conversations.push(current);
+                  } else if (msg.role === "assistant" && current) {
+                    current.answer = msg;
+                  }
+                });
+
+                return conversations.map((chat, index) => (
+                  <div
+                    key={index}
+                    className="p-6 border-b border-[#ECE6DE] dark:border-[#4A3021]"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="font-semibold text-[#8B5E3C] dark:text-[#C08A52]">
+                        AI Question
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          deleteSingleConversation(chat.question.id)
+                        }
+                        className="
+                          w-10
+                          h-10
+                          rounded-xl
+                          bg-[#F8F3ED]
+                          dark:bg-[#3A1D19]
+                          hover:bg-[#874239]
+                          dark:hover:bg-[#51241E]
+                          border
+                          border-red-100
+                          dark:border-[#713128]
+                          text-[#4A3021]
+                          dark:text-[#E5BE99]
+                          flex
+                          items-center
+                          justify-center
+                          transition-all
+                          duration-200
+                        "
+                      >
+                        <FiTrash2 size={18} />
+                      </button>
+                    </div>
+
+                    <p className="mt-2 whitespace-pre-wrap text-[#4A3021] dark:text-gray-200">
+                      {chat.question?.content || "No Question"}
+                    </p>
+
+                    <div className="mt-6 font-semibold text-[#4A3021] dark:text-[#C08A52]">
+                      AI Answer
+                    </div>
+
+                    <p className="mt-2 whitespace-pre-wrap text-[#6B625B] dark:text-gray-300">
+                      {chat.answer?.content || "No Answer"}
+                    </p>
+
+                    <div className="text-xs text-gray-400 mt-4">
+                      {new Date(chat.question?.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          )}
         </div>
       )}
     </div>

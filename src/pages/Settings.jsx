@@ -257,66 +257,58 @@ export default function Settings() {
       let successCount = 0;
 
       for (const doc of documents) {
-        let filePath = document.file_path || document.file_name;
-
-        if (!filePath) {
-          console.warn("Document has no file path:", document);
-          continue;
-        }
-
-        // اگر مسیر با documents/ شروع شده، bucket name را حذف کن
-        if (filePath.startsWith("documents/")) {
-          filePath = filePath.replace(/^documents\//, "");
-        }
-
-        // اگر مسیر URL-encoded شده، decode کن
-        try {
-          filePath = decodeURIComponent(filePath);
-        } catch (e) {
-          console.warn("Could not decode file path:", filePath);
-        }
-
-        console.log("FINAL STORAGE PATH:", filePath);
+        const filePath = doc.file_path || doc.file_name;
 
         if (!filePath) {
           console.warn("Document has no file path:", doc);
           continue;
         }
 
-        const { data: file, error: downloadError } = await supabase.storage
-          .from("documents")
-          .download(filePath);
+        try {
+          const { data: file, error: downloadError } = await supabase.storage
+            .from("documents")
+            .download(filePath);
 
-        if (downloadError) {
-          console.error("FILE DOWNLOAD ERROR:", filePath, downloadError);
-          continue;
+          if (downloadError) {
+            console.error("DOWNLOAD ERROR:", filePath, downloadError);
+            continue;
+          }
+
+          if (!file) continue;
+
+          const originalFileName =
+            doc.file_name || filePath.split("/").pop() || "document";
+
+          const url = window.URL.createObjectURL(file);
+
+          const link = window.document.createElement("a");
+
+          link.href = url;
+          link.download = originalFileName;
+
+          link.style.display = "none";
+
+          window.document.body.appendChild(link);
+
+          link.click();
+
+          window.document.body.removeChild(link);
+
+          setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+          }, 5000);
+
+          successCount++;
+
+          // فقط یک تأخیر خیلی کوتاه برای ثبت دانلود بعدی
+          await new Promise((resolve) => setTimeout(resolve, 150));
+        } catch (err) {
+          console.error("DOWNLOAD FAILED:", filePath, err);
         }
-
-        if (!file) continue;
-
-        const originalFileName =
-          filePath.split("/").pop() || doc.file_name || "document";
-
-        const url = URL.createObjectURL(file);
-
-        const link = window.document.createElement("a");
-
-        link.href = url;
-        link.download = originalFileName;
-
-        window.document.body.appendChild(link);
-        link.click();
-        window.document.body.removeChild(link);
-
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-        }, 2000);
-
-        successCount++;
       }
 
       if (successCount === 0) {
-        alert("No files could be downloaded.");
+        alert("No documents could be downloaded.");
         return;
       }
 
@@ -425,42 +417,67 @@ export default function Settings() {
     if (selectedNumber === 0) {
       let successCount = 0;
 
-      for (const document of documents) {
-        const filePath = document.file_path || document.file_name;
+      for (const doc of documents) {
+        const filePath = doc.file_path || doc.file_name;
 
         if (!filePath) {
-          console.warn("Document has no file path:", document);
-
+          console.warn("No file path:", doc);
           continue;
         }
 
-        const { data: file, error: downloadError } = await supabase.storage
-          .from("documents")
-          .download(filePath);
+        try {
+          const { data: publicData } = supabase.storage
+            .from("documents")
+            .getPublicUrl(filePath);
 
-        if (downloadError) {
-          console.error("FILE DOWNLOAD ERROR:", filePath, downloadError);
+          const publicUrl = publicData?.publicUrl;
 
-          continue;
+          if (!publicUrl) {
+            console.warn("No public URL:", filePath);
+            continue;
+          }
+
+          // فایل را به صورت Blob می‌گیریم
+          const response = await fetch(publicUrl);
+
+          if (!response.ok) {
+            console.error("FILE FETCH ERROR:", filePath, response.status);
+            continue;
+          }
+
+          const blob = await response.blob();
+
+          const url = window.URL.createObjectURL(blob);
+
+          const link = window.document.createElement("a");
+
+          link.href = url;
+
+          link.download =
+            doc.file_name || filePath.split("/").pop() || "document";
+
+          link.style.display = "none";
+
+          window.document.body.appendChild(link);
+
+          link.click();
+
+          window.document.body.removeChild(link);
+
+          setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+          }, 5000);
+
+          successCount++;
+
+          await new Promise((resolve) => setTimeout(resolve, 300));
+        } catch (error) {
+          console.error("DOWNLOAD ERROR:", filePath, error);
         }
-
-        if (!file) continue;
-
-        const originalFileName =
-          filePath.split("/").pop() || document.file_name || "document";
-
-        downloadOriginalFile(file, originalFileName);
-
-        successCount++;
-
-        await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
       if (successCount === 0) {
-        alert(
-          "No files could be downloaded. Check your Supabase Storage bucket and file paths.",
-        );
-
+        alert("No documents could be downloaded.");
         return;
       }
 
@@ -562,61 +579,129 @@ export default function Settings() {
   // =====================================================
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 px-6 min-h-screen bg-[#F8F6F2] dark:bg-[#111827] transition-colors">
+    <div
+      className="
+        min-h-screen
+        max-w-7xl
+        mx-auto
+        space-y-8
+        px-6
+        bg-[#F8F3EC]
+        text-[#3E2A1E]
+        dark:bg-[#0F0B08]
+        dark:text-white
+        transition-colors
+        duration-500
+      "
+    >
       {/* Header */}
 
       <div>
-        <h1 className="text-4xl font-bold text-[#5A3F2A] dark:text-white">
+        <h1 className="text-4xl font-bold text-[#4A3021] dark:text-white">
           Settings
         </h1>
 
-        <p className="text-[#7B6A5C] dark:text-gray-400 mt-2">
+        <p className="mt-2 text-[#806A59] dark:text-gray-400">
           Configure your DataNest AI application.
         </p>
       </div>
 
       {/* Profile + Project */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Profile */}
 
-        <div className="bg-white dark:bg-[#1F2937] rounded-3xl border border-[#ECE6DE] dark:border-gray-700 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#EFE7DE] dark:bg-[#374151] text-[#8B5E3C] dark:text-[#D6A97A] flex items-center justify-center">
+        <div
+          className="
+            rounded-[28px]
+            border
+            border-[#E9DED2]
+            bg-white
+            p-8
+            shadow-[0_12px_35px_rgba(91,56,34,0.07)]
+            transition-all
+            duration-300
+            hover:-translate-y-1
+            hover:shadow-[0_18px_45px_rgba(91,56,34,0.12)]
+            dark:border-white/10
+            dark:bg-[#1A1410]
+          "
+        >
+          <div className="mb-8 flex items-center gap-4">
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-2xl
+                bg-[#F1E7DD]
+                text-[#8B5E3C]
+                dark:bg-[#30241C]
+                dark:text-[#D8A778]
+              "
+            >
               <FiUser size={28} />
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
+              <h2 className="text-2xl font-bold text-[#4A3021] dark:text-white">
                 Administrator
               </h2>
 
-              <p className="text-[#7B6A5C] dark:text-gray-400">User Profile</p>
+              <p className="text-[#806A59] dark:text-gray-400">User Profile</p>
             </div>
           </div>
 
           <div className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-[#5A3F2A] dark:text-white mb-2">
+              <label className="mb-2 block text-sm font-semibold text-[#4A3021] dark:text-white">
                 Name
               </label>
 
               <input
                 readOnly
                 value="Bibi Hawa Abdul Shukoor"
-                className="w-full bg-[#F8F6F2] dark:bg-[#374151] border border-[#ECE6DE] dark:border-gray-600 rounded-2xl p-4 outline-none text-[#5A3F2A] dark:text-white"
+                className="
+                  w-full
+                  rounded-2xl
+                  border
+                  border-[#E9DED2]
+                  bg-[#FCFAF7]
+                  p-4
+                  text-[#4A3021]
+                  outline-none
+                  transition
+                  dark:border-white/10
+                  dark:bg-[#30241C]
+                  dark:text-white
+                "
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#5A3F2A] dark:text-white mb-2">
+              <label className="mb-2 block text-sm font-semibold text-[#4A3021] dark:text-white">
                 Role
               </label>
 
               <input
                 readOnly
                 value="Administrator"
-                className="w-full bg-[#F8F6F2] dark:bg-[#374151] border border-[#ECE6DE] dark:border-gray-600 rounded-2xl p-4 outline-none text-[#5A3F2A] dark:text-white"
+                className="
+                  w-full
+                  rounded-2xl
+                  border
+                  border-[#E9DED2]
+                  bg-[#FCFAF7]
+                  p-4
+                  text-[#4A3021]
+                  outline-none
+                  transition
+                  dark:border-white/10
+                  dark:bg-[#30241C]
+                  dark:text-white
+                "
               />
             </div>
           </div>
@@ -624,18 +709,46 @@ export default function Settings() {
 
         {/* Project */}
 
-        <div className="bg-white dark:bg-[#1F2937] rounded-3xl border border-[#ECE6DE] dark:border-gray-700 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#EFE7DE] dark:bg-[#374151] text-[#8B5E3C] dark:text-[#D6A97A] flex items-center justify-center">
+        <div
+          className="
+            rounded-[28px]
+            border
+            border-[#E9DED2]
+            bg-white
+            p-8
+            shadow-[0_12px_35px_rgba(91,56,34,0.07)]
+            transition-all
+            duration-300
+            hover:-translate-y-1
+            hover:shadow-[0_18px_45px_rgba(91,56,34,0.12)]
+            dark:border-white/10
+            dark:bg-[#1A1410]
+          "
+        >
+          <div className="mb-8 flex items-center gap-4">
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-2xl
+                bg-[#F1E7DD]
+                text-[#8B5E3C]
+                dark:bg-[#30241C]
+                dark:text-[#D8A778]
+              "
+            >
               <FiSettings size={28} />
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
+              <h2 className="text-2xl font-bold text-[#4A3021] dark:text-white">
                 Project
               </h2>
 
-              <p className="text-[#7B6A5C] dark:text-gray-400">
+              <p className="text-[#806A59] dark:text-gray-400">
                 System Information
               </p>
             </div>
@@ -643,27 +756,27 @@ export default function Settings() {
 
           <div className="space-y-5">
             <div className="flex justify-between">
-              <span className="text-[#7B6A5C] dark:text-gray-400">
+              <span className="text-[#806A59] dark:text-gray-400">
                 Application
               </span>
 
-              <strong className="text-[#5A3F2A] dark:text-white">
+              <strong className="text-[#4A3021] dark:text-white">
                 DataNest AI
               </strong>
             </div>
 
             <div className="flex justify-between">
-              <span className="text-[#7B6A5C] dark:text-gray-400">Version</span>
+              <span className="text-[#806A59] dark:text-gray-400">Version</span>
 
-              <strong className="text-[#5A3F2A] dark:text-white">v1.0</strong>
+              <strong className="text-[#4A3021] dark:text-white">v1.0</strong>
             </div>
 
             <div className="flex justify-between">
-              <span className="text-[#7B6A5C] dark:text-gray-400">
+              <span className="text-[#806A59] dark:text-gray-400">
                 Environment
               </span>
 
-              <strong className="text-green-500">Production</strong>
+              <strong className="text-[#4A3021]">Production</strong>
             </div>
           </div>
         </div>
@@ -671,53 +784,93 @@ export default function Settings() {
 
       {/* Preferences + Backup */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Preferences */}
 
-        <div className="bg-white dark:bg-[#1F2937] rounded-3xl border border-[#ECE6DE] dark:border-gray-700 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#EFE7DE] dark:bg-[#374151] text-[#8B5E3C] dark:text-amber-400 flex items-center justify-center">
+        <div
+          className="
+            rounded-[28px]
+            border
+            border-[#E9DED2]
+            bg-white
+            p-8
+            shadow-[0_12px_35px_rgba(91,56,34,0.07)]
+            transition-all
+            duration-300
+            hover:-translate-y-1
+            hover:shadow-[0_18px_45px_rgba(91,56,34,0.12)]
+            dark:border-white/10
+            dark:bg-[#1A1410]
+          "
+        >
+          <div className="mb-8 flex items-center gap-4">
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-2xl
+                bg-[#F1E7DD]
+                text-[#8B5E3C]
+                dark:bg-[#30241C]
+                dark:text-[#D8A778]
+              "
+            >
               <FiMoon size={28} />
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
+              <h2 className="text-2xl font-bold text-[#4A3021] dark:text-white">
                 Preferences
               </h2>
 
-              <p className="text-[#7B6A5C] dark:text-gray-400">
+              <p className="text-[#806A59] dark:text-gray-400">
                 Application Settings
               </p>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <span className="text-[#7B6A5C] dark:text-gray-400">
+            <div className="flex items-center justify-between">
+              <span className="text-[#806A59] dark:text-gray-400">
                 Dark Mode
               </span>
 
-              <button className="inline-block px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-700 text-[#5A3F2A] dark:text-white text-sm font-medium">
-                Coming Soon
+              <button
+                className="
+                  rounded-lg
+                  bg-[#F1E7DD]
+                  px-3
+                  py-1
+                  text-sm
+                  font-medium
+                  text-[#4A3021]
+                  dark:bg-[#30241C]
+                  dark:text-white
+                "
+              >
+                Active
               </button>
             </div>
 
             <div className="flex justify-between">
-              <span className="text-[#7B6A5C] dark:text-gray-400">
+              <span className="text-[#806A59] dark:text-gray-400">
                 Language
               </span>
 
-              <strong className="text-[#5A3F2A] dark:text-white">
+              <strong className="text-[#4A3021] dark:text-white">
                 English
               </strong>
             </div>
 
             <div className="flex justify-between">
-              <span className="text-[#7B6A5C] dark:text-gray-400">
+              <span className="text-[#806A59] dark:text-gray-400">
                 Timezone
               </span>
 
-              <strong className="text-[#5A3F2A] dark:text-white">
+              <strong className="text-[#4A3021] dark:text-white">
                 Local Time
               </strong>
             </div>
@@ -726,34 +879,137 @@ export default function Settings() {
 
         {/* Backup */}
 
-        <div className="bg-white dark:bg-[#1F2937] rounded-3xl border border-[#ECE6DE] dark:border-gray-700 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-8">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#EFE7DE] dark:bg-[#374151] text-[#8B5E3C] dark:text-amber-400 flex items-center justify-center">
+        <div
+          className="
+            rounded-[28px]
+            border
+            border-[#E9DED2]
+            bg-white
+            p-8
+            shadow-[0_12px_35px_rgba(91,56,34,0.07)]
+            transition-all
+            duration-300
+            hover:-translate-y-1
+            hover:shadow-[0_18px_45px_rgba(91,56,34,0.12)]
+            dark:border-white/10
+            dark:bg-[#1A1410]
+          "
+        >
+          <div className="mb-8 flex items-center gap-4">
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-2xl
+                bg-[#F1E7DD]
+                text-[#8B5E3C]
+                dark:bg-[#30241C]
+                dark:text-[#D8A778]
+              "
+            >
               <FiDownload size={28} />
             </div>
 
-            <div>
-              <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
+            <div className="min-w-0">
+              <h2
+                className="
+                  text-xl
+                  font-bold
+                  leading-tight
+                  text-[#4A3021]
+                  sm:text-2xl
+                  dark:text-white
+                "
+              >
                 Backup & Export
               </h2>
 
-              <p className="text-[#7B6A5C] dark:text-gray-400">
-                Export your data
+              <p
+                className="
+                  mt-1
+                  text-xs
+                  leading-5
+                  text-[#806A59]
+                  sm:text-sm
+                  dark:text-gray-400
+                "
+              >
+                Download and backup your DataNest AI data
               </p>
+            </div>
+          </div>
+
+          {/* Information box */}
+
+          <div
+            className="
+              relative
+              mb-5
+              rounded-2xl
+              border
+              border-[#E9DED2]
+              bg-[#FCFAF7]
+              p-4
+              sm:mb-6
+              sm:p-5
+              dark:border-white/10
+              dark:bg-[#30241C]
+            "
+          >
+            <div className="flex items-start gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-[#4A3021] sm:text-base dark:text-white">
+                  Export your information
+                </p>
+
+                <p className="mt-1 text-xs leading-5 text-[#806A59] sm:text-sm sm:leading-6 dark:text-gray-400">
+                  Save your questions, answers, and original documents directly
+                  to your computer.
+                </p>
+              </div>
             </div>
           </div>
 
           <div className="space-y-4">
             <button
               onClick={exportQuestions}
-              className="w-full bg-[#8B5E3C] hover:bg-[#70492C] text-white py-3 rounded-2xl transition"
+              className="
+                w-full
+                rounded-2xl
+                bg-gradient-to-r
+                from-[#9A5F37]
+                to-[#6E4026]
+                py-3
+                font-semibold
+                text-white
+                shadow-lg
+                shadow-[#6E4026]/15
+                transition
+                duration-300
+                hover:-translate-y-0.5
+                hover:shadow-xl
+              "
             >
               Export Questions
             </button>
 
             <button
               onClick={exportDocuments}
-              className="w-full bg-[#5A3F2A] hover:bg-[#4B3423] text-white py-3 rounded-2xl transition"
+              className="
+                w-full
+                rounded-2xl
+                bg-[#70472D]
+                py-3
+                font-semibold
+                text-white
+                transition
+                duration-300
+                hover:-translate-y-0.5
+                hover:bg-[#59351F]
+              "
             >
               Export Documents
             </button>
@@ -763,44 +1019,71 @@ export default function Settings() {
 
       {/* Danger Zone */}
 
-      <div className="bg-white dark:bg-[#1F2937] rounded-3xl border border-[#85453e] dark:border-[#5A3F2A] shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-[#85453e] mb-8">Danger Zone</h2>
+      <div
+        className="
+          rounded-[28px]
+          border
+          border-[#A85B50]
+          bg-white
+          p-8
+          shadow-[0_12px_35px_rgba(91,56,34,0.07)]
+          dark:border-[#7B4037]
+          dark:bg-[#1A1410]
+        "
+      >
+        <h2 className="mb-8 text-2xl font-bold text-[#8F362C]">Danger Zone</h2>
 
         <div className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 className="font-bold text-[#5A3F2A] dark:text-white">
+              <h3 className="font-bold text-[#4A3021] dark:text-white">
                 Clear AI History
               </h3>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <p className="mt-1 text-sm text-[#806A59] dark:text-gray-400">
                 Remove all saved AI questions.
               </p>
             </div>
 
             <button
               onClick={clearAIHistory}
-              className="bg-[#8f362c] hover:bg-[#7d3830] text-white px-6 py-3 rounded-2xl transition"
+              className="
+                rounded-2xl
+                bg-[#8F362C]
+                px-6
+                py-3
+                text-white
+                transition
+                hover:bg-[#7D3830]
+              "
             >
-              <FiTrash2 className="inline mr-2" />
+              <FiTrash2 className="mr-2 inline" />
               Clear
             </button>
           </div>
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
-              <h3 className="font-bold text-[#5A3F2A] dark:text-white">
+              <h3 className="font-bold text-[#4A3021] dark:text-white">
                 Reset Application
               </h3>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <p className="mt-1 text-sm text-[#806A59] dark:text-gray-400">
                 Restore default application settings.
               </p>
             </div>
 
             <button
               onClick={resetApplication}
-              className="bg-[#8f362c] hover:bg-[#7d3830] text-white px-6 py-3 rounded-2xl transition"
+              className="
+                rounded-2xl
+                bg-[#8F362C]
+                px-6
+                py-3
+                text-white
+                transition
+                hover:bg-[#7D3830]
+              "
             >
               Reset
             </button>
@@ -810,39 +1093,63 @@ export default function Settings() {
 
       {/* About */}
 
-      <div className="bg-white dark:bg-[#1F2937] rounded-3xl border border-[#ECE6DE] dark:border-gray-700 shadow-lg p-8">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-[#EFE7DE] dark:bg-[#374151] text-[#8B5E3C] dark:text-amber-400 flex items-center justify-center">
+      <div
+        className="
+          rounded-[28px]
+          border
+          border-[#E9DED2]
+          bg-white
+          p-8
+          shadow-[0_12px_35px_rgba(91,56,34,0.07)]
+          dark:border-white/10
+          dark:bg-[#1A1410]
+        "
+      >
+        <div className="mb-6 flex items-center gap-4">
+          <div
+            className="
+              flex
+              h-14
+              w-14
+              items-center
+              justify-center
+              rounded-2xl
+              bg-[#F1E7DD]
+              text-[#8B5E3C]
+              dark:bg-[#30241C]
+              dark:text-[#D8A778]
+            "
+          >
             <FiSettings size={24} />
           </div>
 
-          <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
+          <h2 className="text-2xl font-bold text-[#4A3021] dark:text-white">
             About
           </h2>
         </div>
 
-        <div className="space-y-4 text-[#7B6A5C] dark:text-gray-300">
+        <div className="space-y-4 text-[#806A59] dark:text-gray-300">
           <p>
-            <strong className="text-[#5A3F2A] dark:text-white">Project:</strong>{" "}
+            <strong className="text-[#4A3021] dark:text-white">Project:</strong>{" "}
             DataNest AI
           </p>
 
           <p>
-            <strong className="text-[#5A3F2A] dark:text-white">
+            <strong className="text-[#4A3021] dark:text-white">
               Developer:
             </strong>{" "}
             Bibi Hawa Abdul Shukoor
           </p>
 
           <p>
-            <strong className="text-[#5A3F2A] dark:text-white">
+            <strong className="text-[#4A3021] dark:text-white">
               Framework:
             </strong>{" "}
             React + Supabase + OpenRouter
           </p>
 
           <p>
-            <strong className="text-[#5A3F2A] dark:text-white">Version:</strong>{" "}
+            <strong className="text-[#4A3021] dark:text-white">Version:</strong>{" "}
             1.0
           </p>
         </div>

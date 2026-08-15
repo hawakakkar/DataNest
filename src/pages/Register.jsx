@@ -55,7 +55,7 @@ export default function Register() {
         }`}
       >
         <div className="text-center">
-          <div className="mx-auto w-20 h-20 rounded-3xl bg-[#8B5E3C] flex items-center justify-center text-white">
+          <div className="mx-auto w-20 h-20 rounded-3xl bg-[#4A3021] flex items-center justify-center text-white">
             <FiCpu size={36} />
           </div>
 
@@ -79,7 +79,7 @@ export default function Register() {
             <label className="font-medium">Full Name</label>
 
             <div className="relative mt-2">
-              <FiUser className="absolute left-4 top-4 text-[#8B5E3C]" />
+              <FiUser className="absolute left-4 top-4 text-[#4A3021]" />
 
               <input
                 type="text"
@@ -96,7 +96,7 @@ export default function Register() {
             <label className="font-medium">Email</label>
 
             <div className="relative mt-2">
-              <FiMail className="absolute left-4 top-4 text-[#8B5E3C]" />
+              <FiMail className="absolute left-4 top-4 text-[#4A3021]" />
 
               <input
                 type="email"
@@ -113,7 +113,7 @@ export default function Register() {
             <label className="font-medium">Password</label>
 
             <div className="relative mt-2">
-              <FiLock className="absolute left-4 top-4 text-[#8B5E3C]" />
+              <FiLock className="absolute left-4 top-4 text-[#4A3021]" />
 
               <input
                 type={showPassword ? "text" : "password"}
@@ -137,7 +137,7 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-[#8B5E3C] py-4 text-white font-semibold hover:bg-[#70492C] transition"
+            className="w-full rounded-2xl bg-[#4A3021] py-4 text-white font-semibold hover:bg-[#70492C] transition"
           >
             {loading ? "Creating..." : "Create Account"}
           </button>
@@ -148,7 +148,7 @@ export default function Register() {
             Already have an account?
             <Link
               to="/login"
-              className="ml-2 text-[#8B5E3C] font-semibold hover:underline"
+              className="ml-2 text-[#4A3021] font-semibold hover:underline"
             >
               Login
             </Link>

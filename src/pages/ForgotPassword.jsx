@@ -41,7 +41,7 @@ export default function ForgotPassword() {
         }`}
       >
         <div className="text-center">
-          <div className="mx-auto w-20 h-20 rounded-3xl bg-[#8B5E3C] flex items-center justify-center text-white">
+          <div className="mx-auto w-20 h-20 rounded-3xl bg-[#4A3021] flex items-center justify-center text-white">
             <FiCpu size={36} />
           </div>
 
@@ -96,11 +96,11 @@ export default function ForgotPassword() {
             className="
               w-full
               rounded-2xl
-              bg-[#8B5E3C]
+              bg-[#4A3021]
               py-4
               text-white
               font-semibold
-              hover:bg-[#70492C]
+              hover:bg-[#573923]
               transition
             "
           >
@@ -109,7 +109,7 @@ export default function ForgotPassword() {
         </form>
 
         <div className="mt-8 text-center">
-          <Link to="/login" className="text-[#8B5E3C] hover:underline">
+          <Link to="/login" className="text-[#4A3021] hover:underline">
             ← Back to Login
           </Link>
         </div>

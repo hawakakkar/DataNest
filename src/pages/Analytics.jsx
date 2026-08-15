@@ -52,448 +52,1150 @@ export default function Analytics() {
 
   const health = documents > 0 ? 100 : 0;
 
+  const statCards = [
+    {
+      title: "Documents",
+      value: documents,
+      icon: FiFileText,
+      description: "Uploaded knowledge files",
+    },
+    {
+      title: "Indexed Chunks",
+      value: chunks,
+      icon: FiDatabase,
+      description: "Searchable content blocks",
+    },
+    {
+      title: "AI Questions",
+      value: questions,
+      icon: FiMessageSquare,
+      description: "Questions processed",
+    },
+    {
+      title: "Knowledge Health",
+      value: `${health}%`,
+      icon: FiTrendingUp,
+      description:
+        health === 100 ? "Knowledge base is ready" : "Upload a document",
+    },
+  ];
+
   return (
-    <div className="max-w-7xl mx-auto px-8 py-6 space-y-8 bg-[#F8F6F2] dark:bg-[#111827] min-h-screen transition-colors">
-      {/* Header */}
+    <div
+      className="
+        max-w-7xl
+        mx-auto
+        px-4
+        sm:px-6
+        lg:px-8
+        py-6
+        lg:py-8
+        space-y-8
+        bg-[#F8F3EC]
+        text-[#3E2A1E]
+        dark:bg-[#0F0B08]
+        dark:text-white
+        min-h-screen
+        transition-colors
+        duration-500
+      "
+    >
+      {/* ========================================================= */}
+      {/* HEADER */}
+      {/* ========================================================= */}
 
-      <div>
-        <h1 className="text-4xl font-bold text-[#5A3F2A] dark:text-white">
-          Analytics Dashboard
-        </h1>
+      <div
+        className="
+          relative
+          overflow-hidden
+          rounded-[2rem]
+          bg-white
+          dark:bg-[#1A1410]
+          border
+          border-[#ECE6DE]
+          dark:border-white/10
+          shadow-sm
+          dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
+          px-6
+          sm:px-8
+          py-7
+          sm:py-8
+        "
+      >
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-3">
+            <div
+              className="
+                w-10
+                h-10
+                rounded-xl
+                bg-[#EFE7DE]
+                dark:bg-[#30241C]
+                text-[#8B5E3C]
+                dark:text-[#D8A778]
+                flex
+                items-center
+                justify-center
+              "
+            >
+              <FiActivity size={20} />
+            </div>
 
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
-          Monitor your AI Knowledge Base performance.
-        </p>
+            <span
+              className="
+                text-sm
+                font-semibold
+                tracking-wide
+                uppercase
+                text-[#8B5E3C]
+                dark:text-[#D8A778]
+              "
+            >
+              DataNest Analytics
+            </span>
+          </div>
+
+          <h1
+            className="
+              text-3xl
+              sm:text-4xl
+              lg:text-5xl
+              font-bold
+              tracking-tight
+              text-[#5A3F2A]
+              dark:text-white
+            "
+          >
+            Analytics Dashboard
+          </h1>
+
+          <p
+            className="
+              text-[#8A7A6A]
+              dark:text-gray-400
+              mt-3
+              max-w-2xl
+              leading-7
+            "
+          >
+            Monitor your AI Knowledge Base, indexed content, document activity,
+            and AI performance from one place.
+          </p>
+        </div>
+
+        {/* Decorative elements */}
+
+        <div
+          className="
+            absolute
+            -right-12
+            -top-12
+            w-40
+            h-40
+            rounded-full
+            bg-[#EFE7DE]
+            dark:bg-[#30241C]
+            opacity-60
+          "
+        />
+
+        <div
+          className="
+            absolute
+            -right-4
+            -bottom-16
+            w-32
+            h-32
+            rounded-full
+            border
+            border-[#D8C3A5]
+            dark:border-white/10
+            opacity-50
+          "
+        />
       </div>
 
-      {/* Cards */}
+      {/* ========================================================= */}
+      {/* STAT CARDS */}
+      {/* ========================================================= */}
 
-      <div className="grid xl:grid-cols-4 md:grid-cols-2 gap-6">
-        {/* Documents */}
+      <div className="grid xl:grid-cols-4 md:grid-cols-2 gap-5">
+        {statCards.map((card, index) => {
+          const Icon = card.icon;
 
-        <div
-          className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-7
-          hover:shadow-2xl
-          hover:-translate-y-1
-          hover:border-[#8B5E3C]
-          dark:hover:border-[#D6A97A]
-          transition-all
-        "
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-gray-500 dark:text-gray-400">Documents</p>
-
-              <h2 className="text-4xl font-bold text-[#5A3F2A] dark:text-white mt-3">
-                {documents}
-              </h2>
-            </div>
-
+          return (
             <div
+              key={index}
               className="
-              w-16
-              h-16
-              rounded-2xl
-              bg-[#EFE7DE]
-              dark:bg-[#374151]
-              text-[#8B5E3C]
-              dark:text-[#D6A97A]
-              flex
-              items-center
-              justify-center
-            "
+                group
+                relative
+                overflow-hidden
+                bg-white
+                dark:bg-[#1A1410]
+                rounded-[1.75rem]
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                shadow-sm
+                dark:shadow-[0_8px_28px_rgba(0,0,0,0.16)]
+                p-6
+                hover:shadow-xl
+                dark:hover:shadow-[0_15px_35px_rgba(0,0,0,0.25)]
+                hover:-translate-y-1
+                hover:border-[#D8C3A5]
+                dark:hover:border-[#C8956B]
+                transition-all
+                duration-300
+              "
             >
-              <FiFileText size={28} />
+              {/* top accent */}
+
+              <div
+                className="
+                  absolute
+                  top-0
+                  left-0
+                  right-0
+                  h-1
+                  bg-[#8B5E3C]
+                  dark:bg-[#8B5E3C]
+                  opacity-80
+                "
+              />
+
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p
+                    className="
+                      text-sm
+                      font-medium
+                      text-[#8A7A6A]
+                      dark:text-gray-400
+                    "
+                  >
+                    {card.title}
+                  </p>
+
+                  <h2
+                    className="
+                      text-4xl
+                      font-bold
+                      tracking-tight
+                      text-[#5A3F2A]
+                      dark:text-white
+                      mt-3
+                    "
+                  >
+                    {card.value}
+                  </h2>
+
+                  <p
+                    className="
+                      text-xs
+                      text-gray-400
+                      dark:text-gray-500
+                      mt-2
+                    "
+                  >
+                    {card.description}
+                  </p>
+                </div>
+
+                <div
+                  className="
+                    w-14
+                    h-14
+                    rounded-2xl
+                    bg-[#EFE7DE]
+                    dark:bg-[#30241C]
+                    text-[#8B5E3C]
+                    dark:text-[#D8A778]
+                    flex
+                    items-center
+                    justify-center
+                    shrink-0
+                    group-hover:scale-110
+                    transition-transform
+                    duration-300
+                  "
+                >
+                  <Icon size={25} />
+                </div>
+              </div>
+
+              <div
+                className="
+                  mt-5
+                  h-px
+                  bg-[#ECE6DE]
+                  dark:bg-white/10
+                "
+              />
+
+              <div
+                className="
+                  mt-4
+                  flex
+                  items-center
+                  gap-2
+                  text-xs
+                  text-[#8A7A6A]
+                  dark:text-gray-400
+                "
+              >
+                <span
+                  className="
+                    w-2
+                    h-2
+                    rounded-full
+                    bg-[#8B5E3C]
+                    dark:bg-[#D8A778]
+                  "
+                />
+                Knowledge base metric
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Chunks */}
-
-        <div
-          className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-7
-          hover:shadow-2xl
-          hover:-translate-y-1
-          hover:border-[#8B5E3C]
-          dark:hover:border-[#D6A97A]
-          transition-all
-        "
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-gray-500 dark:text-gray-400">Indexed Chunks</p>
-
-              <h2 className="text-4xl font-bold text-[#5A3F2A] dark:text-white mt-3">
-                {chunks}
-              </h2>
-            </div>
-
-            <div
-              className="
-              w-16
-              h-16
-              rounded-2xl
-              bg-[#EFE7DE]
-              dark:bg-[#374151]
-              text-[#8B5E3C]
-              dark:text-[#D6A97A]
-              flex
-              items-center
-              justify-center
-            "
-            >
-              <FiDatabase size={28} />
-            </div>
-          </div>
-        </div>
-        {/* AI Questions */}
-
-        <div
-          className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-7
-          hover:shadow-2xl
-          hover:-translate-y-1
-          hover:border-[#8B5E3C]
-          dark:hover:border-[#D6A97A]
-          transition-all
-        "
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-gray-500 dark:text-gray-400">AI Questions</p>
-
-              <h2 className="text-4xl font-bold text-[#5A3F2A] dark:text-white mt-3">
-                {questions}
-              </h2>
-            </div>
-
-            <div
-              className="
-              w-16
-              h-16
-              rounded-2xl
-              bg-[#EFE7DE]
-              dark:bg-[#374151]
-              text-[#8B5E3C]
-              dark:text-[#D6A97A]
-              flex
-              items-center
-              justify-center
-            "
-            >
-              <FiMessageSquare size={28} />
-            </div>
-          </div>
-        </div>
-
-        {/* Health */}
-
-        <div
-          className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-7
-          hover:shadow-2xl
-          hover:-translate-y-1
-          hover:border-[#8B5E3C]
-          dark:hover:border-[#D6A97A]
-          transition-all
-        "
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-gray-500 dark:text-gray-400">
-                Knowledge Health
-              </p>
-
-              <h2 className="text-4xl font-bold text-[#5A3F2A] dark:text-white mt-3">
-                {health}%
-              </h2>
-            </div>
-
-            <div
-              className="
-              w-16
-              h-16
-              rounded-2xl
-              bg-[#EFE7DE]
-              dark:bg-[#374151]
-              text-[#8B5E3C]
-              dark:text-[#D6A97A]
-              flex
-              items-center
-              justify-center
-            "
-            >
-              <FiTrendingUp size={28} />
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      {/* System Health + Recent Uploads */}
+      {/* ========================================================= */}
+      {/* SYSTEM HEALTH + RECENT UPLOADS */}
+      {/* ========================================================= */}
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* SYSTEM HEALTH */}
+
         <div
           className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-8
-        "
+            bg-white
+            dark:bg-[#1A1410]
+            rounded-[2rem]
+            border
+            border-[#ECE6DE]
+            dark:border-white/10
+            shadow-sm
+            dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
+            p-6
+            sm:p-8
+            overflow-hidden
+          "
         >
-          <div className="flex items-center gap-3 mb-6">
-            <FiActivity
-              className="text-[#8B5E3C] dark:text-[#D6A97A]"
-              size={22}
-            />
-            <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
-              System Health
-            </h2>
+          <div className="flex items-start justify-between gap-4 mb-8">
+            <div>
+              <div className="flex items-center gap-3">
+                <div
+                  className="
+                    w-11
+                    h-11
+                    rounded-xl
+                    bg-[#EFE7DE]
+                    dark:bg-[#30241C]
+                    text-[#8B5E3C]
+                    dark:text-[#D8A778]
+                    flex
+                    items-center
+                    justify-center
+                  "
+                >
+                  <FiActivity size={21} />
+                </div>
+
+                <div>
+                  <h2
+                    className="
+                      text-2xl
+                      font-bold
+                      text-[#5A3F2A]
+                      dark:text-white
+                    "
+                  >
+                    System Health
+                  </h2>
+
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Current knowledge infrastructure status
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="
+                px-3
+                py-1.5
+                rounded-full
+                bg-[#EFE7DE]
+                dark:bg-[#30241C]
+                text-[#8B5E3C]
+                dark:text-[#D8A778]
+                text-xs
+                font-bold
+                whitespace-nowrap
+              "
+            >
+              {health === 100 ? "Healthy" : "Waiting"}
+            </div>
           </div>
 
-          <div className="space-y-6">
-            <div>
+          {/* Health score */}
+
+          <div
+            className="
+              rounded-3xl
+              bg-[#F8F6F2]
+              dark:bg-[#0F0B08]
+              border
+              border-[#ECE6DE]
+              dark:border-white/10
+              p-6
+              mb-6
+            "
+          >
+            <div className="flex items-center gap-6">
+              {/* Circular indicator */}
+
+              <div
+                className="
+                  relative
+                  w-28
+                  h-28
+                  rounded-full
+                  flex
+                  items-center
+                  justify-center
+                  shrink-0
+                "
+                style={{
+                  background: `conic-gradient(
+                    #8B5E3C ${health * 3.6}deg,
+                    #E8DED3 ${health * 3.6}deg
+                  )`,
+                }}
+              >
+                <div
+                  className="
+                    absolute
+                    inset-[8px]
+                    rounded-full
+                    bg-[#F8F6F2]
+                    dark:bg-[#0F0B08]
+                    flex
+                    items-center
+                    justify-center
+                  "
+                >
+                  <div className="text-center">
+                    <div
+                      className="
+                        text-2xl
+                        font-bold
+                        text-[#5A3F2A]
+                        dark:text-white
+                      "
+                    >
+                      {health}%
+                    </div>
+
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                      Health
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3
+                  className="
+                    text-lg
+                    font-bold
+                    text-[#5A3F2A]
+                    dark:text-white
+                  "
+                >
+                  Knowledge Base
+                </h3>
+
+                <p
+                  className="
+                    text-sm
+                    text-gray-500
+                    dark:text-gray-400
+                    mt-2
+                    leading-6
+                  "
+                >
+                  {health === 100
+                    ? "Your knowledge base is ready for AI-powered search and document questions."
+                    : "Upload documents to activate your knowledge base."}
+                </p>
+              </div>
+            </div>
+
+            {/* Progress */}
+
+            <div className="mt-7">
               <div className="flex justify-between mb-2">
-                <span className="text-gray-600 dark:text-gray-300">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
                   Knowledge Base
                 </span>
 
-                <span className="font-semibold text-[#8B5E3C] dark:text-[#D6A97A]">
+                <span
+                  className="
+                    text-sm
+                    font-bold
+                    text-[#8B5E3C]
+                    dark:text-[#D8A778]
+                  "
+                >
                   {health}%
                 </span>
               </div>
 
-              <div className="h-3 bg-[#EFE7DE] dark:bg-gray-700 rounded-full overflow-hidden">
+              <div
+                className="
+                  h-2.5
+                  rounded-full
+                  bg-[#E8DED3]
+                  dark:bg-white/10
+                  overflow-hidden
+                "
+              >
                 <div
-                  className="bg-[#8B5E3C] dark:bg-[#D6A97A] h-full rounded-full"
-                  style={{ width: `${health}%` }}
+                  className="
+                    h-full
+                    rounded-full
+                    bg-[#8B5E3C]
+                    dark:bg-[#8B5E3C]
+                    transition-all
+                    duration-700
+                  "
+                  style={{
+                    width: `${health}%`,
+                  }}
                 />
               </div>
             </div>
+          </div>
 
-            <div className="flex items-center gap-3 text-green-500">
-              <FiCheckCircle />
-              AI Service Connected
+          {/* Service statuses */}
+
+          <div className="grid sm:grid-cols-3 gap-3">
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                bg-[#FAF8F5]
+                dark:bg-white/5
+                p-4
+              "
+            >
+              <div className="flex items-center justify-between mb-3">
+                <FiCpu
+                  className="text-[#8B5E3C] dark:text-[#D8A778]"
+                  size={20}
+                />
+
+                <span
+                  className="
+                    w-2.5
+                    h-2.5
+                    rounded-full
+                    bg-[#8B5E3C]
+                    dark:bg-[#D8A778]
+                  "
+                />
+              </div>
+
+              <p className="font-semibold text-sm text-[#5A3F2A] dark:text-white">
+                AI Service
+              </p>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Connected
+              </p>
             </div>
 
-            <div className="flex items-center gap-3 text-green-500">
-              <FiCheckCircle />
-              Supabase Connected
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                bg-[#FAF8F5]
+                dark:bg-white/5
+                p-4
+              "
+            >
+              <div className="flex items-center justify-between mb-3">
+                <FiDatabase
+                  className="text-[#8B5E3C] dark:text-[#D8A778]"
+                  size={20}
+                />
+
+                <span
+                  className="
+                    w-2.5
+                    h-2.5
+                    rounded-full
+                    bg-[#8B5E3C]
+                    dark:bg-[#D8A778]
+                  "
+                />
+              </div>
+
+              <p className="font-semibold text-sm text-[#5A3F2A] dark:text-white">
+                Supabase
+              </p>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Connected
+              </p>
             </div>
 
-            <div className="flex items-center gap-3 text-green-500">
-              <FiCheckCircle />
-              Vector Search Active
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                bg-[#FAF8F5]
+                dark:bg-white/5
+                p-4
+              "
+            >
+              <div className="flex items-center justify-between mb-3">
+                <FiTrendingUp
+                  className="text-[#8B5E3C] dark:text-[#D8A778]"
+                  size={20}
+                />
+
+                <span
+                  className="
+                    w-2.5
+                    h-2.5
+                    rounded-full
+                    bg-[#8B5E3C]
+                    dark:bg-[#D8A778]
+                  "
+                />
+              </div>
+
+              <p className="font-semibold text-sm text-[#5A3F2A] dark:text-white">
+                Vector Search
+              </p>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Active
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Recent Uploads */}
+        {/* RECENT UPLOADS */}
 
         <div
           className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-8
-        "
+            bg-white
+            dark:bg-[#1A1410]
+            rounded-[2rem]
+            border
+            border-[#ECE6DE]
+            dark:border-white/10
+            shadow-sm
+            dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
+            p-6
+            sm:p-8
+          "
         >
-          <div className="flex items-center gap-3 mb-6">
-            <FiClock className="text-[#8B5E3C] dark:text-[#D6A97A]" size={22} />
-            <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
-              Recent Uploads
-            </h2>
+          <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center gap-3">
+              <div
+                className="
+                  w-11
+                  h-11
+                  rounded-xl
+                  bg-[#EFE7DE]
+                  dark:bg-[#30241C]
+                  text-[#8B5E3C]
+                  dark:text-[#D8A778]
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+                <FiClock size={21} />
+              </div>
+
+              <div>
+                <h2
+                  className="
+                    text-2xl
+                    font-bold
+                    text-[#5A3F2A]
+                    dark:text-white
+                  "
+                >
+                  Recent Uploads
+                </h2>
+
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Latest knowledge base files
+                </p>
+              </div>
+            </div>
+
+            <span
+              className="
+                text-xs
+                font-semibold
+                text-[#8A7A6A]
+                dark:text-gray-400
+              "
+            >
+              {recentDocs.length} files
+            </span>
           </div>
 
           {recentDocs.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400">
-              No uploaded documents.
-            </p>
+            <div
+              className="
+                h-64
+                rounded-3xl
+                border
+                border-dashed
+                border-[#D8C3A5]
+                dark:border-white/10
+                bg-[#FAF8F5]
+                dark:bg-white/5
+                flex
+                flex-col
+                items-center
+                justify-center
+                text-center
+                px-6
+              "
+            >
+              <FiFileText
+                size={38}
+                className="text-[#8B5E3C] dark:text-[#D8A778] mb-4"
+              />
+
+              <p className="font-semibold text-[#5A3F2A] dark:text-white">
+                No uploaded documents
+              </p>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Your recent uploads will appear here.
+              </p>
+            </div>
           ) : (
-            <div className="space-y-4">
-              {recentDocs.map((doc) => (
+            <div className="space-y-3">
+              {recentDocs.map((doc, index) => (
                 <div
                   key={doc.id}
-                  className="flex justify-between items-center border-b border-[#ECE6DE] dark:border-gray-700 pb-3"
+                  className="
+                    group
+                    flex
+                    items-center
+                    gap-4
+                    rounded-2xl
+                    border
+                    border-[#ECE6DE]
+                    dark:border-white/10
+                    bg-[#FAF8F5]
+                    dark:bg-white/5
+                    p-4
+                    hover:bg-[#F4EEE8]
+                    dark:hover:bg-[#30241C]
+                    transition-all
+                    duration-200
+                  "
                 >
-                  <div>
-                    <p className="font-semibold text-[#5A3F2A] dark:text-white">
+                  <div
+                    className="
+                      w-11
+                      h-11
+                      rounded-xl
+                      bg-[#EFE7DE]
+                      dark:bg-[#30241C]
+                      text-[#8B5E3C]
+                      dark:text-[#D8A778]
+                      flex
+                      items-center
+                      justify-center
+                      shrink-0
+                    "
+                  >
+                    <FiFileText size={19} />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="
+                        font-semibold
+                        text-[#5A3F2A]
+                        dark:text-white
+                        truncate
+                      "
+                    >
                       {doc.title}
                     </p>
 
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p
+                      className="
+                        text-xs
+                        text-gray-500
+                        dark:text-gray-400
+                        truncate
+                        mt-1
+                      "
+                    >
                       {doc.file_name}
                     </p>
                   </div>
 
-                  <span className="text-xs text-gray-400">
-                    {new Date(doc.uploaded_at).toLocaleDateString()}
-                  </span>
+                  <div className="text-right shrink-0">
+                    <div
+                      className="
+                        text-[10px]
+                        text-gray-400
+                        dark:text-gray-500
+                        mb-1
+                      "
+                    >
+                      #{index + 1}
+                    </div>
+
+                    <span
+                      className="
+                        text-xs
+                        text-[#8A7A6A]
+                        dark:text-gray-400
+                      "
+                    >
+                      {new Date(doc.uploaded_at).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </div>
       </div>
-      {/* AI Performance + Summary */}
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* AI Performance */}
+      {/* ========================================================= */}
+      {/* AI PERFORMANCE + ACTIVITY SUMMARY */}
+      {/* ========================================================= */}
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* AI PERFORMANCE */}
 
         <div
           className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-8
-        "
+            bg-white
+            dark:bg-[#1A1410]
+            rounded-[2rem]
+            border
+            border-[#ECE6DE]
+            dark:border-white/10
+            shadow-sm
+            dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
+            p-6
+            sm:p-8
+          "
         >
-          <div className="flex items-center gap-3 mb-6">
-            <FiCpu className="text-[#8B5E3C] dark:text-[#D6A97A]" size={22} />
+          <div className="flex items-center gap-3 mb-7">
+            <div
+              className="
+                w-11
+                h-11
+                rounded-xl
+                bg-[#EFE7DE]
+                dark:bg-[#30241C]
+                text-[#8B5E3C]
+                dark:text-[#D8A778]
+                flex
+                items-center
+                justify-center
+              "
+            >
+              <FiCpu size={21} />
+            </div>
 
-            <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
-              AI Performance
-            </h2>
+            <div>
+              <h2
+                className="
+                  text-2xl
+                  font-bold
+                  text-[#5A3F2A]
+                  dark:text-white
+                "
+              >
+                AI Performance
+              </h2>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Current AI infrastructure metrics
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-5">
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                p-5
+                bg-[#FAF8F5]
+                dark:bg-white/5
+              "
+            >
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 AI Accuracy
-              </span>
+              </p>
 
-              <strong className="text-green-600">98%</strong>
+              <div className="flex items-end justify-between mt-3">
+                <strong className="text-2xl text-[#5A3F2A] dark:text-white">
+                  98%
+                </strong>
+
+                <FiTrendingUp
+                  className="text-[#8B5E3C] dark:text-[#D8A778]"
+                  size={20}
+                />
+              </div>
             </div>
 
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                p-5
+                bg-[#FAF8F5]
+                dark:bg-white/5
+              "
+            >
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Embedding Status
-              </span>
+              </p>
 
-              <strong className="text-green-600">Active</strong>
+              <div className="flex items-center gap-2 mt-4">
+                <FiCheckCircle className="text-[#8B5E3C] dark:text-[#D8A778]" />
+
+                <strong className="text-[#5A3F2A] dark:text-white">
+                  Active
+                </strong>
+              </div>
             </div>
 
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                p-5
+                bg-[#FAF8F5]
+                dark:bg-white/5
+              "
+            >
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Database
-              </span>
+              </p>
 
-              <strong className="text-green-600">Healthy</strong>
+              <div className="flex items-center gap-2 mt-4">
+                <FiCheckCircle className="text-[#8B5E3C] dark:text-[#D8A778]" />
+
+                <strong className="text-[#5A3F2A] dark:text-white">
+                  Healthy
+                </strong>
+              </div>
             </div>
 
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[#ECE6DE]
+                dark:border-white/10
+                p-5
+                bg-[#FAF8F5]
+                dark:bg-white/5
+              "
+            >
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Search Engine
-              </span>
+              </p>
 
-              <strong className="text-green-600">Online</strong>
+              <div className="flex items-center gap-2 mt-4">
+                <FiCheckCircle className="text-[#8B5E3C] dark:text-[#D8A778]" />
+
+                <strong className="text-[#5A3F2A] dark:text-white">
+                  Online
+                </strong>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Activity Summary */}
+        {/* ACTIVITY SUMMARY */}
 
         <div
           className="
-          bg-white
-          dark:bg-[#1F2937]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-gray-700
-          shadow-lg
-          p-8
-        "
+            bg-white
+            dark:bg-[#1A1410]
+            rounded-[2rem]
+            border
+            border-[#ECE6DE]
+            dark:border-white/10
+            shadow-sm
+            dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
+            p-6
+            sm:p-8
+          "
         >
-          <div className="flex items-center gap-3 mb-6">
-            <FiTrendingUp
-              className="text-[#8B5E3C] dark:text-[#D6A97A]"
-              size={22}
-            />
+          <div className="flex items-center gap-3 mb-7">
+            <div
+              className="
+                w-11
+                h-11
+                rounded-xl
+                bg-[#EFE7DE]
+                dark:bg-[#30241C]
+                text-[#8B5E3C]
+                dark:text-[#D8A778]
+                flex
+                items-center
+                justify-center
+              "
+            >
+              <FiTrendingUp size={21} />
+            </div>
 
-            <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white">
-              Activity Summary
-            </h2>
+            <div>
+              <h2
+                className="
+                  text-2xl
+                  font-bold
+                  text-[#5A3F2A]
+                  dark:text-white
+                "
+              >
+                Activity Summary
+              </h2>
+
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Overview of your knowledge base
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-5">
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+          <div className="space-y-1">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                p-4
+                rounded-2xl
+                hover:bg-[#FAF8F5]
+                dark:hover:bg-white/5
+                transition
+              "
+            >
+              <span className="text-[#8A7A6A] dark:text-gray-400">
                 Total Documents
               </span>
 
-              <strong className="text-[#5A3F2A] dark:text-white">
+              <strong className="text-xl text-[#5A3F2A] dark:text-white">
                 {documents}
               </strong>
             </div>
 
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                p-4
+                rounded-2xl
+                hover:bg-[#FAF8F5]
+                dark:hover:bg-white/5
+                transition
+              "
+            >
+              <span className="text-[#8A7A6A] dark:text-gray-400">
                 Total Chunks
               </span>
 
-              <strong className="text-[#5A3F2A] dark:text-white">
+              <strong className="text-xl text-[#5A3F2A] dark:text-white">
                 {chunks}
               </strong>
             </div>
 
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                p-4
+                rounded-2xl
+                hover:bg-[#FAF8F5]
+                dark:hover:bg-white/5
+                transition
+              "
+            >
+              <span className="text-[#8A7A6A] dark:text-gray-400">
                 Total AI Questions
               </span>
 
-              <strong className="text-[#5A3F2A] dark:text-white">
+              <strong className="text-xl text-[#5A3F2A] dark:text-white">
                 {questions}
               </strong>
             </div>
 
-            <div className="flex justify-between">
-              <span className="text-[#5A3F2A] dark:text-gray-300">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                p-4
+                rounded-2xl
+                hover:bg-[#FAF8F5]
+                dark:hover:bg-white/5
+                transition
+              "
+            >
+              <span className="text-[#8A7A6A] dark:text-gray-400">
                 Knowledge Health
               </span>
 
-              <strong className="text-green-600">{health}%</strong>
+              <strong className="text-xl text-[#8B5E3C] dark:text-[#D8A778]">
+                {health}%
+              </strong>
+            </div>
+          </div>
+
+          <div
+            className="
+              mt-5
+              pt-5
+              border-t
+              border-[#ECE6DE]
+              dark:border-white/10
+            "
+          >
+            <div className="flex items-center gap-2 text-sm text-[#8A7A6A] dark:text-gray-400">
+              <FiCheckCircle className="text-[#8B5E3C] dark:text-[#D8A778]" />
+
+              <span>Your knowledge base is being monitored continuously.</span>
             </div>
           </div>
         </div>

@@ -142,9 +142,9 @@ export default function Upload() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8F6F2] dark:bg-[#111827] p-8 transition-colors">
+    <div className="min-h-screen bg-[#F8F3EC] dark:bg-[#0F0B08] p-8 transition-colors">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-[#5A3F2A] dark:text-white">
+        <h1 className="text-4xl font-bold text-center text-[#4A3021] dark:text-white">
           Upload Documents
         </h1>
 
@@ -158,17 +158,17 @@ export default function Upload() {
           className="
           mt-10
           bg-white
-          dark:bg-[#1F2937]
+          dark:bg-[#30241C]
           border-2
           border-dashed
-          border-[#8B5E3C]
-          dark:border-gray-600
+          border-[#4A3021]
+          dark:border-[#4A3021]
           rounded-3xl
           p-16
           text-center
           cursor-pointer
           hover:bg-[#F8F6F2]
-          dark:hover:bg-[#374151]
+          dark:hover:bg-[#3A2B22]
           transition-all
           duration-300
         "
@@ -177,7 +177,7 @@ export default function Upload() {
 
           <div className="text-6xl">📄</div>
 
-          <h2 className="text-2xl font-bold text-[#5A3F2A] dark:text-white mt-5">
+          <h2 className="text-2xl font-bold text-[#4A3021] dark:text-white mt-5">
             Drag & Drop Files
           </h2>
 
@@ -196,19 +196,19 @@ export default function Upload() {
             className="
             mt-6
             bg-[#F8F6F2]
-            dark:bg-[#1F2937]
+            dark:bg-[#30241C]
             border
             border-[#ECE6DE]
-            dark:border-gray-700
+            dark:border-[#4A3021]
             rounded-3xl
             p-6
           "
           >
-            <h3 className="font-semibold text-[#8B5E3C] dark:text-[#D6A97A]">
+            <h3 className="font-semibold text-[#4A3021] dark:text-[#D6A97A]">
               Selected File
             </h3>
 
-            <p className="mt-2 text-[#5A3F2A] dark:text-white">
+            <p className="mt-2 text-[#4A3021] dark:text-white">
               📄 {selectedFile.name}
             </p>
 
@@ -224,9 +224,9 @@ export default function Upload() {
                   px-6
                   py-3
                   rounded-xl
-                  bg-[#8B5E3C]
+                  bg-[#4A3021]
                   text-white
-                  hover:bg-[#70492C]
+                  hover:bg-[#3A251A]
                   transition
                 "
                 >
@@ -247,6 +247,8 @@ export default function Upload() {
                   border-[#8f362c]
                   text-[#000000]
                   hover:bg-[#8f362c]
+                  hover:text-white
+                  dark:text-white
                   transition
                 "
                 >
@@ -256,31 +258,32 @@ export default function Upload() {
             )}
           </div>
         )}
+
         {/* Upload Status */}
         <div
           className="
           bg-white
-          dark:bg-[#1F2937]
+          dark:bg-[#30241C]
           rounded-3xl
           border
           border-[#ECE6DE]
-          dark:border-gray-700
+          dark:border-[#4A3021]
           shadow-lg
           mt-8
           p-8
         "
         >
-          <h2 className="font-bold text-2xl text-[#5A3F2A] dark:text-white">
+          <h2 className="font-bold text-2xl text-[#4A3021] dark:text-white">
             Upload Status
           </h2>
 
           {uploading ? (
             <div className="mt-5">
-              <div className="h-3 bg-[#ECE6DE] dark:bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-3 bg-[#8B5E3C] rounded-full w-full animate-pulse"></div>
+              <div className="h-3 bg-[#ECE6DE] dark:bg-[#4A3021] rounded-full overflow-hidden">
+                <div className="h-3 bg-[#4A3021] rounded-full w-full animate-pulse"></div>
               </div>
 
-              <p className="mt-3 text-[#8B5E3C] dark:text-[#D6A97A] font-medium">
+              <p className="mt-3 text-[#4A3021] dark:text-[#D6A97A] font-medium">
                 Uploading document and generating embeddings...
               </p>
             </div>
@@ -297,13 +300,13 @@ export default function Upload() {
               className="
               mt-5
               bg-[#F8F6F2]
-              dark:bg-[#111827]
+              dark:bg-[#17110D]
               border
               border-[#ECE6DE]
-              dark:border-gray-700
+              dark:border-[#4A3021]
               rounded-2xl
               p-4
-              text-[#8B5E3C]
+              text-[#4A3021]
               dark:text-[#D6A97A]
             "
             >

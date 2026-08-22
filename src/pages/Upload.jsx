@@ -114,14 +114,25 @@ export default function Upload() {
       // --------------------------------
       // 6. Save document in database
       // --------------------------------
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setMessage("Please login first ❌");
+        setUploading(false);
+        return;
+      }
+
       const { data: documentData, error: databaseError } = await supabase
         .from("documents")
         .insert([
           {
             title: file.name,
             file_name: file.name,
-            uploaded_at: new Date().toISOString(),
+            uploaded_at: new Date(),
             text_content: extractedText,
+            user_id: user.id,
           },
         ])
         .select()

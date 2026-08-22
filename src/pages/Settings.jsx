@@ -19,11 +19,8 @@ import { supabase } from "../Services/supabase";
 
 // =====================================================
 // ADMIN ACCOUNT
-// =====================================================
-// فقط ایمیل اکانت خودت را اینجا قرار بده.
-// تمام کاربران دیگر به صورت User نمایش داده می‌شوند.
 
-const ADMIN_EMAIL = "YOUR_ADMIN_EMAIL@example.com";
+const ADMIN_EMAIL = "kkrhawa@gmail.com";
 
 // =====================================================
 // HELPER FUNCTIONS

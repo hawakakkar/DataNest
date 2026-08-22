@@ -129,7 +129,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                   items-center
                   justify-center
                   rounded-xl
-                  bg-[#4A3021]
+                  bg-[#70472D]
                   text-white
                   shadow-md
                 "

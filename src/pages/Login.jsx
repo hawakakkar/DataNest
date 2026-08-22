@@ -37,12 +37,12 @@ export default function Login() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center px-6 transition-all duration-300 ${
+      className={`min-h-screen flex items-center justify-center px-6 transition-colors duration-300 ${
         darkMode ? "bg-[#121212]" : "bg-[#F8F6F2]"
       }`}
     >
       <div
-        className={`w-full max-w-md rounded-[32px] shadow-2xl p-10 ${
+        className={`w-full max-w-md rounded-[32px] shadow-2xl p-10 transition-colors duration-300 ${
           darkMode ? "bg-[#1E1E1E]" : "bg-white"
         }`}
       >
@@ -80,7 +80,11 @@ export default function Login() {
             </label>
 
             <div className="relative mt-2">
-              <FiMail className="absolute left-4 top-4 text-[#4A3021]" />
+              <FiMail
+                className={`absolute left-4 top-4 ${
+                  darkMode ? "text-[#D8A778]" : "text-[#4A3021]"
+                }`}
+              />
 
               <input
                 type="email"
@@ -88,10 +92,10 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className={`w-full rounded-2xl border pl-12 pr-4 py-4 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#8B5E3C] ${
+                className={`w-full rounded-2xl border pl-12 pr-4 py-4 outline-none transition-colors duration-300 focus:ring-2 focus:ring-[#8B5E3C] ${
                   darkMode
-                    ? "border-gray-700 text-white placeholder-gray-500"
-                    : "border-[#D9CEC1] text-[#2F2A27]"
+                    ? "border-[#493326] bg-[#30241C] text-white placeholder-gray-500"
+                    : "border-[#D9CEC1] bg-white text-[#2F2A27] placeholder-[#A99D92]"
                 }`}
               />
             </div>
@@ -108,7 +112,11 @@ export default function Login() {
             </label>
 
             <div className="relative mt-2">
-              <FiLock className="absolute left-4 top-4 text-[#4A3021]" />
+              <FiLock
+                className={`absolute left-4 top-4 ${
+                  darkMode ? "text-[#D8A778]" : "text-[#4A3021]"
+                }`}
+              />
 
               <input
                 type={showPassword ? "text" : "password"}
@@ -116,17 +124,19 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className={`w-full rounded-2xl border pl-12 pr-12 py-4 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#8B5E3C] ${
+                className={`w-full rounded-2xl border pl-12 pr-12 py-4 outline-none transition-colors duration-300 focus:ring-2 focus:ring-[#8B5E3C] ${
                   darkMode
-                    ? "border-gray-700 text-white placeholder-gray-500"
-                    : "border-[#D9CEC1] text-[#2F2A27]"
+                    ? "border-[#493326] bg-[#30241C] text-white placeholder-gray-500"
+                    : "border-[#D9CEC1] bg-white text-[#2F2A27] placeholder-[#A99D92]"
                 }`}
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-4 text-[#8B5E3C]"
+                className={`absolute right-4 top-4 ${
+                  darkMode ? "text-[#D8A778]" : "text-[#8B5E3C]"
+                }`}
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
@@ -147,7 +157,9 @@ export default function Login() {
         <div className="mt-8 text-center">
           <Link
             to="/forgot-password"
-            className="text-[#4A3021] hover:underline"
+            className={`hover:underline ${
+              darkMode ? "text-[#D8A778]" : "text-[#4A3021]"
+            }`}
           >
             Forgot Password?
           </Link>
@@ -158,7 +170,9 @@ export default function Login() {
             Don't have an account?
             <Link
               to="/register"
-              className="ml-2 text-[#4A3021] font-semibold hover:underline"
+              className={`ml-2 font-semibold hover:underline ${
+                darkMode ? "text-[#D8A778]" : "text-[#4A3021]"
+              }`}
             >
               Register
             </Link>

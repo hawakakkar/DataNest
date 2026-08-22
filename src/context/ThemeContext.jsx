@@ -1,33 +1,38 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-const ThemeContext = createContext();
+const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
-  const [darkMode, setDarkMode] = useState(false);
+  // اول از localStorage می‌خوانیم
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
 
+    return savedTheme === "dark";
+  });
+
+  // هر بار که darkMode تغییر کند، هم localStorage و هم html تغییر کند
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
+    const root = document.documentElement;
 
-    if (saved === "dark") {
-      setDarkMode(true);
-    }
-  }, []);
-
-  useEffect(() => {
     if (darkMode) {
-      document.documentElement.classList.add("dark");
+      root.classList.add("dark");
       localStorage.setItem("theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      root.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
   }, [darkMode]);
+
+  const toggleTheme = () => {
+    setDarkMode((prev) => !prev);
+  };
 
   return (
     <ThemeContext.Provider
       value={{
         darkMode,
         setDarkMode,
+        toggleTheme,
       }}
     >
       {children}
@@ -36,5 +41,11 @@ export function ThemeProvider({ children }) {
 }
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  const context = useContext(ThemeContext);
+
+  if (!context) {
+    throw new Error("useTheme must be used inside ThemeProvider");
+  }
+
+  return context;
 }

@@ -21,7 +21,7 @@ export default function Header({ setSidebarOpen }) {
   const navigate = useNavigate();
 
   const { search, setSearch } = useSearch();
-  const { darkMode, setDarkMode } = useTheme();
+  const { darkMode, toggleTheme } = useTheme();
 
   // Notifications
   const [questionsCount, setQuestionsCount] = useState(0);
@@ -287,27 +287,27 @@ export default function Header({ setSidebarOpen }) {
           </div>
 
           {/* =========================
-              DARK MODE
-          ========================== */}
+    DARK MODE
+========================== */}
           <button
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleTheme}
             className="
-              flex
-              h-11
-              w-11
-              shrink-0
-              items-center
-              justify-center
-              rounded-[14px]
-              border
-              border-[#E8DED3]
-              bg-white
-              transition
-              hover:bg-[#F1E7DD]
-              dark:border-[#493326]
-              dark:bg-[#30241C]
-              dark:hover:bg-[#3A2A20]
-            "
+    flex
+    h-11
+    w-11
+    shrink-0
+    items-center
+    justify-center
+    rounded-[14px]
+    border
+    border-[#E8DED3]
+    bg-white
+    transition
+    hover:bg-[#F1E7DD]
+    dark:border-[#493326]
+    dark:bg-[#30241C]
+    dark:hover:bg-[#3A2A20]
+  "
           >
             {darkMode ? (
               <FiSun size={21} strokeWidth={1.8} className="text-[#D8A778]" />

@@ -13,6 +13,9 @@ export default function Upload() {
 
   const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
+  // -----------------------------
+  // Select File
+  // -----------------------------
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
 
@@ -28,25 +31,38 @@ export default function Upload() {
     setUploadedChunks(null);
   };
 
+  // -----------------------------
+  // Upload
+  // -----------------------------
   async function handleUpload() {
-    if (!selectedFile) return;
+    if (!selectedFile || uploading) return;
 
     setUploading(true);
     setMessage("");
     setUploadedChunks(null);
 
+    let storagePath = null;
+    let documentId = null;
+
     try {
       const startTime = performance.now();
-
       const file = selectedFile;
 
-      const { data: existing } = await supabase
+      // --------------------------------
+      // 1. Check duplicate file name
+      // --------------------------------
+      const { data: existingFiles, error: checkError } = await supabase
         .from("documents")
         .select("id")
         .eq("file_name", file.name)
-        .maybeSingle();
+        .limit(1);
 
-      if (existing) {
+      if (checkError) {
+        console.error("Duplicate check error:", checkError);
+        throw new Error("Could not check existing documents.");
+      }
+
+      if (existingFiles && existingFiles.length > 0) {
         setMessage(
           "A file with this name already exists. Please rename the file and upload again. ❌",
         );
@@ -54,27 +70,57 @@ export default function Upload() {
         return;
       }
 
+      // --------------------------------
+      // 2. Extract text
+      // --------------------------------
       const extractedText = await extractText(file);
 
-      const chunks = chunkText(extractedText);
-
-      const { error: uploadError } = await supabase.storage
-        .from("documents")
-        .upload(file.name, file);
-
-      if (uploadError) {
-        setMessage("Upload failed ❌");
-        setUploading(false);
-        return;
+      if (!extractedText || !extractedText.trim()) {
+        throw new Error("No readable text was found in this document.");
       }
 
+      // --------------------------------
+      // 3. Create chunks
+      // --------------------------------
+      const chunks = chunkText(extractedText);
+
+      if (!chunks || chunks.length === 0) {
+        throw new Error("Could not create text chunks from this document.");
+      }
+
+      // --------------------------------
+      // 4. Create unique storage path
+      // --------------------------------
+      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+      storagePath = `${Date.now()}-${crypto.randomUUID()}-${safeFileName}`;
+
+      // --------------------------------
+      // 5. Upload file to Supabase Storage
+      // --------------------------------
+      const { error: uploadError } = await supabase.storage
+        .from("documents")
+        .upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type || "application/octet-stream",
+        });
+
+      if (uploadError) {
+        console.error("Storage upload error:", uploadError);
+        throw new Error(`File upload failed: ${uploadError.message}`);
+      }
+
+      // --------------------------------
+      // 6. Save document in database
+      // --------------------------------
       const { data: documentData, error: databaseError } = await supabase
         .from("documents")
         .insert([
           {
             title: file.name,
             file_name: file.name,
-            uploaded_at: new Date(),
+            uploaded_at: new Date().toISOString(),
             text_content: extractedText,
           },
         ])
@@ -82,39 +128,65 @@ export default function Upload() {
         .single();
 
       if (databaseError) {
-        setMessage("Database save failed ❌");
-        setUploading(false);
-        return;
+        console.error("Database error:", databaseError);
+
+        // Remove uploaded file if database insert fails
+        await supabase.storage.from("documents").remove([storagePath]);
+
+        throw new Error(`Database save failed: ${databaseError.message}`);
       }
 
-      if (chunks.length > 0) {
-        const chunkRows = [];
+      documentId = documentData.id;
 
-        for (const chunk of chunks) {
-          const embedding = await generateEmbedding(chunk);
+      // --------------------------------
+      // 7. Generate embeddings
+      // --------------------------------
+      const chunkRows = [];
 
-          chunkRows.push({
-            document_id: documentData.id,
-            content: chunk,
-            page: 1,
-            section: "Unknown",
-            embedding,
-          });
+      for (const chunk of chunks) {
+        if (!chunk || !chunk.trim()) continue;
+
+        const embedding = await generateEmbedding(chunk);
+
+        if (!embedding) {
+          throw new Error("Failed to generate embedding for a document chunk.");
         }
 
+        chunkRows.push({
+          document_id: documentId,
+          content: chunk,
+          page: 1,
+          section: "Unknown",
+          embedding,
+        });
+      }
+
+      // --------------------------------
+      // 8. Save chunks
+      // --------------------------------
+      if (chunkRows.length > 0) {
         const { error: chunkError } = await supabase
           .from("chunks")
           .insert(chunkRows);
 
         if (chunkError) {
-          setMessage("Chunks save failed ❌");
-          setUploading(false);
-          return;
+          console.error("Chunks error:", chunkError);
+
+          // Remove document if chunks fail
+          await supabase.from("documents").delete().eq("id", documentId);
+
+          // Remove storage file
+          await supabase.storage.from("documents").remove([storagePath]);
+
+          throw new Error(`Chunks save failed: ${chunkError.message}`);
         }
 
-        setUploadedChunks(chunks.length);
+        setUploadedChunks(chunkRows.length);
       }
 
+      // --------------------------------
+      // 9. Success
+      // --------------------------------
       const endTime = performance.now();
 
       const seconds = ((endTime - startTime) / 1000).toFixed(2);
@@ -123,13 +195,20 @@ export default function Upload() {
 
       setSelectedFile(null);
     } catch (error) {
-      console.log(error);
-      setMessage("Something went wrong ❌");
-    }
+      console.error("UPLOAD ERROR:", error);
 
-    setUploading(false);
+      setMessage(
+        error?.message ||
+          "Something went wrong while uploading the document ❌",
+      );
+    } finally {
+      setUploading(false);
+    }
   }
 
+  // -----------------------------
+  // Dropzone
+  // -----------------------------
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: false,
@@ -156,22 +235,21 @@ export default function Upload() {
         <div
           {...getRootProps()}
           className="
-          mt-10
-          bg-white
-          dark:bg-[#30241C]
-          border-2
-          border-dashed
-          border-[#4A3021]
-          dark:border-[#4A3021]
-          rounded-3xl
-          p-16
-          text-center
-          cursor-pointer
-          hover:bg-[#F8F6F2]
-          dark:hover:bg-[#3A2B22]
-          transition-all
-          duration-300
-        "
+            mt-10
+            bg-white
+            dark:bg-[#30241C]
+            border-2
+            border-dashed
+            border-[#4A3021]
+            rounded-3xl
+            p-16
+            text-center
+            cursor-pointer
+            hover:bg-[#F8F6F2]
+            dark:hover:bg-[#3A2B22]
+            transition-all
+            duration-300
+          "
         >
           <input {...getInputProps()} />
 
@@ -194,15 +272,15 @@ export default function Upload() {
         {selectedFile && (
           <div
             className="
-            mt-6
-            bg-[#F8F6F2]
-            dark:bg-[#30241C]
-            border
-            border-[#ECE6DE]
-            dark:border-[#4A3021]
-            rounded-3xl
-            p-6
-          "
+              mt-6
+              bg-[#F8F6F2]
+              dark:bg-[#30241C]
+              border
+              border-[#ECE6DE]
+              dark:border-[#4A3021]
+              rounded-3xl
+              p-6
+            "
           >
             <h3 className="font-semibold text-[#4A3021] dark:text-[#D6A97A]">
               Selected File
@@ -221,14 +299,14 @@ export default function Upload() {
                 <button
                   onClick={handleUpload}
                   className="
-                  px-6
-                  py-3
-                  rounded-xl
-                  bg-[#4A3021]
-                  text-white
-                  hover:bg-[#3A251A]
-                  transition
-                "
+                    px-6
+                    py-3
+                    rounded-xl
+                    bg-[#4A3021]
+                    text-white
+                    hover:bg-[#3A251A]
+                    transition
+                  "
                 >
                   Submit
                 </button>
@@ -240,17 +318,17 @@ export default function Upload() {
                     setUploadedChunks(null);
                   }}
                   className="
-                  px-6
-                  py-3
-                  rounded-xl
-                  border
-                  border-[#8f362c]
-                  text-[#000000]
-                  hover:bg-[#8f362c]
-                  hover:text-white
-                  dark:text-white
-                  transition
-                "
+                    px-6
+                    py-3
+                    rounded-xl
+                    border
+                    border-[#8f362c]
+                    text-[#000000]
+                    hover:bg-[#8f362c]
+                    hover:text-white
+                    dark:text-white
+                    transition
+                  "
                 >
                   Remove
                 </button>
@@ -262,16 +340,16 @@ export default function Upload() {
         {/* Upload Status */}
         <div
           className="
-          bg-white
-          dark:bg-[#30241C]
-          rounded-3xl
-          border
-          border-[#ECE6DE]
-          dark:border-[#4A3021]
-          shadow-lg
-          mt-8
-          p-8
-        "
+            bg-white
+            dark:bg-[#30241C]
+            rounded-3xl
+            border
+            border-[#ECE6DE]
+            dark:border-[#4A3021]
+            shadow-lg
+            mt-8
+            p-8
+          "
         >
           <h2 className="font-bold text-2xl text-[#4A3021] dark:text-white">
             Upload Status
@@ -284,7 +362,7 @@ export default function Upload() {
               </div>
 
               <p className="mt-3 text-[#4A3021] dark:text-[#D6A97A] font-medium">
-                Uploading document and generating embeddings...
+                Processing document and generating embeddings...
               </p>
             </div>
           ) : (
@@ -298,17 +376,17 @@ export default function Upload() {
           {uploadedChunks && (
             <div
               className="
-              mt-5
-              bg-[#F8F6F2]
-              dark:bg-[#17110D]
-              border
-              border-[#ECE6DE]
-              dark:border-[#4A3021]
-              rounded-2xl
-              p-4
-              text-[#4A3021]
-              dark:text-[#D6A97A]
-            "
+                mt-5
+                bg-[#F8F6F2]
+                dark:bg-[#17110D]
+                border
+                border-[#ECE6DE]
+                dark:border-[#4A3021]
+                rounded-2xl
+                p-4
+                text-[#4A3021]
+                dark:text-[#D6A97A]
+              "
             >
               Chunks created:
               <span className="font-bold ml-2">{uploadedChunks}</span>✅

@@ -59,37 +59,43 @@ export default function Dashboard() {
 
   async function loadStats() {
     try {
-      const { count: docs } = await supabase.from("documents").select("*", {
-        count: "exact",
-        head: true,
-      });
-
-      const { count: chunks } = await supabase.from("chunks").select("*", {
-        count: "exact",
-        head: true,
-      });
-
-      const { count: generalQuestions } = await supabase
-        .from("questions")
+      const { count: docs, error: docsError } = await supabase
+        .from("documents")
         .select("*", {
           count: "exact",
           head: true,
         });
 
-      const { count: documentQuestions } = await supabase
+      if (docsError) {
+        console.error("Documents count error:", docsError);
+      }
+
+      const { count: chunks, error: chunksError } = await supabase
+        .from("chunks")
+        .select("*", {
+          count: "exact",
+          head: true,
+        });
+
+      if (chunksError) {
+        console.error("Chunks count error:", chunksError);
+      }
+
+      const { count: questions, error: questionsError } = await supabase
         .from("chat_history")
         .select("*", {
           count: "exact",
           head: true,
         })
-        .not("document_id", "is", null)
         .eq("role", "user");
 
-      const totalQuestions = (generalQuestions || 0) + (documentQuestions || 0);
+      if (questionsError) {
+        console.error("Questions count error:", questionsError);
+      }
 
       setDocumentsCount(docs || 0);
       setChunksCount(chunks || 0);
-      setQuestionsCount(totalQuestions);
+      setQuestionsCount(questions || 0);
     } catch (error) {
       console.error("Failed to load dashboard stats:", error);
     }

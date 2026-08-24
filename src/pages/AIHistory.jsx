@@ -34,14 +34,23 @@ export default function AIHistory() {
       return;
     }
 
-    const { data, error } = await supabase
+    const ADMIN_EMAIL = "kkrhawa@gmail.com";
+
+    const isAdmin = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+    let query = supabase
       .from("chat_history")
       .select("*")
-      .eq("user_id", user.id)
       .order("created_at", { ascending: true });
 
+    if (!isAdmin) {
+      query = query.eq("user_id", user.id);
+    }
+
+    const { data, error } = await query;
+
     if (error) {
-      console.error(error);
+      console.error("LOAD HISTORY ERROR:", error);
       setLoading(false);
       return;
     }

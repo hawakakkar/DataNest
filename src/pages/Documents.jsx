@@ -141,7 +141,7 @@ export default function Documents() {
         lg:px-12
         py-6
         md:py-8
-        bg-[#F8F6F2]
+        bg-[#F8F3EC]
         dark:bg-[#0F0B08]
         min-h-screen
         transition-colors

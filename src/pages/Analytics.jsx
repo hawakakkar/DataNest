@@ -83,14 +83,18 @@ export default function Analytics() {
   return (
     <div
       className="
+        w-full
         max-w-7xl
         mx-auto
-        px-4
-        sm:px-6
+        px-3
+        sm:px-5
+        md:px-6
         lg:px-8
-        py-6
+        py-4
+        sm:py-6
         lg:py-8
-        space-y-8
+        space-y-6
+        sm:space-y-8
         bg-[#F8F3EC]
         text-[#3E2A1E]
         dark:bg-[#0F0B08]
@@ -100,15 +104,14 @@ export default function Analytics() {
         duration-500
       "
     >
-      {/* ========================================================= */}
-      {/* HEADER */}
-      {/* ========================================================= */}
+      {/* Header */}
 
       <div
         className="
           relative
           overflow-hidden
-          rounded-[2rem]
+          rounded-2xl
+          sm:rounded-[2rem]
           bg-white
           dark:bg-[#1A1410]
           border
@@ -116,10 +119,12 @@ export default function Analytics() {
           dark:border-white/10
           shadow-sm
           dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
-          px-6
-          sm:px-8
-          py-7
-          sm:py-8
+          px-4
+          sm:px-6
+          md:px-8
+          py-6
+          sm:py-7
+          md:py-8
         "
       >
         <div className="relative z-10">
@@ -136,6 +141,7 @@ export default function Analytics() {
                 flex
                 items-center
                 justify-center
+                shrink-0
               "
             >
               <FiActivity size={20} />
@@ -143,7 +149,8 @@ export default function Analytics() {
 
             <span
               className="
-                text-sm
+                text-xs
+                sm:text-sm
                 font-semibold
                 tracking-wide
                 uppercase
@@ -157,8 +164,9 @@ export default function Analytics() {
 
           <h1
             className="
-              text-3xl
-              sm:text-4xl
+              text-2xl
+              sm:text-3xl
+              md:text-4xl
               lg:text-5xl
               font-bold
               tracking-tight
@@ -171,11 +179,14 @@ export default function Analytics() {
 
           <p
             className="
+              text-sm
+              sm:text-base
               text-[#8A7A6A]
               dark:text-gray-400
               mt-3
               max-w-2xl
-              leading-7
+              leading-6
+              sm:leading-7
             "
           >
             Monitor your AI Knowledge Base, indexed content, document activity,
@@ -190,8 +201,10 @@ export default function Analytics() {
             absolute
             -right-12
             -top-12
-            w-40
-            h-40
+            w-32
+            h-32
+            sm:w-40
+            sm:h-40
             rounded-full
             bg-[#EFE7DE]
             dark:bg-[#30241C]
@@ -204,8 +217,10 @@ export default function Analytics() {
             absolute
             -right-4
             -bottom-16
-            w-32
-            h-32
+            w-28
+            h-28
+            sm:w-32
+            sm:h-32
             rounded-full
             border
             border-[#D8C3A5]
@@ -215,11 +230,18 @@ export default function Analytics() {
         />
       </div>
 
-      {/* ========================================================= */}
-      {/* STAT CARDS */}
-      {/* ========================================================= */}
+      {/* Stat Cards */}
 
-      <div className="grid xl:grid-cols-4 md:grid-cols-2 gap-5">
+      <div
+        className="
+          grid
+          grid-cols-1
+          sm:grid-cols-2
+          xl:grid-cols-4
+          gap-4
+          sm:gap-5
+        "
+      >
         {statCards.map((card, index) => {
           const Icon = card.icon;
 
@@ -232,13 +254,16 @@ export default function Analytics() {
                 overflow-hidden
                 bg-white
                 dark:bg-[#1A1410]
-                rounded-[1.75rem]
+                rounded-2xl
+                sm:rounded-[1.75rem]
                 border
                 border-[#ECE6DE]
                 dark:border-white/10
                 shadow-sm
                 dark:shadow-[0_8px_28px_rgba(0,0,0,0.16)]
-                p-6
+                p-4
+                sm:p-5
+                md:p-6
                 hover:shadow-xl
                 dark:hover:shadow-[0_15px_35px_rgba(0,0,0,0.25)]
                 hover:-translate-y-1
@@ -248,7 +273,7 @@ export default function Analytics() {
                 duration-300
               "
             >
-              {/* top accent */}
+              {/* Top accent */}
 
               <div
                 className="
@@ -263,8 +288,8 @@ export default function Analytics() {
                 "
               />
 
-              <div className="flex items-start justify-between gap-4">
-                <div>
+              <div className="flex items-start justify-between gap-3 sm:gap-4">
+                <div className="min-w-0">
                   <p
                     className="
                       text-sm
@@ -278,7 +303,8 @@ export default function Analytics() {
 
                   <h2
                     className="
-                      text-4xl
+                      text-3xl
+                      sm:text-4xl
                       font-bold
                       tracking-tight
                       text-[#5A3F2A]
@@ -295,6 +321,7 @@ export default function Analytics() {
                       text-gray-400
                       dark:text-gray-500
                       mt-2
+                      leading-5
                     "
                   >
                     {card.description}
@@ -303,8 +330,10 @@ export default function Analytics() {
 
                 <div
                   className="
-                    w-14
-                    h-14
+                    w-12
+                    h-12
+                    sm:w-14
+                    sm:h-14
                     rounded-2xl
                     bg-[#EFE7DE]
                     dark:bg-[#30241C]
@@ -319,7 +348,7 @@ export default function Analytics() {
                     duration-300
                   "
                 >
-                  <Icon size={25} />
+                  <Icon size={24} />
                 </div>
               </div>
 
@@ -350,39 +379,52 @@ export default function Analytics() {
                     rounded-full
                     bg-[#8B5E3C]
                     dark:bg-[#D8A778]
+                    shrink-0
                   "
                 />
-                Knowledge base metric
+
+                <span>Knowledge base metric</span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* ========================================================= */}
-      {/* SYSTEM HEALTH + RECENT UPLOADS */}
-      {/* ========================================================= */}
+      {/* System Health + Recent Uploads */}
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* SYSTEM HEALTH */}
+        {/* System Health */}
 
         <div
           className="
             bg-white
             dark:bg-[#1A1410]
-            rounded-[2rem]
+            rounded-2xl
+            sm:rounded-[2rem]
             border
             border-[#ECE6DE]
             dark:border-white/10
             shadow-sm
             dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
-            p-6
-            sm:p-8
+            p-4
+            sm:p-6
+            md:p-8
             overflow-hidden
           "
         >
-          <div className="flex items-start justify-between gap-4 mb-8">
-            <div>
+          <div
+            className="
+              flex
+              flex-col
+              sm:flex-row
+              sm:items-start
+              sm:justify-between
+              gap-4
+              mb-7
+              sm:mb-8
+            "
+          >
+            <div className="min-w-0">
               <div className="flex items-center gap-3">
                 <div
                   className="
@@ -396,15 +438,17 @@ export default function Analytics() {
                     flex
                     items-center
                     justify-center
+                    shrink-0
                   "
                 >
                   <FiActivity size={21} />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <h2
                     className="
-                      text-2xl
+                      text-xl
+                      sm:text-2xl
                       font-bold
                       text-[#5A3F2A]
                       dark:text-white
@@ -413,7 +457,7 @@ export default function Analytics() {
                     System Health
                   </h2>
 
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-5">
                     Current knowledge infrastructure status
                   </p>
                 </div>
@@ -422,6 +466,7 @@ export default function Analytics() {
 
             <div
               className="
+                self-start
                 px-3
                 py-1.5
                 rounded-full
@@ -438,7 +483,7 @@ export default function Analytics() {
             </div>
           </div>
 
-          {/* Health score */}
+          {/* Health Score */}
 
           <div
             className="
@@ -448,18 +493,31 @@ export default function Analytics() {
               border
               border-[#ECE6DE]
               dark:border-white/10
-              p-6
+              p-4
+              sm:p-6
               mb-6
             "
           >
-            <div className="flex items-center gap-6">
+            <div
+              className="
+                flex
+                flex-col
+                sm:flex-row
+                items-center
+                sm:items-center
+                gap-5
+                sm:gap-6
+              "
+            >
               {/* Circular indicator */}
 
               <div
                 className="
                   relative
-                  w-28
-                  h-28
+                  w-24
+                  h-24
+                  sm:w-28
+                  sm:h-28
                   rounded-full
                   flex
                   items-center
@@ -476,7 +534,8 @@ export default function Analytics() {
                 <div
                   className="
                     absolute
-                    inset-[8px]
+                    inset-[7px]
+                    sm:inset-[8px]
                     rounded-full
                     bg-[#F8F6F2]
                     dark:bg-[#0F0B08]
@@ -488,7 +547,8 @@ export default function Analytics() {
                   <div className="text-center">
                     <div
                       className="
-                        text-2xl
+                        text-xl
+                        sm:text-2xl
                         font-bold
                         text-[#5A3F2A]
                         dark:text-white
@@ -504,7 +564,7 @@ export default function Analytics() {
                 </div>
               </div>
 
-              <div>
+              <div className="min-w-0 text-center sm:text-left">
                 <h3
                   className="
                     text-lg
@@ -534,7 +594,7 @@ export default function Analytics() {
 
             {/* Progress */}
 
-            <div className="mt-7">
+            <div className="mt-6 sm:mt-7">
               <div className="flex justify-between mb-2">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   Knowledge Base
@@ -580,7 +640,15 @@ export default function Analytics() {
 
           {/* Service statuses */}
 
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div
+            className="
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              md:grid-cols-3
+              gap-3
+            "
+          >
             <div
               className="
                 rounded-2xl
@@ -694,24 +762,36 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* RECENT UPLOADS */}
+        {/* Recent Uploads */}
 
         <div
           className="
             bg-white
             dark:bg-[#1A1410]
-            rounded-[2rem]
+            rounded-2xl
+            sm:rounded-[2rem]
             border
             border-[#ECE6DE]
             dark:border-white/10
             shadow-sm
             dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
-            p-6
-            sm:p-8
+            p-4
+            sm:p-6
+            md:p-8
           "
         >
-          <div className="flex items-center justify-between mb-7">
-            <div className="flex items-center gap-3">
+          <div
+            className="
+              flex
+              flex-col
+              gap-3
+              sm:flex-row
+              sm:items-center
+              sm:justify-between
+              mb-7
+            "
+          >
+            <div className="flex items-center gap-3 min-w-0">
               <div
                 className="
                   w-11
@@ -724,15 +804,17 @@ export default function Analytics() {
                   flex
                   items-center
                   justify-center
+                  shrink-0
                 "
               >
                 <FiClock size={21} />
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <h2
                   className="
-                    text-2xl
+                    text-xl
+                    sm:text-2xl
                     font-bold
                     text-[#5A3F2A]
                     dark:text-white
@@ -753,6 +835,8 @@ export default function Analytics() {
                 font-semibold
                 text-[#8A7A6A]
                 dark:text-gray-400
+                self-start
+                sm:self-auto
               "
             >
               {recentDocs.length} files
@@ -762,7 +846,7 @@ export default function Analytics() {
           {recentDocs.length === 0 ? (
             <div
               className="
-                h-64
+                min-h-64
                 rounded-3xl
                 border
                 border-dashed
@@ -775,7 +859,9 @@ export default function Analytics() {
                 items-center
                 justify-center
                 text-center
-                px-6
+                px-4
+                sm:px-6
+                py-10
               "
             >
               <FiFileText
@@ -800,14 +886,16 @@ export default function Analytics() {
                     group
                     flex
                     items-center
-                    gap-4
+                    gap-3
+                    sm:gap-4
                     rounded-2xl
                     border
                     border-[#ECE6DE]
                     dark:border-white/10
                     bg-[#FAF8F5]
                     dark:bg-white/5
-                    p-4
+                    p-3
+                    sm:p-4
                     hover:bg-[#F4EEE8]
                     dark:hover:bg-[#30241C]
                     transition-all
@@ -816,8 +904,10 @@ export default function Analytics() {
                 >
                   <div
                     className="
-                      w-11
-                      h-11
+                      w-10
+                      h-10
+                      sm:w-11
+                      sm:h-11
                       rounded-xl
                       bg-[#EFE7DE]
                       dark:bg-[#30241C]
@@ -857,7 +947,7 @@ export default function Analytics() {
                     </p>
                   </div>
 
-                  <div className="text-right shrink-0">
+                  <div className="text-right shrink-0 min-w-[58px]">
                     <div
                       className="
                         text-[10px]
@@ -871,9 +961,11 @@ export default function Analytics() {
 
                     <span
                       className="
-                        text-xs
+                        text-[11px]
+                        sm:text-xs
                         text-[#8A7A6A]
                         dark:text-gray-400
+                        whitespace-nowrap
                       "
                     >
                       {new Date(doc.uploaded_at).toLocaleDateString()}
@@ -886,25 +978,25 @@ export default function Analytics() {
         </div>
       </div>
 
-      {/* ========================================================= */}
-      {/* AI PERFORMANCE + ACTIVITY SUMMARY */}
-      {/* ========================================================= */}
+      {/* AI Performance + Activity Summary */}
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* AI PERFORMANCE */}
+        {/* AI Performance */}
 
         <div
           className="
             bg-white
             dark:bg-[#1A1410]
-            rounded-[2rem]
+            rounded-2xl
+            sm:rounded-[2rem]
             border
             border-[#ECE6DE]
             dark:border-white/10
             shadow-sm
             dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
-            p-6
-            sm:p-8
+            p-4
+            sm:p-6
+            md:p-8
           "
         >
           <div className="flex items-center gap-3 mb-7">
@@ -920,15 +1012,17 @@ export default function Analytics() {
                 flex
                 items-center
                 justify-center
+                shrink-0
               "
             >
               <FiCpu size={21} />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <h2
                 className="
-                  text-2xl
+                  text-xl
+                  sm:text-2xl
                   font-bold
                   text-[#5A3F2A]
                   dark:text-white
@@ -943,14 +1037,22 @@ export default function Analytics() {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div
+            className="
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              gap-3
+            "
+          >
             <div
               className="
                 rounded-2xl
                 border
                 border-[#ECE6DE]
                 dark:border-white/10
-                p-5
+                p-4
+                sm:p-5
                 bg-[#FAF8F5]
                 dark:bg-white/5
               "
@@ -977,7 +1079,8 @@ export default function Analytics() {
                 border
                 border-[#ECE6DE]
                 dark:border-white/10
-                p-5
+                p-4
+                sm:p-5
                 bg-[#FAF8F5]
                 dark:bg-white/5
               "
@@ -1001,7 +1104,8 @@ export default function Analytics() {
                 border
                 border-[#ECE6DE]
                 dark:border-white/10
-                p-5
+                p-4
+                sm:p-5
                 bg-[#FAF8F5]
                 dark:bg-white/5
               "
@@ -1025,7 +1129,8 @@ export default function Analytics() {
                 border
                 border-[#ECE6DE]
                 dark:border-white/10
-                p-5
+                p-4
+                sm:p-5
                 bg-[#FAF8F5]
                 dark:bg-white/5
               "
@@ -1045,20 +1150,22 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* ACTIVITY SUMMARY */}
+        {/* Activity Summary */}
 
         <div
           className="
             bg-white
             dark:bg-[#1A1410]
-            rounded-[2rem]
+            rounded-2xl
+            sm:rounded-[2rem]
             border
             border-[#ECE6DE]
             dark:border-white/10
             shadow-sm
             dark:shadow-[0_12px_35px_rgba(0,0,0,0.18)]
-            p-6
-            sm:p-8
+            p-4
+            sm:p-6
+            md:p-8
           "
         >
           <div className="flex items-center gap-3 mb-7">
@@ -1074,15 +1181,17 @@ export default function Analytics() {
                 flex
                 items-center
                 justify-center
+                shrink-0
               "
             >
               <FiTrendingUp size={21} />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <h2
                 className="
-                  text-2xl
+                  text-xl
+                  sm:text-2xl
                   font-bold
                   text-[#5A3F2A]
                   dark:text-white
@@ -1103,18 +1212,20 @@ export default function Analytics() {
                 flex
                 items-center
                 justify-between
-                p-4
+                gap-4
+                p-3
+                sm:p-4
                 rounded-2xl
                 hover:bg-[#FAF8F5]
                 dark:hover:bg-white/5
                 transition
               "
             >
-              <span className="text-[#8A7A6A] dark:text-gray-400">
+              <span className="text-sm sm:text-base text-[#8A7A6A] dark:text-gray-400">
                 Total Documents
               </span>
 
-              <strong className="text-xl text-[#5A3F2A] dark:text-white">
+              <strong className="text-xl text-[#5A3F2A] dark:text-white shrink-0">
                 {documents}
               </strong>
             </div>
@@ -1124,18 +1235,20 @@ export default function Analytics() {
                 flex
                 items-center
                 justify-between
-                p-4
+                gap-4
+                p-3
+                sm:p-4
                 rounded-2xl
                 hover:bg-[#FAF8F5]
                 dark:hover:bg-white/5
                 transition
               "
             >
-              <span className="text-[#8A7A6A] dark:text-gray-400">
+              <span className="text-sm sm:text-base text-[#8A7A6A] dark:text-gray-400">
                 Total Chunks
               </span>
 
-              <strong className="text-xl text-[#5A3F2A] dark:text-white">
+              <strong className="text-xl text-[#5A3F2A] dark:text-white shrink-0">
                 {chunks}
               </strong>
             </div>
@@ -1145,18 +1258,20 @@ export default function Analytics() {
                 flex
                 items-center
                 justify-between
-                p-4
+                gap-4
+                p-3
+                sm:p-4
                 rounded-2xl
                 hover:bg-[#FAF8F5]
                 dark:hover:bg-white/5
                 transition
               "
             >
-              <span className="text-[#8A7A6A] dark:text-gray-400">
+              <span className="text-sm sm:text-base text-[#8A7A6A] dark:text-gray-400">
                 Total AI Questions
               </span>
 
-              <strong className="text-xl text-[#5A3F2A] dark:text-white">
+              <strong className="text-xl text-[#5A3F2A] dark:text-white shrink-0">
                 {questions}
               </strong>
             </div>
@@ -1166,18 +1281,20 @@ export default function Analytics() {
                 flex
                 items-center
                 justify-between
-                p-4
+                gap-4
+                p-3
+                sm:p-4
                 rounded-2xl
                 hover:bg-[#FAF8F5]
                 dark:hover:bg-white/5
                 transition
               "
             >
-              <span className="text-[#8A7A6A] dark:text-gray-400">
+              <span className="text-sm sm:text-base text-[#8A7A6A] dark:text-gray-400">
                 Knowledge Health
               </span>
 
-              <strong className="text-xl text-[#8B5E3C] dark:text-[#D8A778]">
+              <strong className="text-xl text-[#8B5E3C] dark:text-[#D8A778] shrink-0">
                 {health}%
               </strong>
             </div>
@@ -1192,8 +1309,8 @@ export default function Analytics() {
               dark:border-white/10
             "
           >
-            <div className="flex items-center gap-2 text-sm text-[#8A7A6A] dark:text-gray-400">
-              <FiCheckCircle className="text-[#8B5E3C] dark:text-[#D8A778]" />
+            <div className="flex items-start sm:items-center gap-2 text-sm text-[#8A7A6A] dark:text-gray-400">
+              <FiCheckCircle className="text-[#8B5E3C] dark:text-[#D8A778] shrink-0 mt-0.5 sm:mt-0" />
 
               <span>Your knowledge base is being monitored continuously.</span>
             </div>

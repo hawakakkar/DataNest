@@ -3,14 +3,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
-  // اول از localStorage می‌خوانیم
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
 
     return savedTheme === "dark";
   });
 
-  // هر بار که darkMode تغییر کند، هم localStorage و هم html تغییر کند
   useEffect(() => {
     const root = document.documentElement;
 

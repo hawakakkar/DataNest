@@ -19,97 +19,153 @@ import { supabase } from "../Services/supabase";
 
 // =====================================================
 // ADMIN ACCOUNT
+// =====================================================
 
 const ADMIN_EMAIL = "kkrhawa@gmail.com";
 
 // =====================================================
-// HELPER FUNCTIONS
+// SAFE LOCAL STORAGE
+// =====================================================
+
+function getStorageItem(key, fallback = null) {
+  try {
+    return localStorage.getItem(key) ?? fallback;
+  } catch (error) {
+    console.error("LOCAL STORAGE GET ERROR:", error);
+    return fallback;
+  }
+}
+
+function setStorageItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.error("LOCAL STORAGE SET ERROR:", error);
+  }
+}
+
+// =====================================================
+// USER
 // =====================================================
 
 async function getCurrentUser() {
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-  if (error) {
-    console.error("GET USER ERROR:", error);
+    if (error) {
+      console.error("GET USER ERROR:", error);
+      alert(`Could not get current user: ${error.message}`);
+      return null;
+    }
+
+    if (!user) {
+      alert("Please login first.");
+      return null;
+    }
+
+    return user;
+  } catch (error) {
+    console.error("GET CURRENT USER FAILED:", error);
     alert("Could not get current user.");
     return null;
   }
-
-  if (!user) {
-    alert("Please login first.");
-    return null;
-  }
-
-  return user;
 }
 
+// =====================================================
+// DOWNLOAD HELPERS
+// =====================================================
+
 function downloadTextFile(fileName, content) {
-  const blob = new Blob(["\uFEFF" + content], {
-    type: "text/plain;charset=utf-8",
-  });
+  try {
+    const blob = new Blob(["\uFEFF" + content], {
+      type: "text/plain;charset=utf-8",
+    });
 
-  const url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
 
-  const link = document.createElement("a");
+    const link = document.createElement("a");
 
-  link.href = url;
-  link.download = fileName;
+    link.href = url;
+    link.download = fileName;
+    link.style.display = "none";
 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-  setTimeout(() => {
-    URL.revokeObjectURL(url);
-  }, 1000);
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
+  } catch (error) {
+    console.error("TEXT DOWNLOAD ERROR:", error);
+    alert("Could not download the file.");
+  }
 }
 
 function downloadOriginalFile(file, fileName) {
-  const url = URL.createObjectURL(file);
+  try {
+    const url = URL.createObjectURL(file);
 
-  const link = document.createElement("a");
+    const link = document.createElement("a");
 
-  link.href = url;
-  link.download = fileName;
+    link.href = url;
+    link.download = fileName;
+    link.style.display = "none";
 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-  setTimeout(() => {
-    URL.revokeObjectURL(url);
-  }, 1000);
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
+  } catch (error) {
+    console.error("FILE DOWNLOAD ERROR:", error);
+    alert("Could not download the file.");
+  }
 }
+
+// =====================================================
+// CHAT HISTORY
+// =====================================================
 
 async function getChatHistory(userId) {
-  const { data, error } = await supabase
-    .from("chat_history")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", {
-      ascending: true,
-    });
+  try {
+    const { data, error } = await supabase
+      .from("chat_history")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", {
+        ascending: true,
+      });
 
-  if (error) {
-    console.error("GET CHAT HISTORY ERROR:", error);
+    if (error) {
+      console.error("GET CHAT HISTORY ERROR:", error);
+      alert(`Could not load AI history: ${error.message}`);
+      return [];
+    }
 
-    alert(`Could not load AI history: ${error.message}`);
-
+    return data || [];
+  } catch (error) {
+    console.error("GET CHAT HISTORY FAILED:", error);
+    alert("Could not load AI history.");
     return [];
   }
-
-  return data || [];
 }
+
+// =====================================================
+// CONVERSATIONS
+// =====================================================
 
 function makeConversations(messages) {
   const conversations = [];
 
   let current = null;
 
-  messages.forEach((message) => {
+  (messages || []).forEach((message) => {
     if (message.role === "user") {
       current = {
         question: message,
@@ -126,15 +182,19 @@ function makeConversations(messages) {
 }
 
 // =====================================================
-// TIMEZONE HELPERS
+// TIMEZONE
 // =====================================================
 
 function getAvailableTimezones() {
-  if (
-    typeof Intl !== "undefined" &&
-    typeof Intl.supportedValuesOf === "function"
-  ) {
-    return Intl.supportedValuesOf("timeZone");
+  try {
+    if (
+      typeof Intl !== "undefined" &&
+      typeof Intl.supportedValuesOf === "function"
+    ) {
+      return Intl.supportedValuesOf("timeZone");
+    }
+  } catch (error) {
+    console.warn("TIMEZONE LIST ERROR:", error);
   }
 
   return [
@@ -171,7 +231,9 @@ function getBrowserTimezone() {
 }
 
 function getTimezoneLabel(timezone) {
-  if (!timezone) return "Local Time";
+  if (!timezone) {
+    return "Local Time";
+  }
 
   const parts = timezone.split("/");
 
@@ -201,63 +263,58 @@ function getCurrentTime(timezone) {
 // =====================================================
 
 export default function Settings() {
-  // =====================================================
+  // ===================================================
   // DARK MODE
-  // =====================================================
+  // ===================================================
 
   const [darkMode, setDarkMode] = useState(() => {
-    const root = document.documentElement;
-
-    if (root.classList.contains("dark")) {
-      return true;
-    }
-
-    const savedTheme = localStorage.getItem("datanest-theme");
-
-    if (savedTheme === "dark") {
-      return true;
-    }
-
-    if (savedTheme === "light") {
-      return false;
-    }
-
-    return false;
+    return getStorageItem("theme", "light") === "dark";
   });
 
-  // =====================================================
+  function toggleTheme() {
+    setDarkMode((current) => !current);
+  }
+
+  useEffect(() => {
+    try {
+      if (darkMode) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+
+      setStorageItem("theme", darkMode ? "dark" : "light");
+    } catch (error) {
+      console.error("THEME ERROR:", error);
+    }
+  }, [darkMode]);
+
+  // ===================================================
   // TIMEZONE
-  // =====================================================
+  // ===================================================
 
   const [timezone, setTimezone] = useState(() => {
-    const savedTimezone = localStorage.getItem("datanest-timezone");
+    const savedTimezone = getStorageItem("datanest-timezone");
 
-    if (savedTimezone) {
-      return savedTimezone;
-    }
-
-    return getBrowserTimezone();
+    return savedTimezone || getBrowserTimezone();
   });
 
-  const [currentTime, setCurrentTime] = useState(() =>
-    getCurrentTime(
-      localStorage.getItem("datanest-timezone") || getBrowserTimezone(),
-    ),
-  );
+  const [currentTime, setCurrentTime] = useState(() => {
+    const savedTimezone =
+      getStorageItem("datanest-timezone") || getBrowserTimezone();
 
-  const availableTimezones = getAvailableTimezones();
-
-  // =====================================================
-  // CUSTOM TIMEZONE DROPDOWN
-  // =====================================================
+    return getCurrentTime(savedTimezone);
+  });
 
   const [timezoneOpen, setTimezoneOpen] = useState(false);
 
   const timezoneDropdownRef = useRef(null);
 
-  // =====================================================
-  // USER PROFILE
-  // =====================================================
+  const availableTimezones = getAvailableTimezones();
+
+  // ===================================================
+  // PROFILE
+  // ===================================================
 
   const [profile, setProfile] = useState({
     name: "Loading...",
@@ -265,13 +322,19 @@ export default function Settings() {
     role: "User",
   });
 
-  // =====================================================
+  // ===================================================
   // LOAD PROFILE
-  // =====================================================
+  // ===================================================
 
   useEffect(() => {
+    let mounted = true;
+
     async function loadProfile() {
       const user = await getCurrentUser();
+
+      if (!mounted) {
+        return;
+      }
 
       if (!user) {
         setProfile({
@@ -292,20 +355,14 @@ export default function Settings() {
         user.email?.split("@")[0] ||
         "User";
 
-      // =================================================
-      // ROLE FIX
-      // =================================================
-
-      const normalizedEmail = (user.email || "").trim().toLowerCase();
+      const normalizedEmail = String(user.email || "")
+        .trim()
+        .toLowerCase();
 
       const normalizedAdminEmail = ADMIN_EMAIL.trim().toLowerCase();
 
       const userRole =
-        normalizedEmail &&
-        normalizedAdminEmail &&
-        normalizedEmail === normalizedAdminEmail
-          ? "Administrator"
-          : "User";
+        normalizedEmail === normalizedAdminEmail ? "Administrator" : "User";
 
       setProfile({
         name: userName,
@@ -315,134 +372,18 @@ export default function Settings() {
     }
 
     loadProfile();
-  }, []);
-
-  // =====================================================
-  // GLOBAL DARK MODE SYNC
-  // =====================================================
-  //
-  // این قسمت مهم است.
-  //
-  // Settings و Header دیگر Dark Mode جداگانه ندارند.
-  //
-  // اگر Header تغییر کند:
-  //   Settings هم تغییر می‌کند.
-  //
-  // اگر Settings تغییر کند:
-  //   Header و تمام صفحات تغییر می‌کنند.
-  //
-  // =====================================================
-
-  useEffect(() => {
-    const root = document.documentElement;
-
-    // ---------------------------------------------------
-    // وقتی Header event ارسال کند
-    // ---------------------------------------------------
-
-    function handleThemeChange(event) {
-      const eventValue = event?.detail?.darkMode;
-
-      if (typeof eventValue === "boolean") {
-        setDarkMode(eventValue);
-        return;
-      }
-
-      setDarkMode(root.classList.contains("dark"));
-    }
-
-    // ---------------------------------------------------
-    // وقتی localStorage از جای دیگری تغییر کند
-    // ---------------------------------------------------
-
-    function handleStorageChange(event) {
-      if (event.key !== "datanest-theme") {
-        return;
-      }
-
-      if (event.newValue === "dark") {
-        setDarkMode(true);
-      }
-
-      if (event.newValue === "light") {
-        setDarkMode(false);
-      }
-    }
-
-    // ---------------------------------------------------
-    // MutationObserver
-    //
-    // اگر Header مستقیماً class dark را تغییر دهد،
-    // Settings هم متوجه می‌شود.
-    // ---------------------------------------------------
-
-    const observer = new MutationObserver(() => {
-      const isDark = root.classList.contains("dark");
-
-      setDarkMode((current) => {
-        if (current === isDark) {
-          return current;
-        }
-
-        return isDark;
-      });
-    });
-
-    observer.observe(root, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    window.addEventListener("datanest-theme-change", handleThemeChange);
-
-    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      observer.disconnect();
-
-      window.removeEventListener("datanest-theme-change", handleThemeChange);
-
-      window.removeEventListener("storage", handleStorageChange);
+      mounted = false;
     };
   }, []);
 
-  // =====================================================
-  // APPLY DARK MODE
-  // =====================================================
-
-  useEffect(() => {
-    const root = document.documentElement;
-
-    if (darkMode) {
-      root.classList.add("dark");
-
-      localStorage.setItem("datanest-theme", "dark");
-    } else {
-      root.classList.remove("dark");
-
-      localStorage.setItem("datanest-theme", "light");
-    }
-
-    // اطلاع دادن به Header
-    window.dispatchEvent(
-      new CustomEvent("datanest-theme-change", {
-        detail: {
-          darkMode,
-        },
-      }),
-    );
-  }, [darkMode]);
-
-  function toggleDarkMode() {
-    setDarkMode((current) => !current);
-  }
-
-  // =====================================================
+  // ===================================================
   // TIMEZONE CLOCK
-  // =====================================================
+  // ===================================================
 
   useEffect(() => {
-    localStorage.setItem("datanest-timezone", timezone);
+    setStorageItem("datanest-timezone", timezone);
 
     setCurrentTime(getCurrentTime(timezone));
 
@@ -455,9 +396,9 @@ export default function Settings() {
     };
   }, [timezone]);
 
-  // =====================================================
-  // CLOSE TIMEZONE DROPDOWN WHEN CLICKING OUTSIDE
-  // =====================================================
+  // ===================================================
+  // CLOSE DROPDOWN
+  // ===================================================
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -476,22 +417,26 @@ export default function Settings() {
     };
   }, []);
 
+  // ===================================================
+  // CHANGE TIMEZONE
+  // ===================================================
+
   function handleTimezoneChange(selectedTimezone) {
     setTimezone(selectedTimezone);
-
-    localStorage.setItem("datanest-timezone", selectedTimezone);
-
+    setStorageItem("datanest-timezone", selectedTimezone);
     setTimezoneOpen(false);
   }
 
-  // =====================================================
+  // ===================================================
   // EXPORT QUESTIONS
-  // =====================================================
+  // ===================================================
 
   async function exportQuestions() {
     const user = await getCurrentUser();
 
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     const choice = window.prompt(
       "What do you want to export?\n\n" +
@@ -500,7 +445,9 @@ export default function Settings() {
         "Enter 1 or 2:",
     );
 
-    if (choice === null) return;
+    if (choice === null) {
+      return;
+    }
 
     if (choice !== "1" && choice !== "2") {
       alert("Please enter 1 or 2.");
@@ -516,16 +463,16 @@ export default function Settings() {
 
     const conversations = makeConversations(history);
 
-    // ===================================================
-    // GENERAL QUESTIONS
-    // ===================================================
+    // =================================================
+    // GENERAL
+    // =================================================
 
     if (choice === "1") {
       const generalConversations = conversations.filter(
-        (conversation) => !conversation.question.document_id,
+        (conversation) => !conversation.question?.document_id,
       );
 
-      if (generalConversations.length === 0) {
+      if (!generalConversations.length) {
         alert("No general questions found.");
         return;
       }
@@ -534,22 +481,17 @@ export default function Settings() {
 
       generalConversations.forEach((conversation, index) => {
         text += "========================================\n";
-
         text += `GENERAL QUESTION ${index + 1}\n`;
-
         text += "========================================\n\n";
 
         text += "QUESTION:\n";
-
-        text += `${conversation.question.content || "No question"}\n\n`;
+        text += `${conversation.question?.content || "No question"}\n\n`;
 
         text += "ANSWER:\n";
-
         text += `${conversation.answer?.content || "No answer found"}\n\n`;
 
         text += "DATE:\n";
-
-        text += `${conversation.question.created_at || ""}\n\n`;
+        text += `${conversation.question?.created_at || ""}\n\n`;
 
         text += "----------------------------------------\n\n";
       });
@@ -561,15 +503,15 @@ export default function Settings() {
       return;
     }
 
-    // ===================================================
+    // =================================================
     // DOCUMENT QUESTIONS
-    // ===================================================
+    // =================================================
 
     const documentConversations = conversations.filter(
-      (conversation) => conversation.question.document_id,
+      (conversation) => conversation.question?.document_id,
     );
 
-    if (documentConversations.length === 0) {
+    if (!documentConversations.length) {
       alert("No document questions found.");
       return;
     }
@@ -606,7 +548,9 @@ export default function Settings() {
 
     const documentChoice = window.prompt(documentOptions);
 
-    if (documentChoice === null) return;
+    if (documentChoice === null) {
+      return;
+    }
 
     const selectedNumber = Number(documentChoice);
 
@@ -619,9 +563,9 @@ export default function Settings() {
       return;
     }
 
-    // ===================================================
+    // =================================================
     // ALL DOCUMENTS
-    // ===================================================
+    // =================================================
 
     if (selectedNumber === 0) {
       let successCount = 0;
@@ -631,7 +575,6 @@ export default function Settings() {
 
         if (!filePath) {
           console.warn("Document has no file path:", doc);
-
           continue;
         }
 
@@ -642,46 +585,28 @@ export default function Settings() {
 
           if (downloadError) {
             console.error("DOWNLOAD ERROR:", filePath, downloadError);
-
             continue;
           }
 
-          if (!file) continue;
+          if (!file) {
+            continue;
+          }
 
           const originalFileName =
             doc.file_name || filePath.split("/").pop() || "document";
 
-          const url = window.URL.createObjectURL(file);
-
-          const link = window.document.createElement("a");
-
-          link.href = url;
-
-          link.download = originalFileName;
-
-          link.style.display = "none";
-
-          window.document.body.appendChild(link);
-
-          link.click();
-
-          window.document.body.removeChild(link);
-
-          setTimeout(() => {
-            window.URL.revokeObjectURL(url);
-          }, 5000);
+          downloadOriginalFile(file, originalFileName);
 
           successCount++;
 
-          await new Promise((resolve) => setTimeout(resolve, 150));
-        } catch (err) {
-          console.error("DOWNLOAD FAILED:", filePath, err);
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        } catch (error) {
+          console.error("DOWNLOAD FAILED:", filePath, error);
         }
       }
 
       if (successCount === 0) {
         alert("No documents could be downloaded.");
-
         return;
       }
 
@@ -690,9 +615,9 @@ export default function Settings() {
       return;
     }
 
-    // ===================================================
+    // =================================================
     // ONE DOCUMENT
-    // ===================================================
+    // =================================================
 
     const selectedDocument = documentList[selectedNumber - 1];
 
@@ -704,258 +629,253 @@ export default function Settings() {
     let text = "";
 
     text += "========================================\n";
-
     text += `DOCUMENT: ${selectedDocument.name}\n`;
-
     text += "========================================\n\n";
 
     selectedDocument.conversations.forEach((conversation, index) => {
       text += `QUESTION ${index + 1}:\n`;
-
-      text += `${conversation.question.content || "No question"}\n\n`;
+      text += `${conversation.question?.content || "No question"}\n\n`;
 
       text += "ANSWER:\n";
-
       text += `${conversation.answer?.content || "No answer found"}\n\n`;
 
       text += "DATE:\n";
-
-      text += `${conversation.question.created_at || ""}\n\n`;
+      text += `${conversation.question?.created_at || ""}\n\n`;
 
       text += "----------------------------------------\n\n";
     });
 
-    const safeName = selectedDocument.name.replace(/[<>:"/\\|?*]/g, "_").trim();
+    const safeName =
+      String(selectedDocument.name || "document")
+        .replace(/[<>:"/\\|?*]/g, "_")
+        .trim() || "document";
 
     downloadTextFile(`${safeName}_questions_and_answers.txt`, text);
 
     alert("Document questions and answers downloaded successfully.");
   }
 
-  // =====================================================
+  // ===================================================
   // EXPORT ORIGINAL DOCUMENTS
-  // =====================================================
+  // ===================================================
 
   async function exportDocuments() {
     const user = await getCurrentUser();
 
-    if (!user) return;
-
-    const { data: documents, error } = await supabase
-      .from("documents")
-      .select("*")
-      .eq("user_id", user.id);
-
-    if (error) {
-      console.error("GET DOCUMENTS ERROR:", error);
-
-      alert(`Could not load documents: ${error.message}`);
-
+    if (!user) {
       return;
     }
 
-    if (!documents || documents.length === 0) {
-      alert("No documents found.");
-      return;
-    }
+    try {
+      const { data: documents, error } = await supabase
+        .from("documents")
+        .select("*")
+        .eq("user_id", user.id);
 
-    let options = "Which document do you want to download?\n\n";
+      if (error) {
+        console.error("GET DOCUMENTS ERROR:", error);
 
-    options += "0 - All Documents\n\n";
-
-    documents.forEach((document, index) => {
-      options += `${index + 1} - ${
-        document.title || document.file_name || "Unknown Document"
-      }\n`;
-    });
-
-    const choice = window.prompt(options);
-
-    if (choice === null) return;
-
-    const selectedNumber = Number(choice);
-
-    if (
-      !Number.isInteger(selectedNumber) ||
-      selectedNumber < 0 ||
-      selectedNumber > documents.length
-    ) {
-      alert("Invalid document selection.");
-      return;
-    }
-
-    // ===================================================
-    // ALL DOCUMENTS
-    // ===================================================
-
-    if (selectedNumber === 0) {
-      let successCount = 0;
-
-      for (const doc of documents) {
-        const filePath = doc.file_path || doc.file_name;
-
-        if (!filePath) {
-          console.warn("No file path:", doc);
-
-          continue;
-        }
-
-        try {
-          const { data: publicData } = supabase.storage
-            .from("documents")
-            .getPublicUrl(filePath);
-
-          const publicUrl = publicData?.publicUrl;
-
-          if (!publicUrl) {
-            console.warn("No public URL:", filePath);
-
-            continue;
-          }
-
-          const response = await fetch(publicUrl);
-
-          if (!response.ok) {
-            console.error("FILE FETCH ERROR:", filePath, response.status);
-
-            continue;
-          }
-
-          const blob = await response.blob();
-
-          const url = window.URL.createObjectURL(blob);
-
-          const link = window.document.createElement("a");
-
-          link.href = url;
-
-          link.download =
-            doc.file_name || filePath.split("/").pop() || "document";
-
-          link.style.display = "none";
-
-          window.document.body.appendChild(link);
-
-          link.click();
-
-          window.document.body.removeChild(link);
-
-          setTimeout(() => {
-            window.URL.revokeObjectURL(url);
-          }, 5000);
-
-          successCount++;
-
-          await new Promise((resolve) => setTimeout(resolve, 300));
-        } catch (error) {
-          console.error("DOWNLOAD ERROR:", filePath, error);
-        }
-      }
-
-      if (successCount === 0) {
-        alert("No documents could be downloaded.");
+        alert(`Could not load documents: ${error.message}`);
 
         return;
       }
 
-      alert(`${successCount} document(s) downloaded successfully.`);
+      if (!documents || documents.length === 0) {
+        alert("No documents found.");
+        return;
+      }
 
-      return;
+      let options = "Which document do you want to download?\n\n";
+
+      options += "0 - All Documents\n\n";
+
+      documents.forEach((document, index) => {
+        options += `${index + 1} - ${
+          document.title || document.file_name || "Unknown Document"
+        }\n`;
+      });
+
+      const choice = window.prompt(options);
+
+      if (choice === null) {
+        return;
+      }
+
+      const selectedNumber = Number(choice);
+
+      if (
+        !Number.isInteger(selectedNumber) ||
+        selectedNumber < 0 ||
+        selectedNumber > documents.length
+      ) {
+        alert("Invalid document selection.");
+        return;
+      }
+
+      // ===============================================
+      // ALL DOCUMENTS
+      // ===============================================
+
+      if (selectedNumber === 0) {
+        let successCount = 0;
+
+        for (const doc of documents) {
+          const filePath = doc.file_path || doc.file_name;
+
+          if (!filePath) {
+            console.warn("No file path:", doc);
+            continue;
+          }
+
+          try {
+            const { data: file, error: downloadError } = await supabase.storage
+              .from("documents")
+              .download(filePath);
+
+            if (downloadError) {
+              console.error("FILE DOWNLOAD ERROR:", filePath, downloadError);
+
+              continue;
+            }
+
+            if (!file) {
+              continue;
+            }
+
+            const fileName =
+              doc.file_name || filePath.split("/").pop() || "document";
+
+            downloadOriginalFile(file, fileName);
+
+            successCount++;
+
+            await new Promise((resolve) => setTimeout(resolve, 300));
+          } catch (error) {
+            console.error("DOWNLOAD ERROR:", filePath, error);
+          }
+        }
+
+        if (successCount === 0) {
+          alert("No documents could be downloaded.");
+          return;
+        }
+
+        alert(`${successCount} document(s) downloaded successfully.`);
+
+        return;
+      }
+
+      // ===============================================
+      // ONE DOCUMENT
+      // ===============================================
+
+      const selectedDocument = documents[selectedNumber - 1];
+
+      if (!selectedDocument) {
+        alert("Document not found.");
+        return;
+      }
+
+      const filePath = selectedDocument.file_path || selectedDocument.file_name;
+
+      if (!filePath) {
+        alert("This document does not have a file path.");
+        return;
+      }
+
+      const { data: file, error: downloadError } = await supabase.storage
+        .from("documents")
+        .download(filePath);
+
+      if (downloadError) {
+        console.error("FILE DOWNLOAD ERROR:", downloadError);
+
+        alert(`Could not download file: ${downloadError.message}`);
+
+        return;
+      }
+
+      if (!file) {
+        alert("File was not returned by Supabase.");
+        return;
+      }
+
+      const originalFileName =
+        selectedDocument.file_name || filePath.split("/").pop() || "document";
+
+      downloadOriginalFile(file, originalFileName);
+
+      alert("Document downloaded successfully.");
+    } catch (error) {
+      console.error("EXPORT DOCUMENTS ERROR:", error);
+      alert("Could not export documents.");
     }
-
-    // ===================================================
-    // ONE DOCUMENT
-    // ===================================================
-
-    const selectedDocument = documents[selectedNumber - 1];
-
-    if (!selectedDocument) {
-      alert("Document not found.");
-      return;
-    }
-
-    const filePath = selectedDocument.file_path || selectedDocument.file_name;
-
-    if (!filePath) {
-      alert("This document does not have a file path.");
-
-      return;
-    }
-
-    const { data: file, error: downloadError } = await supabase.storage
-      .from("documents")
-      .download(filePath);
-
-    if (downloadError) {
-      console.error("FILE DOWNLOAD ERROR:", downloadError);
-
-      alert(`Could not download file: ${downloadError.message}`);
-
-      return;
-    }
-
-    if (!file) {
-      alert("File was not returned by Supabase.");
-
-      return;
-    }
-
-    const originalFileName =
-      selectedDocument.file_name || filePath.split("/").pop() || "document";
-
-    downloadOriginalFile(file, originalFileName);
-
-    alert("Document downloaded successfully.");
   }
 
-  // =====================================================
+  // ===================================================
   // CLEAR AI HISTORY
-  // =====================================================
+  // ===================================================
 
   async function clearAIHistory() {
     const confirmDelete = window.confirm(
       "Delete all your AI questions and answers?",
     );
 
-    if (!confirmDelete) return;
-
-    const user = await getCurrentUser();
-
-    if (!user) return;
-
-    const { error } = await supabase
-      .from("chat_history")
-      .delete()
-      .eq("user_id", user.id);
-
-    if (error) {
-      console.error("DELETE CHAT HISTORY ERROR:", error);
-
-      alert(`Failed to clear history: ${error.message}`);
-
+    if (!confirmDelete) {
       return;
     }
 
-    alert("AI history cleared successfully.");
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("chat_history")
+        .delete()
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("DELETE CHAT HISTORY ERROR:", error);
+
+        alert(`Failed to clear history: ${error.message}`);
+
+        return;
+      }
+
+      alert("AI history cleared successfully.");
+    } catch (error) {
+      console.error("CLEAR AI HISTORY ERROR:", error);
+
+      alert("Failed to clear AI history.");
+    }
   }
 
-  // =====================================================
+  // ===================================================
   // RESET APPLICATION
-  // =====================================================
+  // ===================================================
 
   function resetApplication() {
     const confirmReset = window.confirm("Reset application settings?");
 
-    if (!confirmReset) return;
+    if (!confirmReset) {
+      return;
+    }
 
-    localStorage.clear();
+    try {
+      localStorage.clear();
+    } catch (error) {
+      console.error("RESET STORAGE ERROR:", error);
+    }
 
     window.location.reload();
   }
 
-  // =====================================================
+  // ===================================================
   // UI
-  // =====================================================
+  // ===================================================
 
   return (
     <div
@@ -975,9 +895,7 @@ export default function Settings() {
       "
     >
       <div className="mx-auto max-w-7xl">
-        {/* ================================================= */}
         {/* HEADER */}
-        {/* ================================================= */}
 
         <div className="mb-10">
           <h1
@@ -1003,9 +921,9 @@ export default function Settings() {
           </p>
         </div>
 
-        {/* ================================================= */}
-        {/* PROFILE + PROJECT */}
-        {/* ================================================= */}
+        {/* =================================================
+            PROFILE + PROJECT
+        ================================================= */}
 
         <div
           className="
@@ -1276,7 +1194,7 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="space-y-0">
+            <div>
               <div
                 className="
                   flex
@@ -1403,9 +1321,9 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* ================================================= */}
-        {/* PREFERENCES + BACKUP */}
-        {/* ================================================= */}
+        {/* =================================================
+            PREFERENCES + BACKUP
+        ================================================= */}
 
         <div
           className="
@@ -1480,9 +1398,7 @@ export default function Settings() {
             </div>
 
             <div className="space-y-3">
-              {/* =================================================
-                  DARK MODE
-              ================================================= */}
+              {/* DARK MODE */}
 
               <div
                 className="
@@ -1494,7 +1410,6 @@ export default function Settings() {
                   border-[#E9DED2]
                   bg-[#FCFAF7]
                   p-4
-                  transition
                   dark:border-white/10
                   dark:bg-[#211A15]
                 "
@@ -1544,7 +1459,7 @@ export default function Settings() {
 
                 <button
                   type="button"
-                  onClick={toggleDarkMode}
+                  onClick={toggleTheme}
                   aria-label="Toggle dark mode"
                   aria-pressed={darkMode}
                   className={`
@@ -1588,9 +1503,7 @@ export default function Settings() {
                 </button>
               </div>
 
-              {/* =================================================
-                  LANGUAGE
-              ================================================= */}
+              {/* LANGUAGE */}
 
               <div
                 className="
@@ -1661,9 +1574,7 @@ export default function Settings() {
                 </span>
               </div>
 
-              {/* =================================================
-                  TIMEZONE
-              ================================================= */}
+              {/* TIMEZONE */}
 
               <div
                 className="
@@ -1747,13 +1658,7 @@ export default function Settings() {
                   </div>
                 </div>
 
-                {/* ============================================
-                    CUSTOM DROPDOWN
-                ============================================ */}
-
                 <div ref={timezoneDropdownRef} className="relative mt-4">
-                  {/* SELECT BUTTON */}
-
                   <button
                     type="button"
                     onClick={() => setTimezoneOpen((current) => !current)}
@@ -1802,11 +1707,6 @@ export default function Settings() {
                       `}
                     />
                   </button>
-
-                  {/* ==========================================
-                      DROPDOWN OPTIONS
-
-                  ========================================== */}
 
                   {timezoneOpen && (
                     <div
@@ -1860,16 +1760,8 @@ export default function Settings() {
                                   transition
                                   ${
                                     selected
-                                      ? `
-                                        bg-[#4A3021]
-                                        text-white
-                                      `
-                                      : `
-                                        text-[#4A3021]
-                                        hover:bg-[#F3EAE1]
-                                        dark:text-gray-200
-                                        dark:hover:bg-white/10
-                                      `
+                                      ? "bg-[#4A3021] text-white"
+                                      : "text-[#4A3021] hover:bg-[#F3EAE1] dark:text-gray-200 dark:hover:bg-white/10"
                                   }
                                 `}
                             >
@@ -1887,8 +1779,6 @@ export default function Settings() {
                     </div>
                   )}
                 </div>
-
-                {/* CURRENT TIMEZONE */}
 
                 <div
                   className="
@@ -1932,9 +1822,7 @@ export default function Settings() {
             </div>
           </div>
 
-          {/* ================================================= */}
           {/* BACKUP */}
-          {/* ================================================= */}
 
           <div
             className="
@@ -2045,6 +1933,7 @@ export default function Settings() {
 
             <div className="space-y-3">
               <button
+                type="button"
                 onClick={exportQuestions}
                 className="
                   flex
@@ -2082,6 +1971,7 @@ export default function Settings() {
               </button>
 
               <button
+                type="button"
                 onClick={exportDocuments}
                 className="
                   flex
@@ -2144,9 +2034,10 @@ export default function Settings() {
             </div>
           </div>
         </div>
-        {/* ================================================= */}
-        {/* DANGER ZONE */}
-        {/* ================================================= */}
+
+        {/* =================================================
+            DANGER ZONE
+        ================================================= */}
 
         <div
           className="
@@ -2165,7 +2056,16 @@ export default function Settings() {
           </h2>
 
           <div className="space-y-6">
-            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div
+              className="
+                flex
+                flex-col
+                gap-5
+                md:flex-row
+                md:items-center
+                md:justify-between
+              "
+            >
               <div>
                 <h3 className="font-bold text-[#4A3021] dark:text-white">
                   Clear AI History
@@ -2177,6 +2077,7 @@ export default function Settings() {
               </div>
 
               <button
+                type="button"
                 onClick={clearAIHistory}
                 className="
                   rounded-2xl
@@ -2193,7 +2094,16 @@ export default function Settings() {
               </button>
             </div>
 
-            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div
+              className="
+                flex
+                flex-col
+                gap-5
+                md:flex-row
+                md:items-center
+                md:justify-between
+              "
+            >
               <div>
                 <h3 className="font-bold text-[#4A3021] dark:text-white">
                   Reset Application
@@ -2205,6 +2115,7 @@ export default function Settings() {
               </div>
 
               <button
+                type="button"
                 onClick={resetApplication}
                 className="
                   rounded-2xl
@@ -2222,9 +2133,9 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* ================================================= */}
-        {/* ABOUT */}
-        {/* ================================================= */}
+        {/* =================================================
+            ABOUT
+        ================================================= */}
 
         <div
           className="
@@ -2394,9 +2305,7 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* ================================================= */}
         {/* FOOTER */}
-        {/* ================================================= */}
 
         <div
           className="
@@ -2407,7 +2316,7 @@ export default function Settings() {
             dark:text-gray-500
           "
         >
-          ©️ 2026 DataNest AI. All rights reserved.
+          © 2026 DataNest AI. All rights reserved.
         </div>
       </div>
     </div>

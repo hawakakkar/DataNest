@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../Services/supabase";
+import { useTheme } from "../context/ThemeContext";
 
 import HeroImage from "../assets/images/ai pic.png";
 import AboutImage from "../assets/images/about.jpg";
@@ -21,23 +22,18 @@ import {
 } from "react-icons/fi";
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
-  });
+  // =========================================
+  // THEME
+  // =========================================
+
+  const { darkMode, toggleTheme } = useTheme();
 
   const [user, setUser] = useState(null);
   const [mobileMenu, setMobileMenu] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
-
+  // =========================================
+  // SUPABASE USER
+  // =========================================
   useEffect(() => {
     const getUser = async () => {
       const {
@@ -189,7 +185,8 @@ export default function Home() {
             {/* Dark Mode */}
 
             <button
-              onClick={() => setDarkMode(!darkMode)}
+              onClick={toggleTheme}
+              aria-label="Toggle dark mode"
               className="
                 w-12
                 h-12
@@ -258,7 +255,7 @@ export default function Home() {
             ) : (
               <>
                 <Link
-                  to="/Login"
+                  to="/login"
                   className="
                     hidden
                     sm:flex
@@ -278,7 +275,7 @@ export default function Home() {
                 </Link>
 
                 <Link
-                  to="/Register"
+                  to="/register"
                   className="
                     hidden
                     sm:flex
@@ -667,7 +664,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= Statistics ================= */}
+      {/* ================= STATISTICS ================= */}
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-3 gap-8">

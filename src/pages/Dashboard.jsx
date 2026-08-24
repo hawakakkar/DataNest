@@ -226,7 +226,7 @@ This information was found in the following documents:
     <div
       className="
         min-h-screen
-        bg-[#F7F3EE]
+        bg-[#F8F3EC]
         text-[#3E2A1E]
         transition-colors
         duration-500
@@ -1182,7 +1182,7 @@ This information was found in the following documents:
                     handleSearch();
                   }
                 }}
-                placeholder="Example: What is the leave policy?"
+                placeholder="Example: What are the documents about?"
                 className="
                   min-w-0
                   flex-1

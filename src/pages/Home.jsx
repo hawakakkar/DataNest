@@ -32,6 +32,56 @@ export default function Home() {
   const [mobileMenu, setMobileMenu] = useState(false);
 
   // =========================================
+  // VISITOR TRACKING
+  // =========================================
+  useEffect(() => {
+    const trackVisitor = async () => {
+      try {
+        const alreadyTracked = sessionStorage.getItem(
+          "datanest_visitor_tracked",
+        );
+
+        if (alreadyTracked) {
+          return;
+        }
+
+        let visitorId = localStorage.getItem("datanest_visitor_id");
+
+        if (!visitorId) {
+          visitorId = crypto.randomUUID();
+          localStorage.setItem("datanest_visitor_id", visitorId);
+        }
+
+        const response = await fetch("https://ipapi.co/json/");
+        const location = await response.json();
+
+        const { error } = await supabase.from("visitors").insert({
+          visitor_id: visitorId,
+          country: location.country_name || "Unknown",
+          city: location.city || "Unknown",
+        });
+
+        if (error) {
+          console.error("Visitor tracking error:", error);
+          return;
+        }
+
+        sessionStorage.setItem("datanest_visitor_tracked", "true");
+
+        console.log("Visitor recorded:", {
+          visitorId,
+          country: location.country_name,
+          city: location.city,
+        });
+      } catch (error) {
+        console.error("Visitor tracking failed:", error);
+      }
+    };
+
+    trackVisitor();
+  }, []);
+
+  // =========================================
   // SUPABASE USER
   // =========================================
   useEffect(() => {

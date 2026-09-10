@@ -22,7 +22,7 @@ ${chunk.content}
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "poolside/laguna-s-2.1:free",
+        model: "openrouter/free",
 
         messages: [
           {

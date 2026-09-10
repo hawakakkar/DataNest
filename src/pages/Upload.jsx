@@ -154,10 +154,38 @@ export default function Upload() {
       // --------------------------------
       const chunkRows = [];
 
-      for (const chunk of chunks) {
+      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+
         if (!chunk || !chunk.trim()) continue;
 
-        const embedding = await generateEmbedding(chunk);
+        let embedding = null;
+        let attempts = 0;
+
+        while (!embedding && attempts < 3) {
+          try {
+            embedding = await generateEmbedding(chunk);
+          } catch (error) {
+            attempts++;
+
+            const isRateLimit =
+              error?.message?.includes("429") ||
+              error?.message?.toLowerCase().includes("rate limit");
+
+            if (!isRateLimit || attempts >= 3) {
+              throw error;
+            }
+
+            console.log(
+              `Rate limit reached. Waiting before retry... Attempt ${attempts}/3`,
+            );
+
+            // Wait before retry
+            await wait(10000);
+          }
+        }
 
         if (!embedding) {
           throw new Error("Failed to generate embedding for a document chunk.");
@@ -170,6 +198,11 @@ export default function Upload() {
           section: "Unknown",
           embedding,
         });
+
+        // Prevent OpenRouter free-model rate limit
+        if (i < chunks.length - 1) {
+          await wait(3500);
+        }
       }
 
       // --------------------------------
